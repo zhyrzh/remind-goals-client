@@ -3,14 +3,7 @@ import "./App.css";
 import moment from "moment";
 import ReminderList from "./components/ReminderList";
 import { Button } from "./components/ui/button";
-import {
-  Card,
-  // CardContent,
-  // CardDescription,
-  // CardFooter,
-  // CardHeader,
-  // CardTitle,
-} from "./components/ui/card";
+import { Card } from "./components/ui/card";
 import {
   Dialog,
   DialogContent,
