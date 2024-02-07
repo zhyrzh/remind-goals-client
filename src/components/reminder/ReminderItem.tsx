@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { Card } from "../ui/card";
-import CustomCheckbox from "./components/Checkbox";
-import DeleteButton from "./components/DeleteButton";
+import CustomCheckbox from "./ReminderCheckbox";
+import DeleteButton from "./ReminderDeleteButton";
 
 export interface IReminder {
   id: number;
