@@ -1,5 +1,4 @@
 import { FC, useState } from "react";
-import { TrashIcon } from "@radix-ui/react-icons";
 import {
   Dialog,
   DialogContent,
@@ -9,33 +8,38 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Checkbox } from "../ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { IReminder } from "../ReminderItem";
+import { IReminder } from "./ReminderItem";
 
-const DeleteButton: FC<{
+const CustomCheckbox: FC<{
   goal: IReminder;
-  onRemoveGoal: (id: number) => void;
-}> = ({ goal, onRemoveGoal }) => {
+  onSetGoalAsDone: (id: number) => void;
+}> = ({ goal, onSetGoalAsDone }) => {
   const [showSetIsActiveDialog, setShowIsActiveDialog] =
     useState<boolean>(false);
   return (
     <Dialog open={showSetIsActiveDialog} onOpenChange={setShowIsActiveDialog}>
       <DialogTrigger asChild>
-        <TrashIcon className="ml-auto" fill="true" onClick={() => {}} />
+        <Checkbox
+          className="transition-all disabled:cursor-auto"
+          checked={!goal.active}
+          disabled={!goal.active}
+        />
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Delete item</DialogTitle>
+          <DialogTitle>Mark as done</DialogTitle>
           <DialogDescription>
-            Are you sure you want to delete this reminder. You won't be able to
-            redo your action if you do so.
+            Are you sure you want this specific reminder to be marked as done?
+            You <b>WON'T</b> be able to retain it's status if you do so.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
           <Button
             type="submit"
             onClick={() => {
-              onRemoveGoal(goal.id);
+              onSetGoalAsDone(goal.id);
               setShowIsActiveDialog((prevVal) => !prevVal);
             }}
           >
@@ -54,4 +58,4 @@ const DeleteButton: FC<{
   );
 };
 
-export default DeleteButton;
+export default CustomCheckbox;
