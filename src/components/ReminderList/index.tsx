@@ -24,20 +24,27 @@ const ReminderList = () => {
     setGoals((prevGoals) => prevGoals.filter((goal) => goal.id !== id));
   };
 
-  const onSetGoals = (
-    goals: Array<{ id: number; content: string; active: boolean }>
-  ) => {
-    setGoals(goals);
+  const onSetGoalAsDone = (id: number) => {
+    setGoals((prevGoals) =>
+      prevGoals.map((goal) => ({
+        ...goal,
+        active: goal.id === id ? !goal.active : goal.active,
+      }))
+    );
   };
 
-  return goals.map((goal) => (
-    <ReminderItem
-      key={goal.id}
-      goal={goal}
-      onRemoveGoal={onRemoveGoal}
-      onSetGoals={onSetGoals}
-    />
-  ));
+  return (
+    <>
+      {goals.map((goal) => (
+        <ReminderItem
+          key={goal.id}
+          goal={goal}
+          onRemoveGoal={onRemoveGoal}
+          onSetGoalAsDone={onSetGoalAsDone}
+        />
+      ))}
+    </>
+  );
 };
 
 export default ReminderList;
