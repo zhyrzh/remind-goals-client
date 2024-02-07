@@ -3,13 +3,13 @@ import { Card } from "../ui/card";
 import CustomCheckbox from "./components/Checkbox";
 import DeleteButton from "./components/DeleteButton";
 
-export interface IGoal {
+export interface IReminder {
   id: number;
   content: string;
   active: boolean;
 }
 interface IReminderItemProps {
-  goal: IGoal;
+  goal: IReminder;
   onRemoveGoal: (id: number) => void;
   onSetGoalAsDone: (id: number) => void;
 }

@@ -10,10 +10,10 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { IGoal } from "../ReminderItem";
+import { IReminder } from "../ReminderItem";
 
 const DeleteButton: FC<{
-  goal: IGoal;
+  goal: IReminder;
   onRemoveGoal: (id: number) => void;
 }> = ({ goal, onRemoveGoal }) => {
   const [showSetIsActiveDialog, setShowIsActiveDialog] =

@@ -10,10 +10,10 @@ import {
 } from "@/components/ui/dialog";
 import { Checkbox } from "../../ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { IGoal } from "../ReminderItem";
+import { IReminder } from "../ReminderItem";
 
 const CustomCheckbox: FC<{
-  goal: IGoal;
+  goal: IReminder;
   onSetGoalAsDone: (id: number) => void;
 }> = ({ goal, onSetGoalAsDone }) => {
   const [showSetIsActiveDialog, setShowIsActiveDialog] =
