@@ -1,9 +1,8 @@
 import { useState } from "react";
 import "./App.css";
 import moment from "moment";
-import ReminderList from "./components/ReminderList";
+import ReminderList from "./components/reminder";
 import { Button } from "./components/ui/button";
-import { Card } from "./components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -14,6 +13,7 @@ import { RadioGroup, RadioGroupItem } from "./components/ui/radio-group";
 import { Label } from "./components/ui/label";
 import { Input } from "./components/ui/input";
 import { Calendar } from "./components/ui/calendar";
+import Clock from "./components/clock";
 
 function App() {
   const [showAddReminderModal, setShowAddReminderModal] =
@@ -86,10 +86,7 @@ function App() {
         </DialogContent>
       </Dialog>
       <div className="grid grid-cols-12 gap-[30px]">
-        <Card className="col-start-1 col-end-4 h-[310px] flex justify-center items-center flex-col">
-          <h1 className="text-[69px] font-bold">JAN 06</h1>
-          <h3 className="text-[18px] mb-12">MON - 8:45 PM</h3>
-        </Card>
+        <Clock />
         <div className="col-start-4 col-end-13 transition-all">
           <div className="flex justify-between mb-[15px]">
             <h1 className="text-[24px] font-bold">Reminders</h1>
