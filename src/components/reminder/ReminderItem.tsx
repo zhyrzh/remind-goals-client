@@ -2,11 +2,13 @@ import { FC } from "react";
 import { Card } from "../ui/card";
 import CustomCheckbox from "./ReminderCheckbox";
 import DeleteButton from "./ReminderDeleteButton";
+import { FrequencyEnum } from "./AddReminder";
 
 export interface IReminder {
   id: number;
   content: string;
   active: boolean;
+  frequency: FrequencyEnum;
 }
 interface IReminderItemProps {
   goal: IReminder;
