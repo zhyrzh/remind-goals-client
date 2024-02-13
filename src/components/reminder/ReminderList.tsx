@@ -1,16 +1,19 @@
 import { FC } from "react";
 import ReminderItem, { IReminder } from "./ReminderItem";
+import { IReminderInputValues } from "./AddReminder";
 
 interface IReminderList {
   reminders: IReminder[];
   onRemoveGoal: (id: number) => void;
   onSetGoalAsDone: (id: number) => void;
+  onEditReminder: (id: number, values: IReminderInputValues) => void;
 }
 
 const ReminderList: FC<IReminderList> = ({
   reminders,
   onRemoveGoal,
   onSetGoalAsDone,
+  onEditReminder,
 }) => {
   return (
     <>
@@ -22,6 +25,7 @@ const ReminderList: FC<IReminderList> = ({
             goal={reminder}
             onRemoveGoal={onRemoveGoal}
             onSetGoalAsDone={onSetGoalAsDone}
+            onEditReminder={onEditReminder}
           />
         ))}
     </>

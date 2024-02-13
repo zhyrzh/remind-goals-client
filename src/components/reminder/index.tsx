@@ -1,5 +1,8 @@
 import { useState } from "react";
-import AddReminder, { FrequencyEnum } from "./AddReminder";
+import AddReminder, {
+  FrequencyEnum,
+  IReminderInputValues,
+} from "./AddReminder";
 import ReminderList from "./ReminderList";
 import { IReminder } from "./ReminderItem";
 
@@ -52,6 +55,17 @@ const Reminder = () => {
     ]);
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const onEditReminder = (id: number, values: IReminderInputValues) => {
+    setReminders((prevReminders) =>
+      prevReminders.map((item) =>
+        item.id === id
+          ? { ...item, content: values.title, frequency: values.frequency }
+          : item
+      )
+    );
+  };
+
   return (
     <>
       <div className="flex justify-between mb-[15px]">
@@ -62,6 +76,7 @@ const Reminder = () => {
         reminders={reminders}
         onRemoveGoal={onRemoveGoal}
         onSetGoalAsDone={onSetGoalAsDone}
+        onEditReminder={onEditReminder}
       />
     </>
   );

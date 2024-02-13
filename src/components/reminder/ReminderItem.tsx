@@ -1,8 +1,9 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { Card } from "../ui/card";
 import CustomCheckbox from "./ReminderCheckbox";
 import DeleteButton from "./ReminderDeleteButton";
-import { FrequencyEnum } from "./AddReminder";
+import { FrequencyEnum, IReminderInputValues } from "./AddReminder";
+import EditButton from "./ReminderEditButton";
 
 export interface IReminder {
   id: number;
@@ -14,13 +15,17 @@ interface IReminderItemProps {
   goal: IReminder;
   onRemoveGoal: (id: number) => void;
   onSetGoalAsDone: (id: number) => void;
+  onEditReminder: (id: number, values: IReminderInputValues) => void;
 }
 
 const ReminderItem: FC<IReminderItemProps> = ({
   goal,
   onRemoveGoal,
   onSetGoalAsDone,
+  onEditReminder,
 }) => {
+  const [editable] = useState<boolean>(false);
+
   return (
     <>
       <Card
@@ -36,12 +41,18 @@ const ReminderItem: FC<IReminderItemProps> = ({
         <p
           className={
             "text-left ml-2 transition-all duration-1000 ease-in-out" +
-            (!goal.active ? " line-through" : "")
+            (!goal.active ? " line-through" : "") +
+            (editable ? " px-2" : "")
           }
+          contentEditable={editable}
+          suppressContentEditableWarning={editable}
         >
           {goal.content}
         </p>
-        <DeleteButton onRemoveGoal={onRemoveGoal} goal={goal} />
+        <section className="flex ml-auto">
+          <EditButton reminder={goal} onEditReminder={onEditReminder} />
+          <DeleteButton onRemoveGoal={onRemoveGoal} goal={goal} />
+        </section>
       </Card>
     </>
   );
