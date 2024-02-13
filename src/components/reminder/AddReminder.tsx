@@ -15,11 +15,7 @@ import moment from "moment";
 import { Button } from "../ui/button";
 
 interface IAddReminder {
-  // freqVal: FrequencyEnum;
-  // showAddReminderModal: boolean;
-  // setShowAddReminderModal: React.Dispatch<React.SetStateAction<boolean>>;
-  // setFreqVal: React.Dispatch<React.SetStateAction<string>>;
-  onAddGoal: (value: { title: string; frequency: FrequencyEnum }) => void;
+  onAddGoal: (value: IReminderInputValues) => void;
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -29,6 +25,11 @@ export const enum FrequencyEnum {
   weekly = "weekly",
   monthly = "monthly",
   annually = "annually",
+}
+
+export interface IReminderInputValues {
+  title: string;
+  frequency: FrequencyEnum;
 }
 
 const radioItems = [
@@ -53,10 +54,7 @@ const AddReminder: FC<IAddReminder> = ({ onAddGoal }) => {
   const [showAddReminderModal, setShowAddReminderModal] =
     useState<boolean>(false);
 
-  const [values, setValues] = useState<{
-    title: string;
-    frequency: FrequencyEnum;
-  }>({
+  const [values, setValues] = useState<IReminderInputValues>({
     title: "",
     frequency: FrequencyEnum.once,
   });
