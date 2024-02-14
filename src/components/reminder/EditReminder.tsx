@@ -15,7 +15,7 @@ import moment from "moment";
 import { Button } from "../ui/button";
 
 interface IEditReminder {
-  onAddGoal: (value: { title: string; frequency: FrequencyEnum }) => void;
+  onAddReminder: (value: { title: string; frequency: FrequencyEnum }) => void;
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -45,7 +45,7 @@ const radioItems = [
   },
 ];
 
-const AddReminder: FC<IEditReminder> = ({ onAddGoal }) => {
+const AddReminder: FC<IEditReminder> = ({ onAddReminder }) => {
   const [showAddReminderModal, setShowAddReminderModal] =
     useState<boolean>(false);
 
@@ -124,7 +124,7 @@ const AddReminder: FC<IEditReminder> = ({ onAddGoal }) => {
           <Button
             type="submit"
             onClick={() => {
-              onAddGoal(values);
+              onAddReminder(values);
               setShowAddReminderModal(false);
             }}
           >

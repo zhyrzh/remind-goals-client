@@ -13,9 +13,9 @@ import { Button } from "@/components/ui/button";
 import { IReminder } from "./ReminderItem";
 
 const DeleteButton: FC<{
-  goal: IReminder;
-  onRemoveGoal: (id: number) => void;
-}> = ({ goal, onRemoveGoal }) => {
+  reminder: IReminder;
+  onRemoveReminder: (id: number) => void;
+}> = ({ reminder, onRemoveReminder }) => {
   const [showSetIsActiveDialog, setShowIsActiveDialog] =
     useState<boolean>(false);
   return (
@@ -35,7 +35,7 @@ const DeleteButton: FC<{
           <Button
             type="submit"
             onClick={() => {
-              onRemoveGoal(goal.id);
+              onRemoveReminder(reminder.id);
               setShowIsActiveDialog((prevVal) => !prevVal);
             }}
           >

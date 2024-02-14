@@ -28,13 +28,13 @@ const Reminder = () => {
     },
   ]);
 
-  const onRemoveGoal = (id: number) => {
+  const onRemoveReminder = (id: number) => {
     setReminders((prevReminder) =>
       prevReminder.filter((reminder) => reminder.id !== id)
     );
   };
 
-  const onSetGoalAsDone = (id: number) => {
+  const onSetReminderAsDone = (id: number) => {
     setReminders((prevReminder) =>
       prevReminder.map((reminder) => ({
         ...reminder,
@@ -43,7 +43,7 @@ const Reminder = () => {
     );
   };
 
-  const onAddGoal = (value: { title: string; frequency: FrequencyEnum }) => {
+  const onAddReminder = (value: IReminderInputValues) => {
     setReminders((prevReminders) => [
       ...prevReminders,
       {
@@ -70,12 +70,12 @@ const Reminder = () => {
     <>
       <div className="flex justify-between mb-[15px]">
         <h1 className="text-[24px] font-bold">Reminders</h1>
-        <AddReminder onAddGoal={onAddGoal} />
+        <AddReminder onAddReminder={onAddReminder} />
       </div>
       <ReminderList
         reminders={reminders}
-        onRemoveGoal={onRemoveGoal}
-        onSetGoalAsDone={onSetGoalAsDone}
+        onRemoveReminder={onRemoveReminder}
+        onSetReminderAsDone={onSetReminderAsDone}
         onEditReminder={onEditReminder}
       />
     </>

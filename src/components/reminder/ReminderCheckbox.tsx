@@ -12,10 +12,15 @@ import { Checkbox } from "../ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { IReminder } from "./ReminderItem";
 
-const CustomCheckbox: FC<{
-  goal: IReminder;
-  onSetGoalAsDone: (id: number) => void;
-}> = ({ goal, onSetGoalAsDone }) => {
+interface ICustomCheckbox {
+  reminder: IReminder;
+  onSetReminderAsDone: (id: number) => void;
+}
+
+const CustomCheckbox: FC<ICustomCheckbox> = ({
+  reminder,
+  onSetReminderAsDone,
+}) => {
   const [showSetIsActiveDialog, setShowIsActiveDialog] =
     useState<boolean>(false);
   return (
@@ -23,8 +28,8 @@ const CustomCheckbox: FC<{
       <DialogTrigger asChild>
         <Checkbox
           className="transition-all disabled:cursor-auto"
-          checked={!goal.active}
-          disabled={!goal.active}
+          checked={!reminder.active}
+          disabled={!reminder.active}
         />
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
@@ -39,7 +44,7 @@ const CustomCheckbox: FC<{
           <Button
             type="submit"
             onClick={() => {
-              onSetGoalAsDone(goal.id);
+              onSetReminderAsDone(reminder.id);
               setShowIsActiveDialog((prevVal) => !prevVal);
             }}
           >

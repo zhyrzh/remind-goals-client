@@ -12,16 +12,16 @@ export interface IReminder {
   frequency: FrequencyEnum;
 }
 interface IReminderItemProps {
-  goal: IReminder;
-  onRemoveGoal: (id: number) => void;
-  onSetGoalAsDone: (id: number) => void;
+  reminder: IReminder;
+  onRemoveReminder: (id: number) => void;
+  onSetReminderAsDone: (id: number) => void;
   onEditReminder: (id: number, values: IReminderInputValues) => void;
 }
 
 const ReminderItem: FC<IReminderItemProps> = ({
-  goal,
-  onRemoveGoal,
-  onSetGoalAsDone,
+  reminder,
+  onRemoveReminder,
+  onSetReminderAsDone,
   onEditReminder,
 }) => {
   const [editable] = useState<boolean>(false);
@@ -29,29 +29,35 @@ const ReminderItem: FC<IReminderItemProps> = ({
   return (
     <>
       <Card
-        key={goal.id}
+        key={reminder.id}
         className={
           "flex items-center p-2 transition-all duration-200 ease-in-out border-none first:mt-0 mt-2 cursor-pointer" +
-          (!goal.active
+          (!reminder.active
             ? " bg-neutral-300 hover:bg-neutral-300"
             : " bg-neutral-100 hover:bg-neutral-200")
         }
       >
-        <CustomCheckbox goal={goal} onSetGoalAsDone={onSetGoalAsDone} />
+        <CustomCheckbox
+          reminder={reminder}
+          onSetReminderAsDone={onSetReminderAsDone}
+        />
         <p
           className={
             "text-left ml-2 transition-all duration-1000 ease-in-out" +
-            (!goal.active ? " line-through" : "") +
+            (!reminder.active ? " line-through" : "") +
             (editable ? " px-2" : "")
           }
           contentEditable={editable}
           suppressContentEditableWarning={editable}
         >
-          {goal.content}
+          {reminder.content}
         </p>
         <section className="flex ml-auto">
-          <EditButton reminder={goal} onEditReminder={onEditReminder} />
-          <DeleteButton onRemoveGoal={onRemoveGoal} goal={goal} />
+          <EditButton reminder={reminder} onEditReminder={onEditReminder} />
+          <DeleteButton
+            onRemoveReminder={onRemoveReminder}
+            reminder={reminder}
+          />
         </section>
       </Card>
     </>

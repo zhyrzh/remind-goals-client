@@ -4,15 +4,15 @@ import { IReminderInputValues } from "./AddReminder";
 
 interface IReminderList {
   reminders: IReminder[];
-  onRemoveGoal: (id: number) => void;
-  onSetGoalAsDone: (id: number) => void;
+  onRemoveReminder: (id: number) => void;
+  onSetReminderAsDone: (id: number) => void;
   onEditReminder: (id: number, values: IReminderInputValues) => void;
 }
 
 const ReminderList: FC<IReminderList> = ({
   reminders,
-  onRemoveGoal,
-  onSetGoalAsDone,
+  onRemoveReminder,
+  onSetReminderAsDone,
   onEditReminder,
 }) => {
   return (
@@ -22,9 +22,9 @@ const ReminderList: FC<IReminderList> = ({
         .map((reminder) => (
           <ReminderItem
             key={reminder.id}
-            goal={reminder}
-            onRemoveGoal={onRemoveGoal}
-            onSetGoalAsDone={onSetGoalAsDone}
+            reminder={reminder}
+            onRemoveReminder={onRemoveReminder}
+            onSetReminderAsDone={onSetReminderAsDone}
             onEditReminder={onEditReminder}
           />
         ))}
