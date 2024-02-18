@@ -189,14 +189,31 @@ const AddGoal: FC<IAddGoal> = ({ onAddGoal }) => {
           <Button
             type="submit"
             onClick={() => {
-              onAddGoal({
-                title: goalTitle,
-                checklist,
-              });
-              setChecklistEditedTitleValue("");
-              setGoalTitle("");
-              setCheckList([]);
-              setShowAddGoalModal(false);
+              if (!goalTitle && goalTitle.trim() === "") {
+                toast({
+                  title: "Empty title",
+                  description: "Please proved title for your goal",
+                  variant: "destructive",
+                });
+                return;
+              }
+              if (checklist.length <= 0) {
+                toast({
+                  title: "Empty checklist",
+                  description: "Please proved at least 1 checklist",
+                  variant: "destructive",
+                });
+                return;
+              } else {
+                onAddGoal({
+                  title: goalTitle,
+                  checklist,
+                });
+                setChecklistEditedTitleValue("");
+                setGoalTitle("");
+                setCheckList([]);
+                setShowAddGoalModal(false);
+              }
             }}
           >
             Add Goal
