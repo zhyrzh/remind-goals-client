@@ -36,7 +36,7 @@ const Clock = () => {
         </span>{" "}
         -{" "}
         <span>
-          <Moment date={""} element={"time"} format={"HH:mm:ss a"}>
+          <Moment date={""} element={"time"} format={"HH:mm:ss A"}>
             {currentTime}
           </Moment>
         </span>
