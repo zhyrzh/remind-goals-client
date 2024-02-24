@@ -65,6 +65,16 @@ const Goal = () => {
     ]);
   };
 
+  const onEditGoal = (id: number, goal: Omit<IGoal, "id">) => {
+    setGoals((prevGoals) =>
+      prevGoals.map((itm) =>
+        itm.id === id
+          ? { ...itm, checklist: goal.checklist, title: goal.title }
+          : itm
+      )
+    );
+  };
+
   return (
     <>
       <div className="flex flex-col mt-[35px]">
@@ -73,7 +83,7 @@ const Goal = () => {
           <AddGoal onAddGoal={onAddGoal} />
         </div>
         {goals.map((goal) => (
-          <GoalItemCard goal={goal} key={goal.id} />
+          <GoalItemCard goal={goal} key={goal.id} onEditGoal={onEditGoal} />
         ))}
       </div>
     </>
