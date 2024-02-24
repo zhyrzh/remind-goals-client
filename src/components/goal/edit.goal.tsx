@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import Checklist from "../checklist";
 import { Button } from "../ui/button";
 import {
@@ -11,18 +11,33 @@ import {
 } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { IGoalChecklist } from ".";
+import { IGoal, IGoalChecklist } from ".";
 
 interface IEditGoalProps {
+  goalId: number;
   goalTitle: string;
   checklist: IGoalChecklist[];
+  onEditGoal: (id: number, goal: Omit<IGoal, "id">) => void;
 }
 
-const EditGoal: FC<IEditGoalProps> = ({ checklist, goalTitle }) => {
+const EditGoal: FC<IEditGoalProps> = ({
+  checklist,
+  goalTitle,
+  goalId,
+  onEditGoal,
+}) => {
   const [showEditGoalModal, setShowEditGoalModal] = useState<boolean>(false);
-  const [currentGoalTitle, setCurrentGoalTitle] = useState<string>(goalTitle);
-  const [currentChecklist, setCurrentChecklist] =
-    useState<IGoalChecklist[]>(checklist);
+  const [currentGoalTitle, setCurrentGoalTitle] = useState<string>("");
+  const [currentChecklist, setCurrentChecklist] = useState<IGoalChecklist[]>(
+    []
+  );
+
+  useEffect(() => {
+    setCurrentChecklist(checklist);
+    setCurrentGoalTitle(goalTitle);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showEditGoalModal]);
+
   return (
     <Dialog open={showEditGoalModal} onOpenChange={setShowEditGoalModal}>
       <DialogTrigger asChild>
@@ -48,13 +63,26 @@ const EditGoal: FC<IEditGoalProps> = ({ checklist, goalTitle }) => {
           setChecklist={setCurrentChecklist}
         />
         <DialogFooter className="mt-12">
-          <Button type="submit" onClick={() => {}}>
+          <Button
+            type="submit"
+            onClick={() => {
+              onEditGoal(goalId, {
+                title: currentGoalTitle,
+                checklist: currentChecklist,
+              });
+              setShowEditGoalModal(false);
+            }}
+          >
             Save Changes
           </Button>
           <Button
             type="button"
             className="bg-transparent text-slate-900 hover:bg-transparent"
-            onClick={() => setShowEditGoalModal(false)}
+            onClick={() => {
+              setShowEditGoalModal(false);
+              setCurrentChecklist([]);
+              setCurrentGoalTitle("");
+            }}
           >
             Cancel
           </Button>
