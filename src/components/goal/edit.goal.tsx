@@ -15,6 +15,7 @@ import { IGoal, IGoalChecklist } from ".";
 import { Tabs, TabsContent } from "../ui/tabs";
 import useCurrTabDetails from "../../hooks/useCurrTabDetails";
 import { useToast } from "../ui/use-toast";
+import { Pencil1Icon } from "@radix-ui/react-icons";
 
 interface IEditGoalProps {
   goalId: number;
@@ -72,7 +73,7 @@ const EditGoal: FC<IEditGoalProps> = ({
   return (
     <Dialog open={showEditGoalModal} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
-        <Button>Edit Goal</Button>
+        <Pencil1Icon />
       </DialogTrigger>
       <DialogContent>
         <Tabs defaultValue="main" value={currTabDetails.value}>
