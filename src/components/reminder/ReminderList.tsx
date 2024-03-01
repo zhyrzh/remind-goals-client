@@ -2,6 +2,7 @@ import { FC } from "react";
 import ReminderItem, { IReminder } from "./ReminderItem";
 import { IReminderInputValues } from "./AddReminder";
 
+// Types declaration
 interface IReminderList {
   reminders: IReminder[];
   onRemoveReminder: (id: number) => void;
@@ -9,6 +10,7 @@ interface IReminderList {
   onEditReminder: (id: number, values: IReminderInputValues) => void;
 }
 
+/* Function component START */
 const ReminderList: FC<IReminderList> = ({
   reminders,
   onRemoveReminder,
@@ -31,5 +33,6 @@ const ReminderList: FC<IReminderList> = ({
     </>
   );
 };
+/* Function component END */
 
 export default ReminderList;
