@@ -17,12 +17,15 @@ interface ICustomCheckbox {
   onSetReminderAsDone: (id: number) => void;
 }
 
+/* Function component START */
 const CustomCheckbox: FC<ICustomCheckbox> = ({
   reminder,
   onSetReminderAsDone,
 }) => {
+  // useState declarations
   const [showSetIsActiveDialog, setShowIsActiveDialog] =
     useState<boolean>(false);
+
   return (
     <Dialog open={showSetIsActiveDialog} onOpenChange={setShowIsActiveDialog}>
       <DialogTrigger asChild>
@@ -62,5 +65,6 @@ const CustomCheckbox: FC<ICustomCheckbox> = ({
     </Dialog>
   );
 };
+/* Function component START */
 
 export default CustomCheckbox;

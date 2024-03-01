@@ -2,9 +2,11 @@ import { FC, useState } from "react";
 import { Card } from "../ui/card";
 import CustomCheckbox from "./ReminderCheckbox";
 import DeleteButton from "./ReminderDeleteButton";
-import { FrequencyEnum, IReminderInputValues } from "./AddReminder";
+import { IReminderInputValues } from "./AddReminder";
 import EditButton from "./ReminderEditButton";
+import { FrequencyEnum } from "./constants";
 
+// Types declarations
 export interface IReminder {
   id: number;
   content: string;
@@ -18,12 +20,14 @@ interface IReminderItemProps {
   onEditReminder: (id: number, values: IReminderInputValues) => void;
 }
 
+/* Function component START */
 const ReminderItem: FC<IReminderItemProps> = ({
   reminder,
   onRemoveReminder,
   onSetReminderAsDone,
   onEditReminder,
 }) => {
+  // useState declarations
   const [editable] = useState<boolean>(false);
 
   return (
@@ -63,5 +67,6 @@ const ReminderItem: FC<IReminderItemProps> = ({
     </>
   );
 };
+/* Function component END */
 
 export default ReminderItem;

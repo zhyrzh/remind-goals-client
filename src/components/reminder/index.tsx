@@ -1,33 +1,15 @@
 import { useState } from "react";
-import AddReminder, {
-  FrequencyEnum,
-  IReminderInputValues,
-} from "./AddReminder";
+import AddReminder, { IReminderInputValues } from "./AddReminder";
 import ReminderList from "./ReminderList";
 import { IReminder } from "./ReminderItem";
+import { dummyReminders } from "./constants";
 
+/* Function component START */
 const Reminder = () => {
-  const [reminders, setReminders] = useState<IReminder[]>([
-    {
-      id: 1,
-      content: "Build my dream pc.",
-      active: true,
-      frequency: FrequencyEnum.once,
-    },
-    {
-      id: 2,
-      content: "Buy new keyboard.",
-      active: true,
-      frequency: FrequencyEnum.once,
-    },
-    {
-      id: 3,
-      content: "Get passport.",
-      active: false,
-      frequency: FrequencyEnum.once,
-    },
-  ]);
+  // useState declarations
+  const [reminders, setReminders] = useState<IReminder[]>(dummyReminders);
 
+  // methods declarations
   const onRemoveReminder = (id: number) => {
     setReminders((prevReminder) =>
       prevReminder.filter((reminder) => reminder.id !== id)
@@ -55,7 +37,6 @@ const Reminder = () => {
     ]);
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onEditReminder = (id: number, values: IReminderInputValues) => {
     setReminders((prevReminders) =>
       prevReminders.map((item) =>
@@ -81,5 +62,6 @@ const Reminder = () => {
     </>
   );
 };
+/* Function component END */
 
 export default Reminder;

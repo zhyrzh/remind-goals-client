@@ -2,6 +2,7 @@ import { useState } from "react";
 import AddGoal from "./add.goal";
 import GoalItemCard from "./card.goal";
 
+// Types declaration
 export interface IGoalChecklist {
   id: number;
   title: string;
@@ -13,6 +14,7 @@ export interface IGoal {
   checklist: IGoalChecklist[];
 }
 
+/* Function component START */
 const Goal = () => {
   const [goals, setGoals] = useState<IGoal[]>([
     {
@@ -89,5 +91,6 @@ const Goal = () => {
     </>
   );
 };
+/* Function component END */
 
 export default Goal;

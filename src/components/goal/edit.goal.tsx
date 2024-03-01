@@ -17,6 +17,7 @@ import useCurrTabDetails from "../../hooks/useCurrTabDetails";
 import { useToast } from "../ui/use-toast";
 import { Pencil1Icon } from "@radix-ui/react-icons";
 
+// Types declaration
 interface IEditGoalProps {
   goalId: number;
   goalTitle: string;
@@ -24,6 +25,7 @@ interface IEditGoalProps {
   onEditGoal: (id: number, goal: Omit<IGoal, "id">) => void;
 }
 
+/* Function component START */
 const EditGoal: FC<IEditGoalProps> = ({
   checklist,
   goalTitle,
@@ -188,5 +190,6 @@ const EditGoal: FC<IEditGoalProps> = ({
     </Dialog>
   );
 };
+/* Function component END */
 
 export default EditGoal;

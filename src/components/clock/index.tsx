@@ -3,9 +3,11 @@ import Moment from "react-moment";
 import { Card } from "../ui/card";
 
 const Clock = () => {
+  // useState declarations
   const [expectedTime, setExpectedTime] = useState(Date.now());
   const [currentTime, setCurrentTime] = useState(Date.now());
 
+  // useEffect declarations
   useEffect(() => {
     let timeout = setInterval(round, 1000);
     function round() {

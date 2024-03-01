@@ -13,36 +13,21 @@ import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { IReminder } from "./ReminderItem";
-import { FrequencyEnum, IReminderInputValues } from "./AddReminder";
+import { IReminderInputValues } from "./AddReminder";
 import { Calendar } from "../ui/calendar";
 import moment from "moment";
 import { Tabs, TabsContent } from "../ui/tabs";
 import useCurrTabDetails from "@/hooks/useCurrTabDetails";
 import { useToast } from "../ui/use-toast";
-// import { IReminder } from "./ReminderItem";
-const radioItems = [
-  {
-    item: FrequencyEnum.once,
-  },
-  {
-    item: FrequencyEnum.daily,
-  },
-  {
-    item: FrequencyEnum.weekly,
-  },
-  {
-    item: FrequencyEnum.monthly,
-  },
-  {
-    item: FrequencyEnum.annually,
-  },
-];
+import { FrequencyEnum, radioItems } from "./constants";
 
+// Types declaration
 interface IEditButton {
   reminder: IReminder;
   onEditReminder: (id: number, values: IReminderInputValues) => void;
 }
 
+/* Function component START */
 const EditButton: FC<IEditButton> = ({ reminder, onEditReminder }) => {
   // useState declaration
   const [values, setValues] = useState<IReminderInputValues>({
@@ -214,5 +199,6 @@ const EditButton: FC<IEditButton> = ({ reminder, onEditReminder }) => {
     </Dialog>
   );
 };
+/* Function component END */
 
 export default EditButton;

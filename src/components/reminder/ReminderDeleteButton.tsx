@@ -12,12 +12,18 @@ import {
 import { Button } from "@/components/ui/button";
 import { IReminder } from "./ReminderItem";
 
-const DeleteButton: FC<{
+// Types declaration
+interface IDeleteButton {
   reminder: IReminder;
   onRemoveReminder: (id: number) => void;
-}> = ({ reminder, onRemoveReminder }) => {
+}
+
+/* Function component START */
+const DeleteButton: FC<IDeleteButton> = ({ reminder, onRemoveReminder }) => {
+  // useState declarations
   const [showSetIsActiveDialog, setShowIsActiveDialog] =
     useState<boolean>(false);
+
   return (
     <Dialog open={showSetIsActiveDialog} onOpenChange={setShowIsActiveDialog}>
       <DialogTrigger asChild>
@@ -53,5 +59,6 @@ const DeleteButton: FC<{
     </Dialog>
   );
 };
+/* Function component END */
 
 export default DeleteButton;

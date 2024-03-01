@@ -3,17 +3,18 @@ import { Card } from "../ui/card";
 import { IGoal } from ".";
 import EditGoal from "./edit.goal";
 
+// Type declarations
 interface IGoalItemCardProp {
   goal: IGoal;
   onEditGoal: (id: number, goal: Omit<IGoal, "id">) => void;
 }
 
+/* Function component START */
 const GoalItemCard: FC<IGoalItemCardProp> = ({ goal, onEditGoal }) => {
   // state declaration
   const [progress, setProgress] = useState<string>("");
 
-  // methods declaration
-
+  // useEffect declaration
   useEffect(() => {
     setProgress(
       (
@@ -44,5 +45,6 @@ const GoalItemCard: FC<IGoalItemCardProp> = ({ goal, onEditGoal }) => {
     </Card>
   );
 };
+/* Function component END */
 
 export default GoalItemCard;

@@ -16,18 +16,11 @@ import { Button } from "../ui/button";
 import { Tabs, TabsContent } from "../ui/tabs";
 import { useToast } from "../ui/use-toast";
 import useCurrTabDetails from "@/hooks/useCurrTabDetails";
+import { FrequencyEnum, radioItems } from "./constants";
 
+// Types declarations
 interface IAddReminder {
   onAddReminder: (value: IReminderInputValues) => void;
-}
-
-// eslint-disable-next-line react-refresh/only-export-components
-export const enum FrequencyEnum {
-  once = "once",
-  daily = "daily",
-  weekly = "weekly",
-  monthly = "monthly",
-  annually = "annually",
 }
 
 export interface IReminderInputValues {
@@ -35,24 +28,7 @@ export interface IReminderInputValues {
   frequency: FrequencyEnum;
 }
 
-const radioItems = [
-  {
-    item: FrequencyEnum.once,
-  },
-  {
-    item: FrequencyEnum.daily,
-  },
-  {
-    item: FrequencyEnum.weekly,
-  },
-  {
-    item: FrequencyEnum.monthly,
-  },
-  {
-    item: FrequencyEnum.annually,
-  },
-];
-
+/* Function component START */
 const AddReminder: FC<IAddReminder> = ({ onAddReminder }) => {
   // useState declaration
   const [showAddReminderModal, setShowAddReminderModal] =
@@ -232,5 +208,6 @@ const AddReminder: FC<IAddReminder> = ({ onAddReminder }) => {
     </Dialog>
   );
 };
+/* Function component END */
 
 export default AddReminder;

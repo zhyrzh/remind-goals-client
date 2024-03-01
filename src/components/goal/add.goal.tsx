@@ -16,10 +16,12 @@ import Checklist from "../checklist";
 import { Tabs, TabsContent } from "../ui/tabs";
 import useCurrTabDetails from "../../hooks/useCurrTabDetails";
 
+// Type declarations
 interface IAddGoal {
   onAddGoal: ({ title, checklist }: Omit<IGoal, "id">) => void;
 }
 
+/* Function component START */
 const AddGoal: FC<IAddGoal> = ({ onAddGoal }) => {
   // state values declaration
   const [goalTitle, setGoalTitle] = useState<string>("");
@@ -167,5 +169,6 @@ const AddGoal: FC<IAddGoal> = ({ onAddGoal }) => {
     </Dialog>
   );
 };
+/* Function component END */
 
 export default AddGoal;
