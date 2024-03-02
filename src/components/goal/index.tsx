@@ -2,18 +2,9 @@ import { useState } from "react";
 import AddGoal from "./add.goal";
 import GoalItemCard from "./card.goal";
 import { dummyGoals } from "./constants";
+import { IGoal } from "./types";
 
 // Types declaration
-export interface IGoalChecklist {
-  id: number;
-  title: string;
-  isActive: boolean;
-}
-export interface IGoal {
-  id: number;
-  title: string;
-  checklist: IGoalChecklist[];
-}
 
 /* Function component START */
 const Goal = () => {

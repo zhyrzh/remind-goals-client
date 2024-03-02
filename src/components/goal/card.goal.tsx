@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import { Card } from "../ui/card";
-import { IGoal } from ".";
+import { IGoal } from "./types";
 import EditGoal from "./edit.goal";
 
 // Type declarations

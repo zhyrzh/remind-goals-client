@@ -11,7 +11,7 @@ import {
 } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { IGoal, IGoalChecklist } from ".";
+import { IGoal, IGoalChecklist } from "./types/";
 import { Tabs, TabsContent } from "../ui/tabs";
 import useCurrTabDetails from "../../hooks/useCurrTabDetails";
 import { useToast } from "../ui/use-toast";

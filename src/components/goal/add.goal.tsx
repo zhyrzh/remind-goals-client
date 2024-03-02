@@ -10,7 +10,7 @@ import {
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-import { IGoal, IGoalChecklist } from ".";
+import { IGoal, IGoalChecklist } from "./types";
 import { useToast } from "../ui/use-toast";
 import Checklist from "../checklist";
 import { Tabs, TabsContent } from "../ui/tabs";
