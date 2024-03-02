@@ -4,15 +4,9 @@ import CustomCheckbox from "./ReminderCheckbox";
 import DeleteButton from "./ReminderDeleteButton";
 import { IReminderInputValues } from "./AddReminder";
 import EditButton from "./ReminderEditButton";
-import { FrequencyEnum } from "./constants";
+import { IReminder } from "./types";
 
 // Types declarations
-export interface IReminder {
-  id: number;
-  content: string;
-  active: boolean;
-  frequency: FrequencyEnum;
-}
 interface IReminderItemProps {
   reminder: IReminder;
   onRemoveReminder: (id: number) => void;

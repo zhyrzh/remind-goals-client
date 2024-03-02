@@ -10,7 +10,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { IReminder } from "./ReminderItem";
+import { IReminder } from "./types";
 
 // Types declaration
 interface IDeleteButton {

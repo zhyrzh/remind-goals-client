@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Checkbox } from "../ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { IReminder } from "./ReminderItem";
+import { IReminder } from "./types";
 
 interface ICustomCheckbox {
   reminder: IReminder;
