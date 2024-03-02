@@ -1,6 +1,7 @@
 import { useState } from "react";
 import AddGoal from "./add.goal";
 import GoalItemCard from "./card.goal";
+import { dummyGoals } from "./constants";
 
 // Types declaration
 export interface IGoalChecklist {
@@ -16,45 +17,7 @@ export interface IGoal {
 
 /* Function component START */
 const Goal = () => {
-  const [goals, setGoals] = useState<IGoal[]>([
-    {
-      id: 1,
-      title: "Build Dream PC",
-      checklist: [
-        {
-          id: 1,
-          title: "Gather funds",
-          isActive: true,
-        },
-        {
-          id: 2,
-          title: "Buy all components",
-          isActive: false,
-        },
-        {
-          id: 3,
-          title: "Build the pc",
-          isActive: false,
-        },
-      ],
-    },
-    {
-      id: 2,
-      title: "Buy new monitor",
-      checklist: [
-        {
-          id: 1,
-          title: "Gather funds",
-          isActive: true,
-        },
-        {
-          id: 2,
-          title: "Buy the monitor",
-          isActive: false,
-        },
-      ],
-    },
-  ]);
+  const [goals, setGoals] = useState<IGoal[]>(dummyGoals);
 
   const onAddGoal = ({ title, checklist }: Omit<IGoal, "id">) => {
     setGoals((prevGoals) => [
