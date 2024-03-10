@@ -61,21 +61,21 @@ const ChecklistCard: FC<IChecklistCardProp> = ({
             {checklist.title}
           </h1>
         </section>
-        {checklist.isActive ? (
-          <section className="flex mt-1">
+        <section className="flex mt-1">
+          {checklist.isActive && (
             <Pencil1Icon
               role="button"
               onClick={() => {
                 setIsEdittingChecklist(true);
               }}
             />
-            <TrashIcon
-              className="ml-1"
-              role="button"
-              onClick={() => onRemoveChecklist(checklist.id)}
-            />
-          </section>
-        ) : null}
+          )}
+          <TrashIcon
+            className="ml-1"
+            role="button"
+            onClick={() => onRemoveChecklist(checklist.id)}
+          />
+        </section>
       </>
     );
   };
