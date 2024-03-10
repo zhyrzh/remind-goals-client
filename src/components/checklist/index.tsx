@@ -67,7 +67,7 @@ const Checklist: FC<IChecklistProps> = ({ checklist, setChecklist }) => {
 
   return (
     <>
-      <div>
+      <div className="mt-4">
         <Label>Checklist</Label>
         <div className="flex items-center">
           <Input
