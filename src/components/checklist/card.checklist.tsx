@@ -5,10 +5,10 @@ import {
   Pencil1Icon,
   TrashIcon,
 } from "@radix-ui/react-icons";
-import { IGoalChecklist } from "../goal";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
+import { IGoalChecklist } from "../goal/types";
 
 interface IChecklistCardProp {
   checklist: IGoalChecklist;

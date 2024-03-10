@@ -1,11 +1,11 @@
 import { FC, useState } from "react";
-import { IGoalChecklist } from "../goal";
 import { ToastProps } from "../ui/toast";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { useToast } from "../ui/use-toast";
 import ChecklistCard from "./card.checklist";
+import { IGoalChecklist } from "../goal/types";
 
 interface IChecklistProps {
   checklist: IGoalChecklist[];
