@@ -83,7 +83,7 @@ const EditGoal: FC<IEditGoalProps> = ({
             <DialogHeader>
               <DialogTitle>Edit goal details</DialogTitle>
             </DialogHeader>
-            <div>
+            <div className="mt-4">
               <Label htmlFor="title">Title</Label>
               <Input
                 type="text"
