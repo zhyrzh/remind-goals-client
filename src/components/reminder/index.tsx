@@ -1,6 +1,6 @@
 import { useState } from "react";
-import AddReminder, { IReminderInputValues } from "./AddReminder";
-import ReminderList from "./ReminderList";
+import AddReminder, { IReminderInputValues } from "./add.reminder";
+import ReminderList from "./list.reminder";
 import { dummyReminders } from "./constants";
 import { IReminder } from "./types";
 

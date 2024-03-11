@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
-import { IReminderInputValues } from "./AddReminder";
+import { IReminderInputValues } from "./add.reminder";
 import { Calendar } from "../ui/calendar";
 import moment from "moment";
 import { Tabs, TabsContent } from "../ui/tabs";

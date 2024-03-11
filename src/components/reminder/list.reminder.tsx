@@ -1,6 +1,6 @@
 import { FC } from "react";
-import ReminderItem from "./ReminderItem";
-import { IReminderInputValues } from "./AddReminder";
+import ReminderItem from "./item.reminder";
+import { IReminderInputValues } from "./add.reminder";
 import { IReminder } from "./types";
 
 // Types declaration
