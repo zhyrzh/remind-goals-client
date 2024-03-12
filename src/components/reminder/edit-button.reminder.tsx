@@ -78,7 +78,7 @@ const EditButton: FC<IEditButton> = ({ reminder, onEditReminder }) => {
         <Pencil1Icon />
       </DialogTrigger>
       <DialogContent>
-        <Tabs>
+        <Tabs defaultValue="main">
           <TabsContent value="main">
             <DialogHeader>
               <DialogTitle>Edit reminder</DialogTitle>
