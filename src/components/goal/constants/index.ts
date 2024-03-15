@@ -1,15 +1,15 @@
 export const dummyGoals = [
   {
-    id: 1,
+    id: 0,
     title: "Build Dream PC",
     checklist: [
       {
-        id: 1,
+        id: 0,
         title: "Gather funds",
         isActive: true,
       },
       {
-        id: 2,
+        id: 1,
         title: "Buy all components",
         isActive: false,
       },
@@ -25,12 +25,12 @@ export const dummyGoals = [
     title: "Buy new monitor",
     checklist: [
       {
-        id: 1,
+        id: 0,
         title: "Gather funds",
         isActive: true,
       },
       {
-        id: 2,
+        id: 1,
         title: "Buy the monitor",
         isActive: false,
       },
