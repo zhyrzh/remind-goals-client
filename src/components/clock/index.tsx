@@ -24,7 +24,7 @@ const Clock = () => {
   }, []);
 
   return (
-    <Card className="col-start-1 col-end-4 h-[310px] flex justify-center items-center flex-col">
+    <Card className="col-start-1 col-end-13 h-[310px] flex justify-center items-center flex-col">
       <h1 className="text-[69px] font-bold">
         <Moment date={""} element={"time"} format={"MMM DD"}>
           {currentTime}
