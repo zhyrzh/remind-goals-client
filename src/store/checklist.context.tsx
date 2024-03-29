@@ -1,5 +1,11 @@
 import { IGoalChecklist } from "@/components/goal/types";
-import { UseQueryResult, useQuery } from "@tanstack/react-query";
+import {
+  UseMutationResult,
+  UseQueryResult,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { FC, createContext } from "react";
 
 interface IGoalChecklistContext {
@@ -7,6 +13,11 @@ interface IGoalChecklistContext {
   getAllChecklistByGoalIdQry: (
     goalId: number
   ) => UseQueryResult<IGoalChecklist[]>;
+  addGoalChklistItmMutn: UseMutationResult<
+    IGoalChecklist,
+    Error,
+    { title: string; isActive: boolean }
+  >;
 }
 
 export const ChecklistContext = createContext<IGoalChecklistContext>(
@@ -14,6 +25,8 @@ export const ChecklistContext = createContext<IGoalChecklistContext>(
 );
 
 const ChecklistContextProvider: FC<{ children: any }> = ({ children }) => {
+  const qryClient = useQueryClient();
+
   const getAllChecklistWithNoGoalIdQry = useQuery<IGoalChecklist[]>({
     queryKey: ["goal-checklist", "get-all-with-no-goal-id"],
     queryFn: async () => {
@@ -53,11 +66,43 @@ const ChecklistContextProvider: FC<{ children: any }> = ({ children }) => {
     });
   };
 
+  const addGoalChklistItmMutn = useMutation<
+    IGoalChecklist,
+    Error,
+    { title: string; isActive: boolean }
+  >({
+    mutationKey: ["goal-checklist", "add"],
+    mutationFn: async (values) => {
+      const res = await fetch("http://localhost:5000/goal-checklist", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization:
+            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFyb25ncmh5ekBnbWFpLmNvbSIsInN1YiI6ImFyb25ncmh5ekBnbWFpLmNvbSIsImlhdCI6MTcxMTY0NDk2NywiZXhwIjoxNzExNzMxMzY3fQ.KNfs6YelPFvii5kvwZXNPuD3YlgUn28PT3tq7wg28m0",
+        },
+        method: "POST",
+        body: JSON.stringify(values),
+      });
+      return await res.json();
+    },
+    onSuccess: () => {
+      qryClient.invalidateQueries({
+        queryKey: ["goal-checklist", "get-all-by-goal-id"],
+      });
+      qryClient.invalidateQueries({
+        queryKey: ["goal-checklist", "get-all-with-no-goal-id"],
+      });
+      qryClient.invalidateQueries({
+        queryKey: ["goals"],
+      });
+    },
+  });
+
   return (
     <ChecklistContext.Provider
       value={{
         getAllChecklistWithNoGoalIdQry,
         getAllChecklistByGoalIdQry,
+        addGoalChklistItmMutn,
       }}
     >
       {children}
