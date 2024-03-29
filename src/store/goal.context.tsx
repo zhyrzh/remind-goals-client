@@ -5,6 +5,7 @@ import { UseQueryResult, useQuery } from "@tanstack/react-query";
 
 interface IGoalContext {
   goalsQry: UseQueryResult<IGoal[]>;
+  getSpecificGoalQry: (id: number) => UseQueryResult<IGoal>;
 }
 
 export const GoalContext = createContext<IGoalContext>(
@@ -26,9 +27,25 @@ const GoalContextProvider: FC<{ children: any }> = ({ children }) => {
     refetchOnWindowFocus: false,
   });
 
+  const getSpecificGoalQry = (id: number) => {
+    return useQuery({
+      queryKey: ["goals", id],
+      queryFn: async () => {
+        const res = await fetch(`http://localhost:5000/goals/specific/${id}`, {
+          headers: {
+            Authorization:
+              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFyb25ncmh5ekBnbWFpLmNvbSIsInN1YiI6ImFyb25ncmh5ekBnbWFpLmNvbSIsImlhdCI6MTcxMTY0NDk2NywiZXhwIjoxNzExNzMxMzY3fQ.KNfs6YelPFvii5kvwZXNPuD3YlgUn28PT3tq7wg28m0",
+          },
+        });
+        return await res.json();
+      },
+      refetchOnWindowFocus: false,
+    });
+  };
+
   return (
     <ChecklistContextProvider>
-      <GoalContext.Provider value={{ goalsQry }}>
+      <GoalContext.Provider value={{ goalsQry, getSpecificGoalQry }}>
         {children}
       </GoalContext.Provider>
     </ChecklistContextProvider>
