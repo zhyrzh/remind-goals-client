@@ -10,5 +10,8 @@ export interface IGoalChecklist {
 export interface IGoal {
   id: number;
   title: string;
+  createdAt: Date;
+  updatedAt: Date | null;
+  userId: string;
   checklist: IGoalChecklist[];
 }
