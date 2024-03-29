@@ -18,6 +18,11 @@ interface IGoalChecklistContext {
     Error,
     { title: string; isActive: boolean }
   >;
+  addGoalChecklistItmToExistingGoalMtn: UseMutationResult<
+    IGoalChecklist[],
+    Error,
+    { title: string; isActive: boolean; goalId: number }
+  >;
 }
 
 export const ChecklistContext = createContext<IGoalChecklistContext>(
@@ -97,12 +102,50 @@ const ChecklistContextProvider: FC<{ children: any }> = ({ children }) => {
     },
   });
 
+  const addGoalChecklistItmToExistingGoalMtn = useMutation<
+    IGoalChecklist[],
+    Error,
+    { title: string; isActive: boolean; goalId: number }
+  >({
+    mutationKey: ["goal-checklist", "add"],
+    mutationFn: async (values) => {
+      const res = await fetch(
+        `http://localhost:5000/goal-checklist/to-existing-goal/${values.goalId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization:
+              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFyb25ncmh5ekBnbWFpLmNvbSIsInN1YiI6ImFyb25ncmh5ekBnbWFpLmNvbSIsImlhdCI6MTcxMTY0NDk2NywiZXhwIjoxNzExNzMxMzY3fQ.KNfs6YelPFvii5kvwZXNPuD3YlgUn28PT3tq7wg28m0",
+          },
+          method: "POST",
+          body: JSON.stringify({
+            title: values.title,
+            isActive: values.isActive,
+          }),
+        }
+      );
+      return await res.json();
+    },
+    onSuccess: () => {
+      qryClient.invalidateQueries({
+        queryKey: ["goal-checklist", "get-all-by-goal-id"],
+      });
+      qryClient.invalidateQueries({
+        queryKey: ["goal-checklist", "get-all-with-no-goal-id"],
+      });
+      qryClient.invalidateQueries({
+        queryKey: ["goals"],
+      });
+    },
+  });
+
   return (
     <ChecklistContext.Provider
       value={{
         getAllChecklistWithNoGoalIdQry,
         getAllChecklistByGoalIdQry,
         addGoalChklistItmMutn,
+        addGoalChecklistItmToExistingGoalMtn,
       }}
     >
       {children}
