@@ -24,6 +24,11 @@ interface IGoalChecklistContext {
     { title: string; isActive: boolean; goalId: number }
   >;
   deleteAllNoGoalIdMtn: UseMutationResult<undefined, Error, any>;
+  toggleChecklistItmStatusMutn: UseMutationResult<
+    IGoalChecklist,
+    Error,
+    { checklistItmId: number; isActive: boolean }
+  >;
 }
 
 export const ChecklistContext = createContext<IGoalChecklistContext>(
@@ -169,6 +174,39 @@ const ChecklistContextProvider: FC<{ children: any }> = ({ children }) => {
     },
   });
 
+  const toggleChecklistItmStatusMutn = useMutation<
+    IGoalChecklist,
+    Error,
+    { checklistItmId: number; isActive: boolean }
+  >({
+    mutationKey: ["goal-checklist", "toggle-status"],
+    mutationFn: async ({ checklistItmId, isActive }) => {
+      const res = await fetch(
+        `http://localhost:5000/goal-checklist/toggle-is-active/${checklistItmId}/${isActive}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization:
+              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFyb25ncmh5ekBnbWFpLmNvbSIsInN1YiI6ImFyb25ncmh5ekBnbWFpLmNvbSIsImlhdCI6MTcxMTY0NDk2NywiZXhwIjoxNzExNzMxMzY3fQ.KNfs6YelPFvii5kvwZXNPuD3YlgUn28PT3tq7wg28m0",
+          },
+          method: "PUT",
+        }
+      );
+      return await res.json();
+    },
+    onSuccess: () => {
+      qryClient.invalidateQueries({
+        queryKey: ["goal-checklist", "get-all-by-goal-id"],
+      });
+      qryClient.invalidateQueries({
+        queryKey: ["goal-checklist", "get-all-with-no-goal-id"],
+      });
+      qryClient.invalidateQueries({
+        queryKey: ["goals"],
+      });
+    },
+  });
+
   return (
     <ChecklistContext.Provider
       value={{
@@ -177,6 +215,7 @@ const ChecklistContextProvider: FC<{ children: any }> = ({ children }) => {
         addGoalChklistItmMutn,
         addGoalChecklistItmToExistingGoalMtn,
         deleteAllNoGoalIdMtn,
+        toggleChecklistItmStatusMutn,
       }}
     >
       {children}
