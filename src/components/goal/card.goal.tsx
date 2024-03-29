@@ -6,11 +6,10 @@ import EditGoal from "./edit.goal";
 // Type declarations
 interface IGoalItemCardProp {
   goal: IGoal;
-  onEditGoal: (id: number, goal: Omit<IGoal, "id">) => void;
 }
 
 /* Function component START */
-const GoalItemCard: FC<IGoalItemCardProp> = ({ goal, onEditGoal }) => {
+const GoalItemCard: FC<IGoalItemCardProp> = ({ goal }) => {
   // state declaration
   const [progress, setProgress] = useState<string>("");
 
@@ -38,7 +37,6 @@ const GoalItemCard: FC<IGoalItemCardProp> = ({ goal, onEditGoal }) => {
         <EditGoal
           checklist={goal.checklist}
           goalTitle={goal.title}
-          onEditGoal={onEditGoal}
           goalId={goal.id}
         />
       </section>

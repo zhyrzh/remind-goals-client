@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useContext, useEffect, useState } from "react";
 import Checklist from "../checklist";
 import { Button } from "../ui/button";
 import {
@@ -11,32 +11,32 @@ import {
 } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { IGoal, IGoalChecklist } from "./types/";
+import { IGoalChecklist } from "./types/";
 import { Tabs, TabsContent } from "../ui/tabs";
 import useCurrTabDetails from "../../hooks/useCurrTabDetails";
 import { useToast } from "../ui/use-toast";
 import { Pencil1Icon } from "@radix-ui/react-icons";
+import { ChecklistContext } from "@/store/checklist.context";
+import { GoalContext } from "@/store/goal.context";
 
 // Types declaration
 interface IEditGoalProps {
   goalId: number;
   goalTitle: string;
   checklist: IGoalChecklist[];
-  onEditGoal: (id: number, goal: Omit<IGoal, "id">) => void;
 }
 
 /* Function component START */
-const EditGoal: FC<IEditGoalProps> = ({
-  checklist,
-  goalTitle,
-  goalId,
-  onEditGoal,
-}) => {
+const EditGoal: FC<IEditGoalProps> = ({ goalId }) => {
+  // context declarations
+  const goalChecklistCtx = useContext(ChecklistContext);
+  const goalCtx = useContext(GoalContext);
+  const goalDetailsQry = goalCtx.getSpecificGoal(goalId);
+
+  // useState declarations
   const [showEditGoalModal, setShowEditGoalModal] = useState<boolean>(false);
   const [currentGoalTitle, setCurrentGoalTitle] = useState<string>("");
-  const [currentChecklist, setCurrentChecklist] = useState<IGoalChecklist[]>(
-    []
-  );
+  const [isEdittingTitle, setIsEdittingTitle] = useState<boolean>(false);
 
   // hooks
   const { toast } = useToast();
@@ -44,26 +44,27 @@ const EditGoal: FC<IEditGoalProps> = ({
     value: "main",
     isCancel: false,
     tabTitle: "",
+    type: undefined,
   });
 
+  // useEffect delcaration
   useEffect(() => {
-    setCurrentChecklist(checklist);
-    setCurrentGoalTitle(goalTitle);
+    setCurrentGoalTitle(goalDetailsQry.data?.title!);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showEditGoalModal]);
+  }, [showEditGoalModal, currTabDetails.value]);
 
-  // methods
+  // methods declaration
   const resetCurrTabDetails = () => {
     setCurrTabDetails({
       value: "main",
       isCancel: false,
       tabTitle: "",
+      type: undefined,
     });
   };
 
   const resetFields = () => {
     setCurrentGoalTitle("");
-    setCurrentChecklist([]);
   };
 
   const onOpenChange = (val: boolean) => {
@@ -78,79 +79,79 @@ const EditGoal: FC<IEditGoalProps> = ({
         <Pencil1Icon />
       </DialogTrigger>
       <DialogContent>
-        <Tabs defaultValue="main" value={currTabDetails.value}>
+        <Tabs value={currTabDetails.value}>
           <TabsContent value="main">
             <DialogHeader>
               <DialogTitle>Edit goal details</DialogTitle>
             </DialogHeader>
             <div className="mt-4">
-              <Label htmlFor="title">Title</Label>
-              <Input
-                type="text"
-                id="title"
-                name="title"
-                className="mt-2"
-                onChange={(e) => setCurrentGoalTitle(e.target.value)}
-                value={currentGoalTitle}
-              />
+              <Label
+                htmlFor="title"
+                className="flex"
+                onClick={(e) => e.preventDefault()}
+              >
+                Title{" "}
+                <span
+                  className="ml-1"
+                  role="button"
+                  onClick={() => setIsEdittingTitle(true)}
+                >
+                  <Pencil1Icon />
+                </span>
+              </Label>
+              {!isEdittingTitle ? (
+                <p className="mt-2">{currentGoalTitle}</p>
+              ) : (
+                <div className="flex mt-2">
+                  <Input
+                    type="text"
+                    id="title"
+                    name="title"
+                    onChange={(e) => setCurrentGoalTitle(e.target.value)}
+                    value={currentGoalTitle}
+                  />
+                  <section className="flex">
+                    <Button
+                      onClick={() => {
+                        if (currentGoalTitle === goalDetailsQry.data?.title!) {
+                          toast({
+                            title: "No changes has been made",
+                            description:
+                              "Edit something on your goal details to be saved.",
+                            variant: "destructive",
+                          });
+                          return;
+                        }
+                        setCurrTabDetails({
+                          value: "confirmation",
+                          isCancel: false,
+                          tabTitle:
+                            "Are you sure you want to edit the title of this goal?",
+                          type: "goal.edit.title",
+                          data: {
+                            id: goalId,
+                            title: currentGoalTitle,
+                          },
+                        });
+                      }}
+                    >
+                      Save
+                    </Button>
+                    <Button
+                      className="bg-transparent text-slate-900 hover:bg-transparent"
+                      onClick={() => setIsEdittingTitle(false)}
+                    >
+                      Cancel
+                    </Button>
+                  </section>
+                </div>
+              )}
             </div>
             <Checklist
-              checklist={currentChecklist}
-              setChecklist={setCurrentChecklist}
+              setCurrTabDetails={setCurrTabDetails}
+              isEdit
+              goalId={goalId}
             />
-            <DialogFooter className="mt-12">
-              <Button
-                type="submit"
-                onClick={() => {
-                  if (
-                    currentGoalTitle === goalTitle &&
-                    JSON.stringify(checklist) ===
-                      JSON.stringify(currentChecklist)
-                  ) {
-                    toast({
-                      title: "No changes has been made",
-                      description: "Edit something on your goal details",
-                      variant: "destructive",
-                    });
-                    return;
-                  }
-                  if (!currentGoalTitle && currentGoalTitle.trim() === "") {
-                    toast({
-                      title: "Empty title",
-                      description: "Please proved title for your goal",
-                      variant: "destructive",
-                    });
-                    return;
-                  }
-                  if (currentChecklist.length <= 0) {
-                    toast({
-                      title: "Empty checklist",
-                      description: "Please proved at least 1 checklist",
-                      variant: "destructive",
-                    });
-                    return;
-                  }
-                  onEditGoal(goalId, {
-                    title: currentGoalTitle,
-                    checklist: currentChecklist,
-                  });
-                  setShowEditGoalModal(false);
-                }}
-              >
-                Save Changes
-              </Button>
-              <Button
-                type="button"
-                className="bg-transparent text-slate-900 hover:bg-transparent"
-                onClick={() => {
-                  setShowEditGoalModal(false);
-                  setCurrentChecklist([]);
-                  setCurrentGoalTitle("");
-                }}
-              >
-                Cancel
-              </Button>
-            </DialogFooter>
           </TabsContent>
           <TabsContent value="confirmation">
             <DialogHeader>
@@ -162,14 +163,65 @@ const EditGoal: FC<IEditGoalProps> = ({
                 type="submit"
                 onClick={() => {
                   if (!currTabDetails.isCancel) {
-                    onEditGoal(goalId, {
-                      title: goalTitle,
-                      checklist,
-                    });
+                    switch (currTabDetails.type) {
+                      case "checklist.add":
+                        goalChecklistCtx?.addGoalChklistItmMutn.mutate({
+                          isActive: currTabDetails.data?.isActive!,
+                          title: currTabDetails.data?.title!,
+                        });
+                        break;
+                      case "goal.add":
+                        goalCtx.addGoalMtn.mutate({
+                          title: currentGoalTitle,
+                          checklist: goalChecklistCtx
+                            .getAllChecklistByGoalIdQry(goalId)
+                            .data?.map(({ id }) => ({ id }))!,
+                        });
+                        break;
+                      case "checklist.toggle":
+                        goalChecklistCtx.toggleChecklistItmStatusMutn.mutate({
+                          checklistItmId: currTabDetails.data?.id!,
+                          isActive: currTabDetails.data?.isActive!,
+                        });
+                        break;
+                      case "checklist.delete":
+                        if (goalDetailsQry.data?.checklist.length! === 1) {
+                          toast({
+                            title: "Cannot delete last checklist item",
+                            description:
+                              "A goal must have at least one checklist.",
+                            variant: "destructive",
+                          });
+                        } else {
+                          goalChecklistCtx.deleteSpecificChecklistItm.mutate({
+                            id: currTabDetails.data?.id,
+                          });
+                        }
+
+                        break;
+                      case "checklist.edit.title":
+                        goalChecklistCtx.editChecklistItmTitleMtn.mutate({
+                          id: currTabDetails.data?.id!,
+                          title: currTabDetails.data?.title!,
+                        });
+                        break;
+                      case "checklist.add.to-existing-goal":
+                        goalChecklistCtx.addGoalChecklistItmToExistingGoalMtn.mutate(
+                          currTabDetails.data
+                        );
+                        break;
+                      default:
+                        toast({
+                          title: "Invalid tab type",
+                          description:
+                            "Please proved a valid tab type (code leve)",
+                          variant: "destructive",
+                        });
+                    }
+                  } else {
+                    setShowEditGoalModal(false);
                   }
                   resetCurrTabDetails();
-                  resetFields();
-                  setShowEditGoalModal(false);
                 }}
               >
                 {!currTabDetails.isCancel ? "Confirm" : "Discard"}

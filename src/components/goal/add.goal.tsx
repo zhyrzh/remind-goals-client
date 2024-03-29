@@ -1,4 +1,4 @@
-import { useState, FC } from "react";
+import { useState, FC, useContext, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -10,23 +10,34 @@ import {
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-import { IGoal, IGoalChecklist } from "./types";
 import { useToast } from "../ui/use-toast";
 import Checklist from "../checklist";
 import { Tabs, TabsContent } from "../ui/tabs";
 import useCurrTabDetails from "../../hooks/useCurrTabDetails";
-
-// Type declarations
-interface IAddGoal {
-  onAddGoal: ({ title, checklist }: Omit<IGoal, "id">) => void;
-}
+import { ChecklistContext } from "@/store/checklist.context";
+import { GoalContext } from "@/store/goal.context";
 
 /* Function component START */
-const AddGoal: FC<IAddGoal> = ({ onAddGoal }) => {
+const AddGoal: FC = () => {
+  // context declarations
+  const goalChecklistCtx = useContext(ChecklistContext);
+  const goalCtx = useContext(GoalContext);
+
   // state values declaration
   const [goalTitle, setGoalTitle] = useState<string>("");
   const [showAddGoalModal, setShowAddGoalModal] = useState<boolean>(false);
-  const [checklist, setCheckList] = useState<IGoalChecklist[]>([]);
+
+  // useEffect declarations
+  useEffect(() => {
+    goalChecklistCtx.deleteAllNoGoalIdMtn.mutate(undefined);
+  }, [showAddGoalModal]);
+
+  useEffect(() => {
+    if (goalCtx?.addGoalMtn?.isSuccess) {
+      setShowAddGoalModal(false);
+      resetFields();
+    }
+  }, [goalCtx.addGoalMtn.isSuccess]);
 
   // hooks
   const { toast } = useToast();
@@ -34,12 +45,12 @@ const AddGoal: FC<IAddGoal> = ({ onAddGoal }) => {
     value: "main",
     isCancel: false,
     tabTitle: "",
+    type: undefined,
   });
 
   // methods
   const resetFields = () => {
     setGoalTitle("");
-    setCheckList([]);
   };
 
   const resetCurrTabDetails = () => {
@@ -47,13 +58,16 @@ const AddGoal: FC<IAddGoal> = ({ onAddGoal }) => {
       value: "main",
       isCancel: false,
       tabTitle: "",
+      type: undefined,
     });
   };
 
   const onOpenChange = (val: boolean) => {
     setShowAddGoalModal(val);
     resetCurrTabDetails();
-    resetFields();
+    if (goalTitle === "") {
+      resetFields();
+    }
   };
 
   return (
@@ -78,7 +92,11 @@ const AddGoal: FC<IAddGoal> = ({ onAddGoal }) => {
                 value={goalTitle}
               />
             </div>
-            <Checklist checklist={checklist} setChecklist={setCheckList} />
+            <Checklist
+              setCurrTabDetails={setCurrTabDetails}
+              isEdit={false}
+              goalId={undefined}
+            />
             <DialogFooter className="mt-12">
               <Button
                 type="submit"
@@ -91,7 +109,10 @@ const AddGoal: FC<IAddGoal> = ({ onAddGoal }) => {
                     });
                     return;
                   }
-                  if (checklist.length <= 0) {
+                  if (
+                    goalChecklistCtx.getAllChecklistWithNoGoalIdQry.data
+                      ?.length! <= 0
+                  ) {
                     toast({
                       title: "Empty checklist",
                       description: "Please proved at least 1 checklist",
@@ -103,6 +124,7 @@ const AddGoal: FC<IAddGoal> = ({ onAddGoal }) => {
                     value: "confirmation",
                     isCancel: false,
                     tabTitle: "Are you sure you want to add this todo?",
+                    type: "goal.add",
                   });
                 }}
               >
@@ -114,12 +136,14 @@ const AddGoal: FC<IAddGoal> = ({ onAddGoal }) => {
                 onClick={() => {
                   if (
                     (goalTitle && goalTitle.trim() !== "") ||
-                    checklist.length >= 1
+                    goalChecklistCtx.getAllChecklistWithNoGoalIdQry.data
+                      ?.length! >= 1
                   ) {
                     setCurrTabDetails({
                       value: "confirmation",
                       isCancel: true,
                       tabTitle: "Are you sure you want to discard your changes",
+                      type: undefined,
                     });
                   } else {
                     resetFields();
@@ -141,14 +165,51 @@ const AddGoal: FC<IAddGoal> = ({ onAddGoal }) => {
                 type="submit"
                 onClick={() => {
                   if (!currTabDetails.isCancel) {
-                    onAddGoal({
-                      title: goalTitle,
-                      checklist,
-                    });
+                    switch (currTabDetails.type) {
+                      case "checklist.add":
+                        goalChecklistCtx?.addGoalChklistItmMutn.mutate({
+                          isActive: currTabDetails.data?.isActive!,
+                          title: currTabDetails.data?.title!,
+                        });
+                        break;
+                      case "goal.add":
+                        goalCtx.addGoalMtn.mutate({
+                          title: goalTitle,
+                          checklist:
+                            goalChecklistCtx.getAllChecklistWithNoGoalIdQry.data?.map(
+                              ({ id }) => ({ id })
+                            )!,
+                        });
+                        break;
+                      case "checklist.toggle":
+                        goalChecklistCtx.toggleChecklistItmStatusMutn.mutate({
+                          checklistItmId: currTabDetails.data?.id!,
+                          isActive: currTabDetails.data?.isActive!,
+                        });
+                        break;
+                      case "checklist.delete":
+                        goalChecklistCtx.deleteSpecificChecklistItm.mutate({
+                          id: currTabDetails.data?.id!,
+                        });
+                        break;
+                      case "checklist.edit.title":
+                        goalChecklistCtx.editChecklistItmTitleMtn.mutate({
+                          id: currTabDetails.data?.id!,
+                          title: currTabDetails.data?.title!,
+                        });
+                        break;
+                      default:
+                        toast({
+                          title: "Invalid tab type",
+                          description:
+                            "Please proved a valid tab type (code leve)",
+                          variant: "destructive",
+                        });
+                    }
+                  } else {
+                    setShowAddGoalModal(false);
                   }
                   resetCurrTabDetails();
-                  resetFields();
-                  setShowAddGoalModal(false);
                 }}
               >
                 {!currTabDetails.isCancel ? "Confirm" : "Discard"}
