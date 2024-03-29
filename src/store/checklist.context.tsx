@@ -4,6 +4,9 @@ import { FC, createContext } from "react";
 
 interface IGoalChecklistContext {
   getAllChecklistWithNoGoalIdQry: UseQueryResult<IGoalChecklist[]>;
+  getAllChecklistByGoalIdQry: (
+    goalId: number
+  ) => UseQueryResult<IGoalChecklist[]>;
 }
 
 export const ChecklistContext = createContext<IGoalChecklistContext>(
@@ -30,10 +33,31 @@ const ChecklistContextProvider: FC<{ children: any }> = ({ children }) => {
     refetchOnWindowFocus: false,
   });
 
+  const getAllChecklistByGoalIdQry = (goalId: number) => {
+    return useQuery<IGoalChecklist[]>({
+      queryKey: ["goal-checklist", "get-all-by-goal-id"],
+      queryFn: async () => {
+        const res = await fetch(
+          `http://localhost:5000/goal-checklist/get-all-by-goal-id/${goalId}`,
+          {
+            headers: {
+              Authorization:
+                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFyb25ncmh5ekBnbWFpLmNvbSIsInN1YiI6ImFyb25ncmh5ekBnbWFpLmNvbSIsImlhdCI6MTcxMTY0NDk2NywiZXhwIjoxNzExNzMxMzY3fQ.KNfs6YelPFvii5kvwZXNPuD3YlgUn28PT3tq7wg28m0",
+            },
+          }
+        );
+        return await res.json();
+      },
+      placeholderData: [],
+      refetchOnWindowFocus: false,
+    });
+  };
+
   return (
     <ChecklistContext.Provider
       value={{
         getAllChecklistWithNoGoalIdQry,
+        getAllChecklistByGoalIdQry,
       }}
     >
       {children}
