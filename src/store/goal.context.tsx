@@ -8,9 +8,15 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
+import {
+  addGoalReq,
+  editGoalTitleReq,
+  getAllGoalsReq,
+  getSpecificGoalReq,
+} from "@/api/goal.api";
 
 interface IGoalContext {
-  goalsQry: UseQueryResult<IGoal[]>;
+  getAllGoalsQry: UseQueryResult<IGoal[]>;
   getSpecificGoalQry: (id: number) => UseQueryResult<IGoal>;
   addGoalMtn: UseMutationResult<
     IGoal,
@@ -31,32 +37,16 @@ export const GoalContext = createContext<IGoalContext>(
 const GoalContextProvider: FC<{ children: any }> = ({ children }) => {
   const qryClient = useQueryClient();
 
-  const goalsQry = useQuery({
+  const getAllGoalsQry = useQuery({
     queryKey: ["goals"],
-    queryFn: async () => {
-      const res = await fetch("http://localhost:5000/goals", {
-        headers: {
-          Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFyb25ncmh5ekBnbWFpLmNvbSIsInN1YiI6ImFyb25ncmh5ekBnbWFpLmNvbSIsImlhdCI6MTcxMTY0NDk2NywiZXhwIjoxNzExNzMxMzY3fQ.KNfs6YelPFvii5kvwZXNPuD3YlgUn28PT3tq7wg28m0",
-        },
-      });
-      return await res.json();
-    },
+    queryFn: getAllGoalsReq,
     refetchOnWindowFocus: false,
   });
 
   const getSpecificGoalQry = (id: number) => {
     return useQuery({
       queryKey: ["goals", id],
-      queryFn: async () => {
-        const res = await fetch(`http://localhost:5000/goals/specific/${id}`, {
-          headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFyb25ncmh5ekBnbWFpLmNvbSIsInN1YiI6ImFyb25ncmh5ekBnbWFpLmNvbSIsImlhdCI6MTcxMTY0NDk2NywiZXhwIjoxNzExNzMxMzY3fQ.KNfs6YelPFvii5kvwZXNPuD3YlgUn28PT3tq7wg28m0",
-          },
-        });
-        return await res.json();
-      },
+      queryFn: getSpecificGoalReq,
       refetchOnWindowFocus: false,
     });
   };
@@ -67,21 +57,7 @@ const GoalContextProvider: FC<{ children: any }> = ({ children }) => {
     { title: string; checklist: Pick<IGoalChecklist, "id">[] }
   >({
     mutationKey: ["goals", "add"],
-    mutationFn: async ({ title, checklist }) => {
-      const res = await fetch("http://localhost:5000/goals", {
-        method: "POST",
-        body: JSON.stringify({
-          title,
-          checklist,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-          Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFyb25ncmh5ekBnbWFpLmNvbSIsInN1YiI6ImFyb25ncmh5ekBnbWFpLmNvbSIsImlhdCI6MTcxMTY0NDk2NywiZXhwIjoxNzExNzMxMzY3fQ.KNfs6YelPFvii5kvwZXNPuD3YlgUn28PT3tq7wg28m0",
-        },
-      });
-      return await res.json();
-    },
+    mutationFn: addGoalReq,
     onSuccess: () => {
       qryClient.invalidateQueries({
         queryKey: ["goals"],
@@ -98,17 +74,7 @@ const GoalContextProvider: FC<{ children: any }> = ({ children }) => {
     { title: string; id: number }
   >({
     mutationKey: ["goals", "add"],
-    mutationFn: async ({ id, title }) => {
-      const res = await fetch(`http://localhost:5000/goals/${id}`, {
-        method: "PUT",
-        body: JSON.stringify({ title }),
-        headers: {
-          Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFyb25ncmh5ekBnbWFpLmNvbSIsInN1YiI6ImFyb25ncmh5ekBnbWFpLmNvbSIsImlhdCI6MTcxMTY0NDk2NywiZXhwIjoxNzExNzMxMzY3fQ.KNfs6YelPFvii5kvwZXNPuD3YlgUn28PT3tq7wg28m0",
-        },
-      });
-      return await res.json();
-    },
+    mutationFn: editGoalTitleReq,
     onSuccess: ({ id }) => {
       qryClient.invalidateQueries({
         queryKey: ["goals", id],
@@ -119,7 +85,12 @@ const GoalContextProvider: FC<{ children: any }> = ({ children }) => {
   return (
     <ChecklistContextProvider>
       <GoalContext.Provider
-        value={{ goalsQry, getSpecificGoalQry, addGoalMtn, editGoalTitleMtn }}
+        value={{
+          getAllGoalsQry,
+          getSpecificGoalQry,
+          addGoalMtn,
+          editGoalTitleMtn,
+        }}
       >
         {children}
       </GoalContext.Provider>
