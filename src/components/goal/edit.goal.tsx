@@ -31,7 +31,7 @@ const EditGoal: FC<IEditGoalProps> = ({ goalId }) => {
   // context declarations
   const goalChecklistCtx = useContext(ChecklistContext);
   const goalCtx = useContext(GoalContext);
-  const goalDetailsQry = goalCtx.getSpecificGoal(goalId);
+  const goalDetailsQry = goalCtx.getSpecificGoalQry(goalId);
 
   // useState declarations
   const [showEditGoalModal, setShowEditGoalModal] = useState<boolean>(false);
