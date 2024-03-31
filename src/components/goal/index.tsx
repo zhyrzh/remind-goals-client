@@ -6,7 +6,7 @@ import { GoalContext } from "@/store/goal.context";
 /* Function component START */
 const Goal = () => {
   // context declarations
-  const goalCtx = useContext(GoalContext).goalsQry;
+  const goalCtx = useContext(GoalContext).getAllGoalsQry;
 
   return (
     <>
