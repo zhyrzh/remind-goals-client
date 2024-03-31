@@ -7,6 +7,16 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { FC, createContext } from "react";
+import {
+  addGoalChecklistItmToExistingGoalReq,
+  addGoalChklistItmReq,
+  deleteAllNoGoalIdReq,
+  deleteSpecificChecklistItmReq,
+  editChecklistItmTitleReq,
+  getAllChecklistByGoalIdReq,
+  getAllChecklistWithNoGoalIdReq,
+  toggleChecklistItmStatusReq,
+} from "@/api/goal-checklist.api";
 
 interface IGoalChecklistContext {
   getAllChecklistWithNoGoalIdQry: UseQueryResult<IGoalChecklist[]>;
@@ -19,11 +29,11 @@ interface IGoalChecklistContext {
     { title: string; isActive: boolean }
   >;
   addGoalChecklistItmToExistingGoalMtn: UseMutationResult<
-    IGoalChecklist[],
+    IGoalChecklist,
     Error,
     { title: string; isActive: boolean; goalId: number }
   >;
-  deleteAllNoGoalIdMtn: UseMutationResult<undefined, Error, any>;
+  deleteAllNoGoalIdMtn: UseMutationResult<{ count: number }, Error, any>;
   toggleChecklistItmStatusMutn: UseMutationResult<
     IGoalChecklist,
     Error,
@@ -50,38 +60,15 @@ const ChecklistContextProvider: FC<{ children: any }> = ({ children }) => {
 
   const getAllChecklistWithNoGoalIdQry = useQuery<IGoalChecklist[]>({
     queryKey: ["goal-checklist", "get-all-with-no-goal-id"],
-    queryFn: async () => {
-      const res = await fetch(
-        "http://localhost:5000/goal-checklist/get-all-no-goal-id",
-        {
-          headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFyb25ncmh5ekBnbWFpLmNvbSIsInN1YiI6ImFyb25ncmh5ekBnbWFpLmNvbSIsImlhdCI6MTcxMTY0NDk2NywiZXhwIjoxNzExNzMxMzY3fQ.KNfs6YelPFvii5kvwZXNPuD3YlgUn28PT3tq7wg28m0",
-          },
-        }
-      );
-
-      return await res.json();
-    },
+    queryFn: getAllChecklistWithNoGoalIdReq,
     placeholderData: [],
     refetchOnWindowFocus: false,
   });
 
   const getAllChecklistByGoalIdQry = (goalId: number) => {
     return useQuery<IGoalChecklist[]>({
-      queryKey: ["goal-checklist", "get-all-by-goal-id"],
-      queryFn: async () => {
-        const res = await fetch(
-          `http://localhost:5000/goal-checklist/get-all-by-goal-id/${goalId}`,
-          {
-            headers: {
-              Authorization:
-                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFyb25ncmh5ekBnbWFpLmNvbSIsInN1YiI6ImFyb25ncmh5ekBnbWFpLmNvbSIsImlhdCI6MTcxMTY0NDk2NywiZXhwIjoxNzExNzMxMzY3fQ.KNfs6YelPFvii5kvwZXNPuD3YlgUn28PT3tq7wg28m0",
-            },
-          }
-        );
-        return await res.json();
-      },
+      queryKey: ["goal-checklist", "get-all-by-goal-id", goalId],
+      queryFn: getAllChecklistByGoalIdReq,
       placeholderData: [],
       refetchOnWindowFocus: false,
     });
@@ -93,18 +80,7 @@ const ChecklistContextProvider: FC<{ children: any }> = ({ children }) => {
     { title: string; isActive: boolean }
   >({
     mutationKey: ["goal-checklist", "add"],
-    mutationFn: async (values) => {
-      const res = await fetch("http://localhost:5000/goal-checklist", {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFyb25ncmh5ekBnbWFpLmNvbSIsInN1YiI6ImFyb25ncmh5ekBnbWFpLmNvbSIsImlhdCI6MTcxMTY0NDk2NywiZXhwIjoxNzExNzMxMzY3fQ.KNfs6YelPFvii5kvwZXNPuD3YlgUn28PT3tq7wg28m0",
-        },
-        method: "POST",
-        body: JSON.stringify(values),
-      });
-      return await res.json();
-    },
+    mutationFn: addGoalChklistItmReq,
     onSuccess: () => {
       qryClient.invalidateQueries({
         queryKey: ["goal-checklist", "get-all-by-goal-id"],
@@ -119,29 +95,12 @@ const ChecklistContextProvider: FC<{ children: any }> = ({ children }) => {
   });
 
   const addGoalChecklistItmToExistingGoalMtn = useMutation<
-    IGoalChecklist[],
+    IGoalChecklist,
     Error,
     { title: string; isActive: boolean; goalId: number }
   >({
     mutationKey: ["goal-checklist", "add"],
-    mutationFn: async (values) => {
-      const res = await fetch(
-        `http://localhost:5000/goal-checklist/to-existing-goal/${values.goalId}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFyb25ncmh5ekBnbWFpLmNvbSIsInN1YiI6ImFyb25ncmh5ekBnbWFpLmNvbSIsImlhdCI6MTcxMTY0NDk2NywiZXhwIjoxNzExNzMxMzY3fQ.KNfs6YelPFvii5kvwZXNPuD3YlgUn28PT3tq7wg28m0",
-          },
-          method: "POST",
-          body: JSON.stringify({
-            title: values.title,
-            isActive: values.isActive,
-          }),
-        }
-      );
-      return await res.json();
-    },
+    mutationFn: addGoalChecklistItmToExistingGoalReq,
     onSuccess: () => {
       qryClient.invalidateQueries({
         queryKey: ["goal-checklist", "get-all-by-goal-id"],
@@ -155,34 +114,23 @@ const ChecklistContextProvider: FC<{ children: any }> = ({ children }) => {
     },
   });
 
-  const deleteAllNoGoalIdMtn = useMutation({
-    mutationKey: ["goal-checklist", "delete-no-goal-id"],
-    mutationFn: async () => {
-      const res = await fetch(
-        "http://localhost:5000/goal-checklist/all/no-goal-id",
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFyb25ncmh5ekBnbWFpLmNvbSIsInN1YiI6ImFyb25ncmh5ekBnbWFpLmNvbSIsImlhdCI6MTcxMTY0NDk2NywiZXhwIjoxNzExNzMxMzY3fQ.KNfs6YelPFvii5kvwZXNPuD3YlgUn28PT3tq7wg28m0",
-          },
-          method: "DELETE",
-        }
-      );
-      return await res.json();
-    },
-    onSuccess: () => {
-      qryClient.invalidateQueries({
-        queryKey: ["goal-checklist", "get-all-by-goal-id"],
-      });
-      qryClient.invalidateQueries({
-        queryKey: ["goal-checklist", "get-all-with-no-goal-id"],
-      });
-      qryClient.invalidateQueries({
-        queryKey: ["goals"],
-      });
-    },
-  });
+  const deleteAllNoGoalIdMtn = useMutation<{ count: number }, Error, undefined>(
+    {
+      mutationKey: ["goal-checklist", "delete-no-goal-id"],
+      mutationFn: deleteAllNoGoalIdReq,
+      onSuccess: () => {
+        qryClient.invalidateQueries({
+          queryKey: ["goal-checklist", "get-all-by-goal-id"],
+        });
+        qryClient.invalidateQueries({
+          queryKey: ["goal-checklist", "get-all-with-no-goal-id"],
+        });
+        qryClient.invalidateQueries({
+          queryKey: ["goals"],
+        });
+      },
+    }
+  );
 
   const toggleChecklistItmStatusMutn = useMutation<
     IGoalChecklist,
@@ -190,20 +138,7 @@ const ChecklistContextProvider: FC<{ children: any }> = ({ children }) => {
     { checklistItmId: number; isActive: boolean }
   >({
     mutationKey: ["goal-checklist", "toggle-status"],
-    mutationFn: async ({ checklistItmId, isActive }) => {
-      const res = await fetch(
-        `http://localhost:5000/goal-checklist/toggle-is-active/${checklistItmId}/${isActive}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFyb25ncmh5ekBnbWFpLmNvbSIsInN1YiI6ImFyb25ncmh5ekBnbWFpLmNvbSIsImlhdCI6MTcxMTY0NDk2NywiZXhwIjoxNzExNzMxMzY3fQ.KNfs6YelPFvii5kvwZXNPuD3YlgUn28PT3tq7wg28m0",
-          },
-          method: "PUT",
-        }
-      );
-      return await res.json();
-    },
+    mutationFn: toggleChecklistItmStatusReq,
     onSuccess: () => {
       qryClient.invalidateQueries({
         queryKey: ["goal-checklist", "get-all-by-goal-id"],
@@ -223,17 +158,7 @@ const ChecklistContextProvider: FC<{ children: any }> = ({ children }) => {
     { id: number }
   >({
     mutationKey: ["goal-checklist", "delete-specific"],
-    mutationFn: async ({ id }) => {
-      const res = await fetch(`http://localhost:5000/goal-checklist/${id}`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFyb25ncmh5ekBnbWFpLmNvbSIsInN1YiI6ImFyb25ncmh5ekBnbWFpLmNvbSIsImlhdCI6MTcxMTY0NDk2NywiZXhwIjoxNzExNzMxMzY3fQ.KNfs6YelPFvii5kvwZXNPuD3YlgUn28PT3tq7wg28m0",
-        },
-        method: "DELETE",
-      });
-      return await res.json();
-    },
+    mutationFn: deleteSpecificChecklistItmReq,
     onSuccess: () => {
       qryClient.invalidateQueries({
         queryKey: ["goal-checklist", "get-all-by-goal-id"],
@@ -253,21 +178,7 @@ const ChecklistContextProvider: FC<{ children: any }> = ({ children }) => {
     { id: number; title: string }
   >({
     mutationKey: ["goal-checklist", "edit-title"],
-    mutationFn: async ({ id, title }) => {
-      // /edit-title/:id/:title
-      const res = await fetch(
-        `http://localhost:5000/goal-checklist/edit-title/${id}/${title}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFyb25ncmh5ekBnbWFpLmNvbSIsInN1YiI6ImFyb25ncmh5ekBnbWFpLmNvbSIsImlhdCI6MTcxMTY0NDk2NywiZXhwIjoxNzExNzMxMzY3fQ.KNfs6YelPFvii5kvwZXNPuD3YlgUn28PT3tq7wg28m0",
-          },
-          method: "PUT",
-        }
-      );
-      return await res.json();
-    },
+    mutationFn: editChecklistItmTitleReq,
     onSuccess: () => {
       qryClient.invalidateQueries({
         queryKey: ["goal-checklist", "get-all-by-goal-id"],
