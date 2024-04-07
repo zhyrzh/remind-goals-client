@@ -5,4 +5,5 @@ export interface IReminder {
   content: string;
   active: boolean;
   frequency: FrequencyEnum;
+  reminderStartDate: Date;
 }
