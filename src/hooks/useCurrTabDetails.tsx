@@ -1,4 +1,5 @@
 import { IGoal, IGoalChecklist } from "@/components/goal/types";
+import { IReminder } from "@/components/reminder/types";
 import { useState } from "react";
 
 export type ICurrTabDetails = {
@@ -36,6 +37,17 @@ export type ICurrTabDetails = {
     }
   | {
       type: "goal.add";
+    }
+  | {
+      type: "reminder.edit";
+      data: Pick<
+        IReminder,
+        "content" | "frequency" | "id" | "reminderStartDate"
+      >;
+    }
+  | {
+      type: "reminder.add";
+      data: Pick<IReminder, "content" | "frequency" | "reminderStartDate">;
     }
   | {
       type: undefined;
