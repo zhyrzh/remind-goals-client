@@ -1,4 +1,4 @@
-import { FC, useRef, useState } from "react";
+import { FC, useContext, useRef, useState } from "react";
 import { Pencil1Icon } from "@radix-ui/react-icons";
 import {
   Dialog,
@@ -20,22 +20,28 @@ import useCurrTabDetails from "@/hooks/useCurrTabDetails";
 import { useToast } from "../ui/use-toast";
 import { FrequencyEnum, radioItems } from "./constants";
 import { IReminder } from "./types";
+import { ReminderContext } from "@/store/reminder.context";
 
 // Types declaration
 interface IEditButton {
   reminder: IReminder;
-  onEditReminder: (id: number, values: IReminderInputValues) => void;
 }
 
 /* Function component START */
-const EditButton: FC<IEditButton> = ({ reminder, onEditReminder }) => {
+const EditButton: FC<IEditButton> = ({ reminder }) => {
+  // context declarations
+  const reminderCtx = useContext(ReminderContext);
+
   // useState declaration
   const [values, setValues] = useState<IReminderInputValues>({
     title: reminder.content,
     frequency: reminder.frequency,
+    reminderStartDate: new Date(reminder.reminderStartDate),
   });
   const [showEditReminderModal, setShowEditReminderModal] =
     useState<boolean>(false);
+
+  // ref declaration
   const inputRef = useRef<HTMLInputElement>(null);
 
   // hooks
@@ -44,6 +50,7 @@ const EditButton: FC<IEditButton> = ({ reminder, onEditReminder }) => {
     value: "main",
     isCancel: false,
     tabTitle: "",
+    type: undefined,
   });
 
   // methods
@@ -59,6 +66,7 @@ const EditButton: FC<IEditButton> = ({ reminder, onEditReminder }) => {
       value: "main",
       isCancel: false,
       tabTitle: "",
+      type: undefined,
     });
   };
 
@@ -66,6 +74,7 @@ const EditButton: FC<IEditButton> = ({ reminder, onEditReminder }) => {
     setValues({
       title: "",
       frequency: FrequencyEnum.once,
+      reminderStartDate: new Date(),
     });
   };
 
@@ -78,7 +87,7 @@ const EditButton: FC<IEditButton> = ({ reminder, onEditReminder }) => {
         <Pencil1Icon />
       </DialogTrigger>
       <DialogContent>
-        <Tabs defaultValue="main">
+        <Tabs value={currTabDetails.value}>
           <TabsContent value="main">
             <DialogHeader>
               <DialogTitle>Edit reminder</DialogTitle>
@@ -132,6 +141,14 @@ const EditButton: FC<IEditButton> = ({ reminder, onEditReminder }) => {
                   <Calendar
                     disabled={isDisabled}
                     className="bg-slate-200 mx-auto"
+                    onSelect={(date) =>
+                      setValues((prevValues) => ({
+                        ...prevValues,
+                        reminderStartDate: new Date(date!),
+                      }))
+                    }
+                    selected={values.reminderStartDate}
+                    mode="single"
                   />
                 </div>
               )}
@@ -141,8 +158,21 @@ const EditButton: FC<IEditButton> = ({ reminder, onEditReminder }) => {
                 type="submit"
                 onClick={() => {
                   if (values.title && values.title.trim() !== "") {
-                    onEditReminder(reminder.id, values!);
-                    setShowEditReminderModal(false);
+                    // onEditReminder(reminder.id, values!);
+                    console.log("here?");
+                    setCurrTabDetails({
+                      value: "confirmation",
+                      isCancel: false,
+                      tabTitle:
+                        "Are you sure you want to edit the title of this goal?",
+                      type: "reminder.edit",
+                      data: {
+                        id: reminder.id,
+                        content: values.title,
+                        frequency: values.frequency,
+                        reminderStartDate: values.reminderStartDate,
+                      },
+                    });
                   } else {
                     toast({
                       title: "Empty title",
@@ -157,7 +187,7 @@ const EditButton: FC<IEditButton> = ({ reminder, onEditReminder }) => {
               <Button
                 type="button"
                 className="bg-transparent text-slate-900 hover:bg-transparent"
-                onClick={() => {}}
+                onClick={() => setShowEditReminderModal(false)}
               >
                 Cancel
               </Button>
@@ -173,12 +203,32 @@ const EditButton: FC<IEditButton> = ({ reminder, onEditReminder }) => {
                 type="submit"
                 onClick={() => {
                   if (!currTabDetails.isCancel) {
-                    onEditReminder(reminder.id, values!);
+                    switch (currTabDetails.type) {
+                      case "reminder.edit":
+                        reminderCtx.editReminderDetailsMtn.mutate({
+                          content: currTabDetails.data.content,
+                          frequency: currTabDetails.data.frequency,
+                          id: reminder.id,
+                          reminderStartDate:
+                            currTabDetails.data.reminderStartDate,
+                        });
+                        setShowEditReminderModal(false);
+                        break;
+                      default:
+                        toast({
+                          title: "Invalid tab type",
+                          description:
+                            "Please proved a valid tab type (code leve)",
+                          variant: "destructive",
+                        });
+                        break;
+                    }
+                    // onEditReminder(reminder.id, values!);
                   } else {
-                    resetCurrTabDetails();
-                    resetFields();
                     setShowEditReminderModal(false);
+                    resetFields();
                   }
+                  resetCurrTabDetails();
                 }}
               >
                 {!currTabDetails.isCancel ? "Confirm" : "Discard"}
@@ -188,6 +238,7 @@ const EditButton: FC<IEditButton> = ({ reminder, onEditReminder }) => {
                 className="bg-transparent text-slate-900 hover:bg-transparent"
                 onClick={() => {
                   resetCurrTabDetails();
+                  setShowEditReminderModal(false);
                 }}
               >
                 Cancel

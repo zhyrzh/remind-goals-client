@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useContext, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -17,25 +17,29 @@ import { Tabs, TabsContent } from "../ui/tabs";
 import { useToast } from "../ui/use-toast";
 import useCurrTabDetails from "@/hooks/useCurrTabDetails";
 import { FrequencyEnum, radioItems } from "./constants";
+import { ReminderContext } from "@/store/reminder.context";
 
 // Types declarations
-interface IAddReminder {
-  onAddReminder: (value: IReminderInputValues) => void;
-}
+interface IAddReminder {}
 
 export interface IReminderInputValues {
   title: string;
   frequency: FrequencyEnum;
+  reminderStartDate: Date;
 }
 
 /* Function component START */
-const AddReminder: FC<IAddReminder> = ({ onAddReminder }) => {
+const AddReminder: FC<IAddReminder> = () => {
+  // context declaration
+  const reminderCtx = useContext(ReminderContext);
+
   // useState declaration
   const [showAddReminderModal, setShowAddReminderModal] =
     useState<boolean>(false);
   const [values, setValues] = useState<IReminderInputValues>({
     title: "",
     frequency: FrequencyEnum.once,
+    reminderStartDate: new Date(),
   });
 
   // hooks declaration
@@ -44,14 +48,15 @@ const AddReminder: FC<IAddReminder> = ({ onAddReminder }) => {
     value: "main",
     isCancel: false,
     tabTitle: "",
+    type: undefined,
   });
 
   // methods declaration
   const isDisabled = (current: Date) => {
     const curr = moment(current);
-    // const customDate = moment().format("YYYY-MM-DD");
-    // return curr && curr.isBefore(customDate);
-    return curr.isBefore(moment());
+    const customDate = moment().format("YYYY-MM-DD");
+    return curr && curr.isBefore(customDate);
+    // return curr.isBefore(moment());
   };
 
   const resetCurrTabDetails = () => {
@@ -59,6 +64,7 @@ const AddReminder: FC<IAddReminder> = ({ onAddReminder }) => {
       value: "main",
       isCancel: false,
       tabTitle: "",
+      type: undefined,
     });
   };
 
@@ -66,6 +72,7 @@ const AddReminder: FC<IAddReminder> = ({ onAddReminder }) => {
     setValues({
       title: "",
       frequency: FrequencyEnum.once,
+      reminderStartDate: new Date(),
     });
   };
 
@@ -125,8 +132,16 @@ const AddReminder: FC<IAddReminder> = ({ onAddReminder }) => {
                 <div className="ml-12">
                   <h1 className="font-medium text-sm mb-2">Pick a date</h1>
                   <Calendar
+                    onSelect={(date) =>
+                      setValues((prevValues) => ({
+                        ...prevValues,
+                        reminderStartDate: new Date(date!),
+                      }))
+                    }
+                    selected={values.reminderStartDate}
                     disabled={isDisabled}
                     className="bg-slate-200 mx-auto"
+                    mode="single"
                   />
                 </div>
               )}
@@ -147,6 +162,12 @@ const AddReminder: FC<IAddReminder> = ({ onAddReminder }) => {
                     value: "confirmation",
                     isCancel: false,
                     tabTitle: "Are you sure you want to add this reminder?",
+                    type: "reminder.add",
+                    data: {
+                      content: values.title,
+                      frequency: values.frequency,
+                      reminderStartDate: values.reminderStartDate,
+                    },
                   });
                 }}
               >
@@ -161,6 +182,7 @@ const AddReminder: FC<IAddReminder> = ({ onAddReminder }) => {
                       value: "confirmation",
                       isCancel: true,
                       tabTitle: "Are you sure you want to discard your changes",
+                      type: undefined,
                     });
                     return;
                   } else {
@@ -182,8 +204,18 @@ const AddReminder: FC<IAddReminder> = ({ onAddReminder }) => {
                 type="submit"
                 onClick={() => {
                   if (!currTabDetails.isCancel) {
-                    console.log("triggered");
-                    onAddReminder(values);
+                    switch (currTabDetails.type) {
+                      case "reminder.add":
+                        reminderCtx.createReminderMtn.mutate({
+                          content: currTabDetails.data.content!,
+                          frequency: currTabDetails.data.frequency!,
+                          isActive: true,
+                          reminderStartDate:
+                            currTabDetails.data.reminderStartDate!,
+                        });
+                        break;
+                    }
+                    // onAddReminder(values);
                   }
                   resetCurrTabDetails();
                   resetFields();

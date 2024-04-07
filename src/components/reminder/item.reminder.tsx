@@ -2,25 +2,16 @@ import { FC, useState } from "react";
 import { Card } from "../ui/card";
 import CustomCheckbox from "./checkbox.reminder";
 import DeleteButton from "./delete-button.reminder";
-import { IReminderInputValues } from "./add.reminder";
 import EditButton from "./edit-button.reminder";
 import { IReminder } from "./types";
 
 // Types declarations
 interface IReminderItemProps {
   reminder: IReminder;
-  onRemoveReminder: (id: number) => void;
-  onSetReminderAsDone: (id: number) => void;
-  onEditReminder: (id: number, values: IReminderInputValues) => void;
 }
 
 /* Function component START */
-const ReminderItem: FC<IReminderItemProps> = ({
-  reminder,
-  onRemoveReminder,
-  onSetReminderAsDone,
-  onEditReminder,
-}) => {
+const ReminderItem: FC<IReminderItemProps> = ({ reminder }) => {
   // useState declarations
   const [editable] = useState<boolean>(false);
 
@@ -34,10 +25,7 @@ const ReminderItem: FC<IReminderItemProps> = ({
           : " bg-neutral-100 hover:bg-neutral-200")
       }
     >
-      <CustomCheckbox
-        reminder={reminder}
-        onSetReminderAsDone={onSetReminderAsDone}
-      />
+      <CustomCheckbox reminder={reminder} />
       <p
         className={
           "text-left ml-2 transition-all duration-1000 ease-in-out" +
@@ -50,8 +38,8 @@ const ReminderItem: FC<IReminderItemProps> = ({
         {reminder.content}
       </p>
       <section className="flex ml-auto">
-        <EditButton reminder={reminder} onEditReminder={onEditReminder} />
-        <DeleteButton onRemoveReminder={onRemoveReminder} reminder={reminder} />
+        <EditButton reminder={reminder} />
+        <DeleteButton reminder={reminder} />
       </section>
     </Card>
   );

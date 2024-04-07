@@ -14,7 +14,6 @@ import { IReminder } from "./types";
 
 interface ICustomCheckbox {
   reminder: IReminder;
-  onSetReminderAsDone: (id: number) => void;
 }
 
 /* Function component START */

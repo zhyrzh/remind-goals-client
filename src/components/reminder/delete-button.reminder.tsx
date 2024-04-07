@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useContext, useState } from "react";
 import { TrashIcon } from "@radix-ui/react-icons";
 import {
   Dialog,
@@ -11,15 +11,18 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { IReminder } from "./types";
+import { ReminderContext } from "@/store/reminder.context";
 
 // Types declaration
 interface IDeleteButton {
   reminder: IReminder;
-  onRemoveReminder: (id: number) => void;
 }
 
 /* Function component START */
-const DeleteButton: FC<IDeleteButton> = ({ reminder, onRemoveReminder }) => {
+const DeleteButton: FC<IDeleteButton> = ({ reminder }) => {
+  // context declarations
+  const reminderCtx = useContext(ReminderContext);
+
   // useState declarations
   const [showSetIsActiveDialog, setShowIsActiveDialog] =
     useState<boolean>(false);
@@ -41,7 +44,8 @@ const DeleteButton: FC<IDeleteButton> = ({ reminder, onRemoveReminder }) => {
           <Button
             type="submit"
             onClick={() => {
-              onRemoveReminder(reminder.id);
+              // onRemoveReminder(reminder.id);
+              reminderCtx.deleteReminderItemMtn.mutate({ id: reminder.id });
               setShowIsActiveDialog((prevVal) => !prevVal);
             }}
           >
