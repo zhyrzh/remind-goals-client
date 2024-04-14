@@ -11,11 +11,13 @@ interface IReminderList {
 const ReminderList: FC<IReminderList> = ({ reminders }) => {
   return (
     <>
-      {reminders
-        ?.sort((a, b) => (b.active ? 1 : 0) - (a.active ? 1 : 0))
-        .map((reminder) => (
-          <ReminderItem key={reminder.id} reminder={reminder} />
-        ))}
+      {Array.isArray(reminders)
+        ? reminders
+            ?.sort((a, b) => (b.active ? 1 : 0) - (a.active ? 1 : 0))
+            .map((reminder) => (
+              <ReminderItem key={reminder.id} reminder={reminder} />
+            ))
+        : null}
     </>
   );
 };

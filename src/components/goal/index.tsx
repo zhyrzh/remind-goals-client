@@ -15,9 +15,11 @@ const Goal = () => {
           <h1 className="text-[24px] font-bold">Goals</h1>
           <AddGoal />
         </div>
-        {goalCtx.data?.map((goal) => (
-          <GoalItemCard goal={goal} key={goal.id} />
-        ))}
+        {Array.isArray(goalCtx)
+          ? goalCtx.data?.map((goal) => (
+              <GoalItemCard goal={goal} key={goal.id} />
+            ))
+          : null}
       </div>
     </>
   );
