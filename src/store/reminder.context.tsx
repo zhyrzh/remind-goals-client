@@ -1,3 +1,6 @@
+import { getAllRemindersReq } from "@/api/reminder.api";
+import { IReminder } from "@/components/reminder/types";
+import { UseQueryResult, useQuery } from "@tanstack/react-query";
 import { FC, createContext } from "react";
 
 export class FetchError extends Error {
@@ -6,14 +9,28 @@ export class FetchError extends Error {
   }
 }
 
-interface IReminderContext {}
+interface IReminderContext {
+  getAllRemindersQry: UseQueryResult<IReminder[], FetchError>;
+}
 
 export const ReminderContext = createContext<IReminderContext>(
   null as unknown as IReminderContext
 );
 
 export const ReminderContextProvder: FC<{ children: any }> = ({ children }) => {
+  const getAllRemindersQry = useQuery<IReminder[], FetchError>({
+    queryKey: ["reminders"],
+    queryFn: getAllRemindersReq,
+    refetchOnWindowFocus: false,
+  });
+
   return (
-    <ReminderContext.Provider value={{}}>{children}</ReminderContext.Provider>
+    <ReminderContext.Provider
+      value={{
+        getAllRemindersQry,
+      }}
+    >
+      {children}
+    </ReminderContext.Provider>
   );
 };
