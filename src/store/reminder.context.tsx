@@ -1,4 +1,8 @@
-import { createReminderReq, getAllRemindersReq } from "@/api/reminder.api";
+import {
+  createReminderReq,
+  getAllRemindersReq,
+  toggleIsActiveReq,
+} from "@/api/reminder.api";
 import { FrequencyEnum } from "@/components/reminder/constants";
 import { IReminder } from "@/components/reminder/types";
 import {
@@ -27,6 +31,11 @@ interface IReminderContext {
       isActive: boolean;
       reminderStartDate: Date;
     }
+  >;
+  toggleIsActiveMtn: UseMutationResult<
+    IReminder,
+    Error,
+    { id: number; isActive: boolean }
   >;
 }
 
@@ -62,11 +71,26 @@ export const ReminderContextProvder: FC<{ children: any }> = ({ children }) => {
     },
   });
 
+  const toggleIsActiveMtn = useMutation<
+    IReminder,
+    Error,
+    { id: number; isActive: boolean }
+  >({
+    mutationKey: ["reminder", "toggle-is-active"],
+    mutationFn: toggleIsActiveReq,
+    onSuccess: () => {
+      qryClient.invalidateQueries({
+        queryKey: ["reminders"],
+      });
+    },
+  });
+
   return (
     <ReminderContext.Provider
       value={{
         getAllRemindersQry,
         createReminderMtn,
+        toggleIsActiveMtn,
       }}
     >
       {children}
