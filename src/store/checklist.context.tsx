@@ -1,4 +1,5 @@
 import { IGoalChecklist } from "@/components/goal/types";
+import { useGoalChecklistAPIRequest } from "@/hooks/useGoalChecklistAPIRequest";
 import {
   UseMutationResult,
   UseQueryResult,
@@ -7,16 +8,6 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { FC, createContext } from "react";
-import {
-  addGoalChecklistItmToExistingGoalReq,
-  addGoalChklistItmReq,
-  deleteAllNoGoalIdReq,
-  deleteSpecificChecklistItmReq,
-  editChecklistItmTitleReq,
-  getAllChecklistByGoalIdReq,
-  getAllChecklistWithNoGoalIdReq,
-  toggleChecklistItmStatusReq,
-} from "@/api/goal-checklist.api";
 
 interface IGoalChecklistContext {
   getAllChecklistWithNoGoalIdQry: UseQueryResult<IGoalChecklist[]>;
@@ -57,6 +48,17 @@ export const ChecklistContext = createContext<IGoalChecklistContext>(
 
 const ChecklistContextProvider: FC<{ children: any }> = ({ children }) => {
   const qryClient = useQueryClient();
+
+  const {
+    addGoalChecklistItmToExistingGoalReq,
+    addGoalChklistItmReq,
+    deleteAllNoGoalIdReq,
+    deleteSpecificChecklistItmReq,
+    editChecklistItmTitleReq,
+    getAllChecklistByGoalIdReq,
+    getAllChecklistWithNoGoalIdReq,
+    toggleChecklistItmStatusReq,
+  } = useGoalChecklistAPIRequest();
 
   const getAllChecklistWithNoGoalIdQry = useQuery<IGoalChecklist[]>({
     queryKey: ["goal-checklist", "get-all-with-no-goal-id"],

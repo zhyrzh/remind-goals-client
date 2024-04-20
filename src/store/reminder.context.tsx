@@ -1,12 +1,6 @@
-import {
-  createReminderReq,
-  deleteReminderItemReq,
-  editReminderDetailsReq,
-  getAllRemindersReq,
-  toggleIsActiveReq,
-} from "@/api/reminder.api";
 import { FrequencyEnum } from "@/components/reminder/constants";
 import { IReminder } from "@/components/reminder/types";
+import { useReminderAPIrequest } from "@/hooks/useReminderAPIRequest";
 import {
   UseMutationResult,
   UseQueryResult,
@@ -62,6 +56,14 @@ export const ReminderContext = createContext<IReminderContext>(
 
 export const ReminderContextProvder: FC<{ children: any }> = ({ children }) => {
   const qryClient = useQueryClient();
+
+  const {
+    createReminderReq,
+    deleteReminderItemReq,
+    editReminderDetailsReq,
+    getAllRemindersReq,
+    toggleIsActiveReq,
+  } = useReminderAPIrequest();
 
   const getAllRemindersQry = useQuery<IReminder[], FetchError>({
     queryKey: ["reminders"],

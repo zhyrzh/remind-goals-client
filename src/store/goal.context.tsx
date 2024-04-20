@@ -8,12 +8,7 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import {
-  addGoalReq,
-  editGoalTitleReq,
-  getAllGoalsReq,
-  getSpecificGoalReq,
-} from "@/api/goal.api";
+import { useGoalAPIRequest } from "@/hooks/useGoalAPIRequest";
 
 interface IGoalContext {
   getAllGoalsQry: UseQueryResult<IGoal[]>;
@@ -36,6 +31,9 @@ export const GoalContext = createContext<IGoalContext>(
 
 const GoalContextProvider: FC<{ children: any }> = ({ children }) => {
   const qryClient = useQueryClient();
+
+  const { addGoalReq, editGoalTitleReq, getAllGoalsReq, getSpecificGoalReq } =
+    useGoalAPIRequest();
 
   const getAllGoalsQry = useQuery({
     queryKey: ["goals"],
