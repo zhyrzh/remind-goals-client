@@ -1,6 +1,7 @@
 import {
   createReminderReq,
   deleteReminderItemReq,
+  editReminderDetailsReq,
   getAllRemindersReq,
   toggleIsActiveReq,
 } from "@/api/reminder.api";
@@ -42,6 +43,16 @@ interface IReminderContext {
     { count: number },
     Error,
     { id: number }
+  >;
+  editReminderDetailsMtn: UseMutationResult<
+    IReminder,
+    Error,
+    {
+      id: number;
+      content: string;
+      frequency: FrequencyEnum;
+      reminderStartDate: Date;
+    }
   >;
 }
 
@@ -105,6 +116,25 @@ export const ReminderContextProvder: FC<{ children: any }> = ({ children }) => {
     },
   });
 
+  const editReminderDetailsMtn = useMutation<
+    IReminder,
+    Error,
+    {
+      id: number;
+      content: string;
+      frequency: FrequencyEnum;
+      reminderStartDate: Date;
+    }
+  >({
+    mutationKey: ["reminder", "edit-details"],
+    mutationFn: editReminderDetailsReq,
+    onSuccess: () => {
+      qryClient.invalidateQueries({
+        queryKey: ["reminders"],
+      });
+    },
+  });
+
   return (
     <ReminderContext.Provider
       value={{
@@ -112,6 +142,7 @@ export const ReminderContextProvder: FC<{ children: any }> = ({ children }) => {
         createReminderMtn,
         toggleIsActiveMtn,
         deleteReminderItemMtn,
+        editReminderDetailsMtn,
       }}
     >
       {children}
