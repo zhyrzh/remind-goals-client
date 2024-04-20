@@ -6,7 +6,7 @@ import { GoalContext } from "@/store/goal.context";
 /* Function component START */
 const Goal = () => {
   // context declarations
-  const goalCtx = useContext(GoalContext).getAllGoalsQry;
+  const goalCtx = useContext(GoalContext)?.getAllGoalsQry;
 
   return (
     <>
@@ -15,7 +15,7 @@ const Goal = () => {
           <h1 className="text-[24px] font-bold">Goals</h1>
           <AddGoal />
         </div>
-        {Array.isArray(goalCtx)
+        {goalCtx?.data
           ? goalCtx.data?.map((goal) => (
               <GoalItemCard goal={goal} key={goal.id} />
             ))

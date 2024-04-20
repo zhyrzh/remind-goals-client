@@ -11,7 +11,7 @@ interface IReminderList {
 const ReminderList: FC<IReminderList> = ({ reminders }) => {
   return (
     <>
-      {Array.isArray(reminders)
+      {reminders
         ? reminders
             ?.sort((a, b) => (b.active ? 1 : 0) - (a.active ? 1 : 0))
             .map((reminder) => (
