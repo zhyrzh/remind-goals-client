@@ -1,5 +1,6 @@
 import {
   createReminderReq,
+  deleteReminderItemReq,
   getAllRemindersReq,
   toggleIsActiveReq,
 } from "@/api/reminder.api";
@@ -36,6 +37,11 @@ interface IReminderContext {
     IReminder,
     Error,
     { id: number; isActive: boolean }
+  >;
+  deleteReminderItemMtn: UseMutationResult<
+    { count: number },
+    Error,
+    { id: number }
   >;
 }
 
@@ -85,12 +91,27 @@ export const ReminderContextProvder: FC<{ children: any }> = ({ children }) => {
     },
   });
 
+  const deleteReminderItemMtn = useMutation<
+    { count: number },
+    Error,
+    { id: number }
+  >({
+    mutationKey: ["reminder", "delete"],
+    mutationFn: deleteReminderItemReq,
+    onSuccess: () => {
+      qryClient.invalidateQueries({
+        queryKey: ["reminders"],
+      });
+    },
+  });
+
   return (
     <ReminderContext.Provider
       value={{
         getAllRemindersQry,
         createReminderMtn,
         toggleIsActiveMtn,
+        deleteReminderItemMtn,
       }}
     >
       {children}
