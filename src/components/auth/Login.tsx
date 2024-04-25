@@ -10,17 +10,18 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Toaster } from "../ui/toaster";
+import { useToast } from "../ui/use-toast";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   useEffect(() => {
-    console.log('first, "check');
     if (window.location.hash === "#_=_") {
       if (history.replaceState) {
         const cleanHref = window.location.href.split("#")[0];
@@ -35,15 +36,14 @@ const Login = () => {
       if (data?.includes("j:")) {
         const cookieData = data?.replace("j:", "");
         const parsedData = JSON.parse(cookieData!);
-        localStorage.setItem("remind-goals-ath-tkn", parsedData.access_token);
+        console.log(parsedData, "check parsed");
+        localStorage.setItem("remind-goals-ath-tkn", cookieData);
         if (parsedData.profile !== null) {
           navigate("/");
         } else {
           navigate("/setup-profile");
         }
         Cookies.remove("my-key");
-      } else {
-        console.log(JSON.parse(data!), "second");
       }
     }
   }, []);
@@ -55,22 +55,50 @@ const Login = () => {
   }, []);
 
   const onLogin = async () => {
-    const res = await fetch("http://localhost:5000/auth/login", {
-      method: "POST",
-      body: JSON.stringify({
-        username: email,
-        password,
-      }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    const data = await res.json();
-    console.log(data, "check data");
-    if (data.profile) {
-      navigate("/");
-    } else {
-      navigate("/setup-profile");
+    if (password === "" || email === "") {
+      toast({
+        title: "All fields are required",
+        description: "Kindly fill up all details",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const res = await fetch("http://localhost:5000/auth/login", {
+        method: "POST",
+        body: JSON.stringify({
+          username: email,
+          password,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await res.json();
+
+      if (res.status >= 400 && data.profile === undefined) {
+        toast({
+          title: "Invalid credentials",
+          description: "Pleases provide valid credentials",
+          variant: "destructive",
+        });
+        return;
+      }
+      localStorage.setItem(
+        "remind-goals-ath-tkn",
+        JSON.stringify({
+          ...data,
+          profile: data.profile !== null ? true : null,
+        })
+      );
+      if (data.profile !== null) {
+        navigate("/");
+      } else {
+        navigate("/setup-profile");
+      }
+    } catch (error) {
+      localStorage.removeItem("remind-goals-ath-tkn");
     }
   };
 
@@ -104,10 +132,10 @@ const Login = () => {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
-            <Button className="w-full" type="submit" onClick={onLogin}>
-              Login
-            </Button>
           </div>
+          <Button className="w-full mt-12" type="submit" onClick={onLogin}>
+            Login
+          </Button>
           <div className="flex items-center">
             <div className="flex-grow border-t border-gray-400"></div>
             <span className="flex-shrink mx-4 text-gray-400">or</span>
@@ -122,6 +150,13 @@ const Login = () => {
           >
             Login with facebook
           </Button>
+          <CardDescription className="text-center mt-12">
+            Not yet registed? Go to{" "}
+            <Link to={"/signup"} className="underline">
+              signup page
+            </Link>
+            .
+          </CardDescription>
         </CardContent>
       </Card>
     </div>
