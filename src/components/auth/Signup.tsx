@@ -10,7 +10,7 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "../ui/use-toast";
 import { Toaster } from "../ui/toaster";
 
@@ -33,23 +33,21 @@ const Signup = () => {
         if (data) {
           if (data?.includes("j:")) {
             const cookieData = data?.replace("j:", "");
-            const parsedData = JSON.parse(cookieData!);
-            localStorage.setItem(
-              "remind-goals-ath-tkn",
-              parsedData.access_token
-            );
+            JSON.parse(cookieData!);
+            localStorage.setItem("remind-goals-ath-tkn", cookieData);
             navigate("/setup-profile");
             Cookies.remove("my-key");
           }
         }
-      } else {
-        window.location.hash = "";
       }
     }
   }, []);
 
   useEffect(() => {
-    if (localStorage.getItem("remind-goals-ath-tkn")) {
+    if (
+      localStorage.getItem("remind-goals-ath-tkn") &&
+      window.location.hash !== "#_=_"
+    ) {
       navigate("/");
     }
   }, []);
@@ -88,7 +86,7 @@ const Signup = () => {
       const data = await res.json();
 
       if (data.access_token) {
-        localStorage.setItem("remind-goals-ath-tkn", data.access_token);
+        localStorage.setItem("remind-goals-ath-tkn", JSON.stringify(data));
         navigate("/setup-profile");
       } else {
         toast({
@@ -97,7 +95,9 @@ const Signup = () => {
           description: data.message,
         });
       }
-    } catch (error) {}
+    } catch (error) {
+      localStorage.removeItem("remind-goals-ath-tkn");
+    }
   };
 
   return (
@@ -142,10 +142,10 @@ const Signup = () => {
                 onChange={(e) => setConfirmedPassword(e.target.value)}
               />
             </div>
-            <Button className="w-full" type="submit" onClick={onSignUp}>
-              Signup
-            </Button>
           </div>
+          <Button className="w-full mt-12" type="submit" onClick={onSignUp}>
+            Signup
+          </Button>
           <div className="flex items-center">
             <div className="flex-grow border-t border-gray-400"></div>
             <span className="flex-shrink mx-4 text-gray-400">or</span>
@@ -155,11 +155,18 @@ const Signup = () => {
             className="w-full bg-[#1877F2] hover:bg-[#1877F2]/80"
             onClick={() =>
               (window.location.href =
-                "http://localhost:5000/auth/login/facebook")
+                "http://localhost:5000/auth/signup/facebook")
             }
           >
             Signup with facebook
           </Button>
+          <CardDescription className="text-center mt-12">
+            Already registed? Go to{" "}
+            <Link to={"/login"} className="underline">
+              login page
+            </Link>
+            .
+          </CardDescription>
         </CardContent>
       </Card>
     </div>
