@@ -9,18 +9,19 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { useGoalAPIRequest } from "@/hooks/useGoalAPIRequest";
+import { FetchError } from "@/utils/error";
 
 interface IGoalContext {
-  getAllGoalsQry: UseQueryResult<IGoal[]>;
-  getSpecificGoalQry: (id: number) => UseQueryResult<IGoal>;
+  getAllGoalsQry: UseQueryResult<IGoal[], FetchError>;
+  getSpecificGoalQry: (id: number) => UseQueryResult<IGoal, FetchError>;
   addGoalMtn: UseMutationResult<
     IGoal,
-    Error,
+    FetchError,
     { title: string; checklist: Array<Pick<IGoalChecklist, "id">> }
   >;
   editGoalTitleMtn: UseMutationResult<
     IGoal,
-    Error,
+    FetchError,
     { title: string; id: number }
   >;
 }
@@ -35,14 +36,14 @@ const GoalContextProvider: FC<{ children: any }> = ({ children }) => {
   const { addGoalReq, editGoalTitleReq, getAllGoalsReq, getSpecificGoalReq } =
     useGoalAPIRequest();
 
-  const getAllGoalsQry = useQuery({
+  const getAllGoalsQry = useQuery<IGoal[], FetchError>({
     queryKey: ["goals"],
     queryFn: getAllGoalsReq,
     refetchOnWindowFocus: false,
   });
 
   const getSpecificGoalQry = (id: number) => {
-    return useQuery({
+    return useQuery<IGoal, FetchError>({
       queryKey: ["goals", id],
       queryFn: getSpecificGoalReq,
       refetchOnWindowFocus: false,
@@ -51,7 +52,7 @@ const GoalContextProvider: FC<{ children: any }> = ({ children }) => {
 
   const addGoalMtn = useMutation<
     IGoal,
-    Error,
+    FetchError,
     { title: string; checklist: Pick<IGoalChecklist, "id">[] }
   >({
     mutationKey: ["goals", "add"],
@@ -68,7 +69,7 @@ const GoalContextProvider: FC<{ children: any }> = ({ children }) => {
 
   const editGoalTitleMtn = useMutation<
     IGoal,
-    Error,
+    FetchError,
     { title: string; id: number }
   >({
     mutationKey: ["goals", "add"],

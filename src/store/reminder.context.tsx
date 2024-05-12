@@ -1,6 +1,7 @@
 import { FrequencyEnum } from "@/components/reminder/constants";
 import { IReminder } from "@/components/reminder/types";
 import { useReminderAPIrequest } from "@/hooks/useReminderAPIRequest";
+import { FetchError } from "@/utils/error";
 import {
   UseMutationResult,
   UseQueryResult,
@@ -10,17 +11,11 @@ import {
 } from "@tanstack/react-query";
 import { FC, createContext } from "react";
 
-export class FetchError extends Error {
-  constructor(public res: Response, message?: string) {
-    super(message);
-  }
-}
-
 interface IReminderContext {
   getAllRemindersQry: UseQueryResult<IReminder[], FetchError>;
   createReminderMtn: UseMutationResult<
     IReminder,
-    Error,
+    FetchError,
     {
       content: string;
       frequency: FrequencyEnum;
@@ -30,17 +25,17 @@ interface IReminderContext {
   >;
   toggleIsActiveMtn: UseMutationResult<
     IReminder,
-    Error,
+    FetchError,
     { id: number; isActive: boolean }
   >;
   deleteReminderItemMtn: UseMutationResult<
     { count: number },
-    Error,
+    FetchError,
     { id: number }
   >;
   editReminderDetailsMtn: UseMutationResult<
     IReminder,
-    Error,
+    FetchError,
     {
       id: number;
       content: string;
@@ -73,7 +68,7 @@ export const ReminderContextProvder: FC<{ children: any }> = ({ children }) => {
 
   const createReminderMtn = useMutation<
     IReminder,
-    Error,
+    FetchError,
     {
       content: string;
       frequency: FrequencyEnum;
@@ -92,7 +87,7 @@ export const ReminderContextProvder: FC<{ children: any }> = ({ children }) => {
 
   const toggleIsActiveMtn = useMutation<
     IReminder,
-    Error,
+    FetchError,
     { id: number; isActive: boolean }
   >({
     mutationKey: ["reminder", "toggle-is-active"],
@@ -106,7 +101,7 @@ export const ReminderContextProvder: FC<{ children: any }> = ({ children }) => {
 
   const deleteReminderItemMtn = useMutation<
     { count: number },
-    Error,
+    FetchError,
     { id: number }
   >({
     mutationKey: ["reminder", "delete"],
@@ -120,7 +115,7 @@ export const ReminderContextProvder: FC<{ children: any }> = ({ children }) => {
 
   const editReminderDetailsMtn = useMutation<
     IReminder,
-    Error,
+    FetchError,
     {
       id: number;
       content: string;

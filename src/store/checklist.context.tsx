@@ -1,5 +1,6 @@
 import { IGoalChecklist } from "@/components/goal/types";
 import { useGoalChecklistAPIRequest } from "@/hooks/useGoalChecklistAPIRequest";
+import { FetchError } from "@/utils/error";
 import {
   UseMutationResult,
   UseQueryResult,
@@ -10,34 +11,34 @@ import {
 import { FC, createContext } from "react";
 
 interface IGoalChecklistContext {
-  getAllChecklistWithNoGoalIdQry: UseQueryResult<IGoalChecklist[]>;
+  getAllChecklistWithNoGoalIdQry: UseQueryResult<IGoalChecklist[], FetchError>;
   getAllChecklistByGoalIdQry: (
     goalId: number
   ) => UseQueryResult<IGoalChecklist[]>;
   addGoalChklistItmMutn: UseMutationResult<
     IGoalChecklist,
-    Error,
+    FetchError,
     { title: string; isActive: boolean }
   >;
   addGoalChecklistItmToExistingGoalMtn: UseMutationResult<
     IGoalChecklist,
-    Error,
+    FetchError,
     { title: string; isActive: boolean; goalId: number }
   >;
-  deleteAllNoGoalIdMtn: UseMutationResult<{ count: number }, Error, any>;
+  deleteAllNoGoalIdMtn: UseMutationResult<{ count: number }, FetchError, any>;
   toggleChecklistItmStatusMutn: UseMutationResult<
     IGoalChecklist,
-    Error,
+    FetchError,
     { checklistItmId: number; isActive: boolean }
   >;
   deleteSpecificChecklistItm: UseMutationResult<
     IGoalChecklist,
-    Error,
+    FetchError,
     { id: number }
   >;
   editChecklistItmTitleMtn: UseMutationResult<
     IGoalChecklist,
-    Error,
+    FetchError,
     { id: number; title: string }
   >;
 }
@@ -60,12 +61,14 @@ const ChecklistContextProvider: FC<{ children: any }> = ({ children }) => {
     toggleChecklistItmStatusReq,
   } = useGoalChecklistAPIRequest();
 
-  const getAllChecklistWithNoGoalIdQry = useQuery<IGoalChecklist[]>({
-    queryKey: ["goal-checklist", "get-all-with-no-goal-id"],
-    queryFn: getAllChecklistWithNoGoalIdReq,
-    placeholderData: [],
-    refetchOnWindowFocus: false,
-  });
+  const getAllChecklistWithNoGoalIdQry = useQuery<IGoalChecklist[], FetchError>(
+    {
+      queryKey: ["goal-checklist", "get-all-with-no-goal-id"],
+      queryFn: getAllChecklistWithNoGoalIdReq,
+      placeholderData: [],
+      refetchOnWindowFocus: false,
+    }
+  );
 
   const getAllChecklistByGoalIdQry = (goalId: number) => {
     return useQuery<IGoalChecklist[]>({
@@ -78,7 +81,7 @@ const ChecklistContextProvider: FC<{ children: any }> = ({ children }) => {
 
   const addGoalChklistItmMutn = useMutation<
     IGoalChecklist,
-    Error,
+    FetchError,
     { title: string; isActive: boolean }
   >({
     mutationKey: ["goal-checklist", "add"],
@@ -98,7 +101,7 @@ const ChecklistContextProvider: FC<{ children: any }> = ({ children }) => {
 
   const addGoalChecklistItmToExistingGoalMtn = useMutation<
     IGoalChecklist,
-    Error,
+    FetchError,
     { title: string; isActive: boolean; goalId: number }
   >({
     mutationKey: ["goal-checklist", "add"],
@@ -116,27 +119,29 @@ const ChecklistContextProvider: FC<{ children: any }> = ({ children }) => {
     },
   });
 
-  const deleteAllNoGoalIdMtn = useMutation<{ count: number }, Error, undefined>(
-    {
-      mutationKey: ["goal-checklist", "delete-no-goal-id"],
-      mutationFn: deleteAllNoGoalIdReq,
-      onSuccess: () => {
-        qryClient.invalidateQueries({
-          queryKey: ["goal-checklist", "get-all-by-goal-id"],
-        });
-        qryClient.invalidateQueries({
-          queryKey: ["goal-checklist", "get-all-with-no-goal-id"],
-        });
-        qryClient.invalidateQueries({
-          queryKey: ["goals"],
-        });
-      },
-    }
-  );
+  const deleteAllNoGoalIdMtn = useMutation<
+    { count: number },
+    FetchError,
+    undefined
+  >({
+    mutationKey: ["goal-checklist", "delete-no-goal-id"],
+    mutationFn: deleteAllNoGoalIdReq,
+    onSuccess: () => {
+      qryClient.invalidateQueries({
+        queryKey: ["goal-checklist", "get-all-by-goal-id"],
+      });
+      qryClient.invalidateQueries({
+        queryKey: ["goal-checklist", "get-all-with-no-goal-id"],
+      });
+      qryClient.invalidateQueries({
+        queryKey: ["goals"],
+      });
+    },
+  });
 
   const toggleChecklistItmStatusMutn = useMutation<
     IGoalChecklist,
-    Error,
+    FetchError,
     { checklistItmId: number; isActive: boolean }
   >({
     mutationKey: ["goal-checklist", "toggle-status"],
@@ -156,7 +161,7 @@ const ChecklistContextProvider: FC<{ children: any }> = ({ children }) => {
 
   const deleteSpecificChecklistItm = useMutation<
     IGoalChecklist,
-    Error,
+    FetchError,
     { id: number }
   >({
     mutationKey: ["goal-checklist", "delete-specific"],
@@ -176,7 +181,7 @@ const ChecklistContextProvider: FC<{ children: any }> = ({ children }) => {
 
   const editChecklistItmTitleMtn = useMutation<
     IGoalChecklist,
-    Error,
+    FetchError,
     { id: number; title: string }
   >({
     mutationKey: ["goal-checklist", "edit-title"],
