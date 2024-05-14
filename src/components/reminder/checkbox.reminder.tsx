@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useContext, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -11,16 +11,17 @@ import {
 import { Checkbox } from "../ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { IReminder } from "./types";
+import { ReminderContext } from "@/store/reminder.context";
 
 interface ICustomCheckbox {
   reminder: IReminder;
 }
 
 /* Function component START */
-const CustomCheckbox: FC<ICustomCheckbox> = ({
-  reminder,
-  onSetReminderAsDone,
-}) => {
+const CustomCheckbox: FC<ICustomCheckbox> = ({ reminder }) => {
+  // hooks declarations
+  const toggleIsActiveMtn = useContext(ReminderContext).toggleIsActiveMtn;
+
   // useState declarations
   const [showSetIsActiveDialog, setShowIsActiveDialog] =
     useState<boolean>(false);
@@ -30,8 +31,8 @@ const CustomCheckbox: FC<ICustomCheckbox> = ({
       <DialogTrigger asChild>
         <Checkbox
           className="transition-all disabled:cursor-auto"
-          checked={!reminder.active}
-          disabled={!reminder.active}
+          checked={!reminder.isActive}
+          disabled={!reminder.isActive}
         />
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
@@ -46,7 +47,7 @@ const CustomCheckbox: FC<ICustomCheckbox> = ({
           <Button
             type="submit"
             onClick={() => {
-              onSetReminderAsDone(reminder.id);
+              toggleIsActiveMtn.mutate({ id: reminder.id, isActive: false });
               setShowIsActiveDialog((prevVal) => !prevVal);
             }}
           >
