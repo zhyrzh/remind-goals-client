@@ -11,13 +11,15 @@ interface IReminderList {
 const ReminderList: FC<IReminderList> = ({ reminders }) => {
   return (
     <>
-      {reminders
-        ? reminders
-            ?.sort((a, b) => (b.active ? 1 : 0) - (a.active ? 1 : 0))
-            .map((reminder) => (
-              <ReminderItem key={reminder.id} reminder={reminder} />
-            ))
-        : null}
+      {reminders && reminders.length >= 1 ? (
+        reminders
+          ?.sort((a, b) => (b.isActive ? 1 : 0) - (a.isActive ? 1 : 0))
+          .map((reminder) => (
+            <ReminderItem key={reminder.id} reminder={reminder} />
+          ))
+      ) : (
+        <p className="text-center">No reminders created.</p>
+      )}
     </>
   );
 };
