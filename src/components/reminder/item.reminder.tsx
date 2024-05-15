@@ -20,7 +20,7 @@ const ReminderItem: FC<IReminderItemProps> = ({ reminder }) => {
       key={reminder.id}
       className={
         "flex items-center p-2 transition-all duration-200 ease-in-out border-none first:mt-0 mt-2 cursor-pointer" +
-        (!reminder.active
+        (!reminder.isActive
           ? " bg-neutral-300 hover:bg-neutral-300"
           : " bg-neutral-100 hover:bg-neutral-200")
       }
@@ -29,7 +29,7 @@ const ReminderItem: FC<IReminderItemProps> = ({ reminder }) => {
       <p
         className={
           "text-left ml-2 transition-all duration-1000 ease-in-out" +
-          (!reminder.active ? " line-through" : "") +
+          (!reminder.isActive ? " line-through" : "") +
           (editable ? " px-2" : "")
         }
         contentEditable={editable}
