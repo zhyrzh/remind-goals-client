@@ -1,8 +1,10 @@
 import { IGoal, IGoalChecklist } from "@/components/goal/types";
+import { FetchError } from "@/utils/error";
 import { MutationFunction, QueryFunction } from "@tanstack/react-query";
 
 export const useGoalAPIRequest = () => {
-  const token = localStorage.getItem("remind-goals-ath-tkn");
+  const userDetails = JSON.parse(localStorage.getItem("remind-goals-ath-tkn")!);
+  const token = userDetails?.access_token ? userDetails?.access_token : "";
   const headers: HeadersInit = {
     Authorization: `Bearer ${token}`,
     "Content-Type": "application/json",
@@ -14,7 +16,11 @@ export const useGoalAPIRequest = () => {
     const res = await fetch(`${baseUrl}`, {
       headers,
     });
-    return await res.json();
+    if (res.ok) {
+      return await res.json();
+    } else {
+      throw new FetchError(res);
+    }
   };
 
   const getSpecificGoalReq: QueryFunction<IGoal> = async ({ queryKey }) => {
@@ -22,6 +28,11 @@ export const useGoalAPIRequest = () => {
     const res = await fetch(`http://localhost:5000/goals/specific/${id}`, {
       headers,
     });
+    if (res.ok) {
+      return await res.json();
+    } else {
+      throw new FetchError(res);
+    }
     return await res.json();
   };
 
@@ -37,7 +48,11 @@ export const useGoalAPIRequest = () => {
       }),
       headers,
     });
-    return await res.json();
+    if (res.ok) {
+      return await res.json();
+    } else {
+      throw new FetchError(res);
+    }
   };
 
   const editGoalTitleReq: MutationFunction<
@@ -49,7 +64,11 @@ export const useGoalAPIRequest = () => {
       body: JSON.stringify({ title }),
       headers,
     });
-    return await res.json();
+    if (res.ok) {
+      return await res.json();
+    } else {
+      throw new FetchError(res);
+    }
   };
 
   return { getAllGoalsReq, getSpecificGoalReq, addGoalReq, editGoalTitleReq };
