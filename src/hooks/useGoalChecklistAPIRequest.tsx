@@ -1,8 +1,10 @@
 import { IGoalChecklist } from "@/components/goal/types";
+import { FetchError } from "@/utils/error";
 import { MutationFunction, QueryFunctionContext } from "@tanstack/react-query";
 
 export const useGoalChecklistAPIRequest = () => {
-  const token = localStorage.getItem("remind-goals-ath-tkn");
+  const userDetails = JSON.parse(localStorage.getItem("remind-goals-ath-tkn")!);
+  const token = userDetails?.access_token ? userDetails?.access_token : "";
   const headers: HeadersInit = {
     Authorization: `Bearer ${token}`,
     "Content-Type": "application/json",
@@ -17,7 +19,11 @@ export const useGoalChecklistAPIRequest = () => {
       headers,
     });
 
-    return await res.json();
+    if (res.ok) {
+      return await res.json();
+    } else {
+      throw new FetchError(res);
+    }
   };
 
   const getAllChecklistByGoalIdReq = async ({
@@ -27,7 +33,11 @@ export const useGoalChecklistAPIRequest = () => {
     const res = await fetch(`${baseUrl}/get-all-by-goal-id/${goalId}`, {
       headers,
     });
-    return await res.json();
+    if (res.ok) {
+      return await res.json();
+    } else {
+      throw new FetchError(res);
+    }
   };
 
   const addGoalChklistItmReq: MutationFunction<
@@ -39,7 +49,11 @@ export const useGoalChecklistAPIRequest = () => {
       method: "POST",
       body: JSON.stringify(values),
     });
-    return await res.json();
+    if (res.ok) {
+      return await res.json();
+    } else {
+      throw new FetchError(res);
+    }
   };
 
   const addGoalChecklistItmToExistingGoalReq: MutationFunction<
@@ -57,7 +71,11 @@ export const useGoalChecklistAPIRequest = () => {
         }),
       }
     );
-    return await res.json();
+    if (res.ok) {
+      return await res.json();
+    } else {
+      throw new FetchError(res);
+    }
   };
 
   const deleteAllNoGoalIdReq: MutationFunction<
@@ -71,7 +89,11 @@ export const useGoalChecklistAPIRequest = () => {
         method: "DELETE",
       }
     );
-    return await res.json();
+    if (res.ok) {
+      return await res.json();
+    } else {
+      throw new FetchError(res);
+    }
   };
 
   const toggleChecklistItmStatusReq: MutationFunction<
@@ -85,7 +107,11 @@ export const useGoalChecklistAPIRequest = () => {
         method: "PUT",
       }
     );
-    return await res.json();
+    if (res.ok) {
+      return await res.json();
+    } else {
+      throw new FetchError(res);
+    }
   };
 
   const deleteSpecificChecklistItmReq: MutationFunction<
@@ -96,7 +122,11 @@ export const useGoalChecklistAPIRequest = () => {
       headers,
       method: "DELETE",
     });
-    return await res.json();
+    if (res.ok) {
+      return await res.json();
+    } else {
+      throw new FetchError(res);
+    }
   };
 
   const editChecklistItmTitleReq: MutationFunction<
@@ -110,7 +140,11 @@ export const useGoalChecklistAPIRequest = () => {
         method: "PUT",
       }
     );
-    return await res.json();
+    if (res.ok) {
+      return await res.json();
+    } else {
+      throw new FetchError(res);
+    }
   };
 
   return {
