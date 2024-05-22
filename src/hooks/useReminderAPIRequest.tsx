@@ -1,10 +1,11 @@
 import { FrequencyEnum } from "@/components/reminder/constants";
 import { IReminder } from "@/components/reminder/types";
-import { FetchError } from "@/store/reminder.context";
+import { FetchError } from "@/utils/error";
 import { MutationFunction, QueryFunction } from "@tanstack/react-query";
 
 export const useReminderAPIrequest = () => {
-  const token = localStorage.getItem("remind-goals-ath-tkn");
+  const userDetails = JSON.parse(localStorage.getItem("remind-goals-ath-tkn")!);
+  const token = userDetails?.access_token ? userDetails?.access_token : "";
   const headers: HeadersInit = {
     Authorization: `Bearer ${token}`,
     "Content-Type": "application/json",
@@ -17,10 +18,10 @@ export const useReminderAPIrequest = () => {
       method: "GET",
       headers,
     });
+    console.log(res, "check res");
     if (res.ok) {
       return await res.json();
     } else {
-      console.log(await res.json(), "checkes");
       throw new FetchError(res);
     }
   };
@@ -34,7 +35,11 @@ export const useReminderAPIrequest = () => {
       headers,
       body: JSON.stringify(values),
     });
-    return await res.json();
+    if (res.ok) {
+      return await res.json();
+    } else {
+      throw new FetchError(res);
+    }
   };
 
   const toggleIsActiveReq: MutationFunction<
@@ -45,7 +50,11 @@ export const useReminderAPIrequest = () => {
       method: "PUT",
       headers,
     });
-    return await res.json();
+    if (res.ok) {
+      return await res.json();
+    } else {
+      throw new FetchError(res);
+    }
   };
 
   const deleteReminderItemReq: MutationFunction<
@@ -56,7 +65,11 @@ export const useReminderAPIrequest = () => {
       method: "DELETE",
       headers,
     });
-    return await res.json();
+    if (res.ok) {
+      return await res.json();
+    } else {
+      throw new FetchError(res);
+    }
   };
 
   const editReminderDetailsReq: MutationFunction<
@@ -73,7 +86,11 @@ export const useReminderAPIrequest = () => {
       headers,
       body: JSON.stringify({ content, frequency, reminderStartDate }),
     });
-    return await res.json();
+    if (res.ok) {
+      return await res.json();
+    } else {
+      throw new FetchError(res);
+    }
   };
 
   return {
