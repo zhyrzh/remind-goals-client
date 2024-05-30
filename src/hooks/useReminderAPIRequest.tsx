@@ -18,7 +18,6 @@ export const useReminderAPIrequest = () => {
       method: "GET",
       headers,
     });
-    console.log(res, "check res");
     if (res.ok) {
       return await res.json();
     } else {
