@@ -16,20 +16,16 @@ export const useGoalAPIRequest = () => {
     IGoal,
     { title: string; checklist: Pick<IGoalChecklist, "id">[] }
   > = async ({ title, checklist }) =>
-    useFetchRequest(
-      `${baseUrl}`,
-      "POST",
-      JSON.stringify({
-        title,
-        checklist,
-      })
-    )();
+    useFetchRequest(`${baseUrl}`, "POST", {
+      title,
+      checklist,
+    })();
 
   const editGoalTitleReq: MutationFunction<
     IGoal,
     { title: string; id: number }
   > = async ({ id, title }) =>
-    useFetchRequest(`${baseUrl}/${id}`, "PUT", JSON.stringify({ title }))();
+    useFetchRequest(`${baseUrl}/${id}`, "PUT", { title })();
 
   return { getAllGoalsReq, getSpecificGoalReq, addGoalReq, editGoalTitleReq };
 };
