@@ -27,10 +27,10 @@ export const useGoalChecklistAPIRequest = () => {
     useFetchRequest(
       `http://localhost:5000/goal-checklist/to-existing-goal/${values.goalId}`,
       "POST",
-      JSON.stringify({
+      {
         title: values.title,
         isActive: values.isActive,
-      })
+      }
     )();
 
   const deleteAllNoGoalIdReq: MutationFunction<
