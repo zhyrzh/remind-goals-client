@@ -12,8 +12,7 @@ export const useReminderAPIrequest = () => {
   const createReminderReq: MutationFunction<
     IReminder,
     { content: string; frequency: FrequencyEnum; isActive: boolean }
-  > = async (values) =>
-    useFetchRequest(`${baseUrl}`, "POST", JSON.stringify(values))();
+  > = async (values) => useFetchRequest(`${baseUrl}`, "POST", values)();
 
   const toggleIsActiveReq: MutationFunction<
     IReminder,
@@ -35,11 +34,11 @@ export const useReminderAPIrequest = () => {
       reminderStartDate: Date;
     }
   > = async ({ id, content, frequency, reminderStartDate }) =>
-    useFetchRequest(
-      `${baseUrl}/details/${id}`,
-      "PUT",
-      JSON.stringify({ content, frequency, reminderStartDate })
-    )();
+    useFetchRequest(`${baseUrl}/details/${id}`, "PUT", {
+      content,
+      frequency,
+      reminderStartDate,
+    })();
 
   return {
     getAllRemindersReq,
