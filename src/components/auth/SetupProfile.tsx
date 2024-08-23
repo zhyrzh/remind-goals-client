@@ -22,7 +22,7 @@ const SetupProfile = () => {
         localStorage.getItem("remind-goals-ath-tkn")!
       );
       const token = userDetails?.access_token ? userDetails?.access_token : "";
-      const res = await fetch("http://localhost:5000/users/setup-profile", {
+      const res = await fetch("http://localhost:5001/users/setup-profile", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

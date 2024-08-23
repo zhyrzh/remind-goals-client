@@ -4,7 +4,7 @@ import { MutationFunction, QueryFunction } from "@tanstack/react-query";
 import useFetchRequest from "./useFetchREquest";
 
 export const useReminderAPIrequest = () => {
-  const baseUrl = "http://localhost:5000/reminder";
+  const baseUrl = "http://localhost:5001/reminder";
 
   const getAllRemindersReq: QueryFunction<IReminder[]> = async () =>
     useFetchRequest(`${baseUrl}`, "GET")();

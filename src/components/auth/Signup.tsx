@@ -72,7 +72,7 @@ const Signup = () => {
     }
 
     try {
-      const res = await fetch("http://localhost:5000/auth/register", {
+      const res = await fetch("http://localhost:5001/auth/register", {
         method: "POST",
         body: JSON.stringify({
           email,
@@ -155,7 +155,7 @@ const Signup = () => {
             className="w-full bg-[#1877F2] hover:bg-[#1877F2]/80"
             onClick={() =>
               (window.location.href =
-                "http://localhost:5000/auth/signup/facebook")
+                "http://localhost:5001/auth/signup/facebook")
             }
           >
             Signup with facebook

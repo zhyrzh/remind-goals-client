@@ -3,7 +3,7 @@ import { MutationFunction, QueryFunction } from "@tanstack/react-query";
 import useFetchRequest from "./useFetchREquest";
 
 export const useGoalAPIRequest = () => {
-  const baseUrl = "http://localhost:5000/goals";
+  const baseUrl = "http://localhost:5001/goals";
 
   const getAllGoalsReq: QueryFunction<IGoal[]> = async () =>
     useFetchRequest(`${baseUrl}`, "GET")();
