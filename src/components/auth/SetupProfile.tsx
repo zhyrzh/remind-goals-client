@@ -32,7 +32,16 @@ const SetupProfile = () => {
         },
         body: JSON.stringify({ firstName, lastName }),
       });
+      const data = await res.json();
+
       if (res.ok) {
+        localStorage.setItem(
+          "remind-goals-ath-tkn",
+          JSON.stringify({
+            access_token: userDetails?.access_token,
+            profile: data,
+          })
+        );
         navigate("/");
       }
     } catch (error) {
