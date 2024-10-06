@@ -10,10 +10,12 @@ import { Toaster } from "../ui/toaster";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { FormEventHandler, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const SetupProfile = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const navigate = useNavigate();
 
   const onSetupProfile: FormEventHandler = async (e) => {
     e.preventDefault();
@@ -30,8 +32,9 @@ const SetupProfile = () => {
         },
         body: JSON.stringify({ firstName, lastName }),
       });
-      const data = await res.json();
-      console.log(data);
+      if (res.ok) {
+        navigate("/");
+      }
     } catch (error) {
       localStorage.removeItem("remind-goals-ath-tkn");
     }
