@@ -159,7 +159,6 @@ const EditButton: FC<IEditButton> = ({ reminder }) => {
                 onClick={() => {
                   if (values.title && values.title.trim() !== "") {
                     // onEditReminder(reminder.id, values!);
-                    console.log("here?");
                     setCurrTabDetails({
                       value: "confirmation",
                       isCancel: false,

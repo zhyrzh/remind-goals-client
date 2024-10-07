@@ -36,7 +36,6 @@ const Login = () => {
       if (data?.includes("j:")) {
         const cookieData = data?.replace("j:", "");
         const parsedData = JSON.parse(cookieData!);
-        console.log(parsedData, "check parsed");
         localStorage.setItem("remind-goals-ath-tkn", cookieData);
         if (parsedData.profile !== null) {
           navigate("/");
