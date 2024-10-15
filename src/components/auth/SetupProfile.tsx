@@ -11,14 +11,25 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { FormEventHandler, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "../ui/use-toast";
 
 const SetupProfile = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const onSetupProfile: FormEventHandler = async (e) => {
     e.preventDefault();
+
+    if (firstName === "" || lastName === "") {
+      toast({
+        title: "All fields are required",
+        description: "Kindly fill up all details",
+        variant: "destructive",
+      });
+    }
+
     try {
       const userDetails = JSON.parse(
         localStorage.getItem("remind-goals-ath-tkn")!
@@ -69,7 +80,6 @@ const SetupProfile = () => {
                 <Input
                   autoComplete="off"
                   id="firstName"
-                  required
                   type="text"
                   onChange={(e) => setFirstName(e.target.value)}
                   value={firstName}
@@ -80,7 +90,6 @@ const SetupProfile = () => {
                 <Input
                   autoComplete="off"
                   id="lastName"
-                  required
                   type="text"
                   onChange={(e) => setLastName(e.target.value)}
                   value={lastName}
