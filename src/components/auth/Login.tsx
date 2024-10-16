@@ -36,11 +36,16 @@ const Login = () => {
       if (data?.includes("j:")) {
         const cookieData = data?.replace("j:", "");
         const parsedData = JSON.parse(cookieData!);
-        localStorage.setItem("remind-goals-ath-tkn", cookieData);
-        if (parsedData.profile !== null) {
+
+        if (parsedData?.profile !== undefined && parsedData?.profile !== null) {
+          localStorage.setItem("remind-goals-ath-tkn", cookieData);
           navigate("/");
         } else {
-          navigate("/setup-profile");
+          toast({
+            title: parsedData.message,
+            description: "Kindly register using that account.",
+            variant: "destructive",
+          });
         }
         Cookies.remove("my-key");
       }
