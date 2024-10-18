@@ -33,8 +33,8 @@ const Signup = () => {
         if (data) {
           if (data?.includes("j:")) {
             const cookieData = data?.replace("j:", "");
-            JSON.parse(cookieData!);
-            localStorage.setItem("remind-goals-ath-tkn", cookieData);
+            const parsedData = JSON.parse(cookieData!);
+            localStorage.setItem("remind-goals-ath-tkn", parsedData);
             navigate("/setup-profile");
             Cookies.remove("my-key");
           }
