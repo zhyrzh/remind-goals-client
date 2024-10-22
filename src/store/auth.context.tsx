@@ -1,12 +1,14 @@
 import { useToast } from "@/components/ui/use-toast";
 import { createContext, FC, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 import { Toaster } from "@/components/ui/toaster";
 
 interface IAuthContext {
   isLoggedIn: boolean;
   onLogoutHandler: () => void;
   onLoginHandler: (email: string, sting: string) => Promise<void>;
+  onFacebookLoginHandler: () => void;
 }
 
 export const AuthContext = createContext<IAuthContext>(
@@ -77,11 +79,44 @@ export const AuthContextProvider: FC<{ children: any }> = ({ children }) => {
     }
   };
 
+  const onFacebookLoginHandler = () => {
+    if (window.location.hash === "#_=_") {
+      if (history.replaceState) {
+        const cleanHref = window.location.href.split("#")[0];
+        history.replaceState(null, "", cleanHref);
+      } else {
+        window.location.hash = "";
+      }
+    }
+    const data = Cookies.get("my-key");
+
+    if (data) {
+      if (data?.includes("j:")) {
+        const cookieData = data?.replace("j:", "");
+        const parsedData = JSON.parse(cookieData!);
+
+        if (parsedData?.profile !== undefined && parsedData?.profile !== null) {
+          localStorage.setItem("remind-goals-ath-tkn", cookieData);
+          setIsLoggedIn(true);
+          navigate("/");
+        } else {
+          toast({
+            title: parsedData.message,
+            description: "Kindly register using that account.",
+            variant: "destructive",
+          });
+        }
+        Cookies.remove("my-key");
+      }
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
         onLogoutHandler,
         onLoginHandler,
+        onFacebookLoginHandler,
         isLoggedIn,
       }}
     >
