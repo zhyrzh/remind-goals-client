@@ -9,6 +9,7 @@ interface IAuthContext {
   onLogoutHandler: () => void;
   onLoginHandler: (email: string, sting: string) => Promise<void>;
   onFacebookLoginHandler: () => void;
+  onGetUserDetails: () => void;
 }
 
 export const AuthContext = createContext<IAuthContext>(
@@ -111,12 +112,34 @@ export const AuthContextProvider: FC<{ children: any }> = ({ children }) => {
     }
   };
 
+  const onGetUserDetails = async () => {
+    try {
+      const userDetails = JSON.parse(
+        localStorage.getItem("remind-goals-ath-tkn")!
+      );
+      const token = userDetails?.access_token ? userDetails?.access_token : "";
+      const resposne = await fetch(`http://localhost:5001/auth/verify-user/`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      if (resposne.status >= 400) {
+        navigate("/login");
+      }
+      const data = await resposne.json();
+      console.log(data, "from verify");
+    } catch (error) {}
+  };
+
   return (
     <AuthContext.Provider
       value={{
         onLogoutHandler,
         onLoginHandler,
         onFacebookLoginHandler,
+        onGetUserDetails,
         isLoggedIn,
       }}
     >
