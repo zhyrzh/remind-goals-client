@@ -1,5 +1,5 @@
 import { useToast } from "@/components/ui/use-toast";
-import { createContext, FC, useState } from "react";
+import { createContext, FC, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { Toaster } from "@/components/ui/toaster";
@@ -20,6 +20,10 @@ export const AuthContextProvider: FC<{ children: any }> = ({ children }) => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+
+  useEffect(() => {
+    onGetUserDetails();
+  }, []);
 
   const onLogoutHandler = () => {
     localStorage.removeItem("remind-goals-ath-tkn");
@@ -59,8 +63,6 @@ export const AuthContextProvider: FC<{ children: any }> = ({ children }) => {
         return;
       }
 
-      setIsLoggedIn(true);
-
       localStorage.setItem(
         "remind-goals-ath-tkn",
         JSON.stringify({
@@ -74,6 +76,8 @@ export const AuthContextProvider: FC<{ children: any }> = ({ children }) => {
       } else {
         navigate("/setup-profile");
       }
+
+      setIsLoggedIn(true);
     } catch (error) {
       setIsLoggedIn(false);
       localStorage.removeItem("remind-goals-ath-tkn");
@@ -126,11 +130,14 @@ export const AuthContextProvider: FC<{ children: any }> = ({ children }) => {
         },
       });
       if (resposne.status >= 400) {
+        setIsLoggedIn(false);
         navigate("/login");
       }
-      const data = await resposne.json();
-      console.log(data, "from verify");
-    } catch (error) {}
+      await resposne.json();
+      setIsLoggedIn(true);
+    } catch (error) {
+      setIsLoggedIn(false);
+    }
   };
 
   return (
