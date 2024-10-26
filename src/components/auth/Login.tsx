@@ -8,48 +8,19 @@ import {
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { useEffect, useState } from "react";
-import Cookies from "js-cookie";
+import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Toaster } from "../ui/toaster";
-import { useToast } from "../ui/use-toast";
+import { AuthContext } from "@/store/auth.context";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const authCtx = useContext(AuthContext);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   useEffect(() => {
-    if (window.location.hash === "#_=_") {
-      if (history.replaceState) {
-        const cleanHref = window.location.href.split("#")[0];
-        history.replaceState(null, "", cleanHref);
-      } else {
-        window.location.hash = "";
-      }
-    }
-    const data = Cookies.get("my-key");
-
-    if (data) {
-      if (data?.includes("j:")) {
-        const cookieData = data?.replace("j:", "");
-        const parsedData = JSON.parse(cookieData!);
-
-        if (parsedData?.profile !== undefined && parsedData?.profile !== null) {
-          localStorage.setItem("remind-goals-ath-tkn", cookieData);
-          navigate("/");
-        } else {
-          toast({
-            title: parsedData.message,
-            description: "Kindly register using that account.",
-            variant: "destructive",
-          });
-        }
-        Cookies.remove("my-key");
-      }
-    }
+    authCtx?.onFacebookLoginHandler();
   }, []);
 
   useEffect(() => {
@@ -58,57 +29,12 @@ const Login = () => {
     }
   }, []);
 
-  const onLogin = async () => {
-    if (password === "" || email === "") {
-      toast({
-        title: "All fields are required",
-        description: "Kindly fill up all details",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    try {
-      const res = await fetch("http://localhost:5001/auth/login", {
-        method: "POST",
-        body: JSON.stringify({
-          username: email,
-          password,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await res.json();
-
-      if (res.status >= 400 && data.profile === undefined) {
-        toast({
-          title: "Invalid credentials",
-          description: "Pleases provide valid credentials",
-          variant: "destructive",
-        });
-        return;
-      }
-      localStorage.setItem(
-        "remind-goals-ath-tkn",
-        JSON.stringify({
-          ...data,
-          profile: data.profile !== null ? true : null,
-        })
-      );
-      if (data.profile !== null) {
-        navigate("/");
-      } else {
-        navigate("/setup-profile");
-      }
-    } catch (error) {
-      localStorage.removeItem("remind-goals-ath-tkn");
-    }
+  const onLogin = () => {
+    authCtx?.onLoginHandler(email, password);
   };
 
   return (
     <div className="h-screen flex items-center justify-items-center	">
-      <Toaster />
       <Card className="mx-auto max-w-sm mb-24">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold">Login</CardTitle>
