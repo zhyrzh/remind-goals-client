@@ -9,7 +9,7 @@ const Header = () => {
     <header className="h-16 w-full bg-primary text-primary-foreground">
       <div className="max-w-[1400px] h-full px-2 mx-auto flex items-center">
         <h1 className="text-3xl font-bold">RemindGoals</h1>
-        {authCtx.isLoggedIn ? (
+        {authCtx?.isLoggedIn ? (
           <p
             className="ml-auto hover:cursor-pointer"
             onClick={() => {
