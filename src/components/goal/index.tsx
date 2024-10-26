@@ -9,13 +9,13 @@ const Goal = () => {
   const navigate = useNavigate();
 
   // context declarations
-  const goalCtx = useContext(GoalContext)?.getAllGoalsQry;
+  const goals = useContext(GoalContext)?.getAllGoalsQry;
 
-  if (goalCtx.isLoading) {
+  if (goals.isLoading) {
     return <h1>Loading</h1>;
   }
 
-  if (goalCtx.isError && goalCtx.error.res.status === 401) {
+  if (goals.isError && goals.error.res.status === 401) {
     localStorage.removeItem("remind-goals-ath-tkn");
     navigate("/login");
   }
@@ -27,10 +27,8 @@ const Goal = () => {
           <h1 className="text-[24px] font-bold">Goals</h1>
           <AddGoal />
         </div>
-        {goalCtx?.data && goalCtx?.data.length >= 1 ? (
-          goalCtx.data?.map((goal) => (
-            <GoalItemCard goal={goal} key={goal.id} />
-          ))
+        {goals?.data && goals?.data.length >= 1 ? (
+          goals.data?.map((goal) => <GoalItemCard goal={goal} key={goal.id} />)
         ) : (
           <p className="text-center">No goas created.</p>
         )}
