@@ -8,7 +8,7 @@ import {
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { useContext, useEffect, useState } from "react";
+import { FormEventHandler, useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "@/store/auth.context";
 
@@ -29,7 +29,8 @@ const Login = () => {
     }
   }, []);
 
-  const onLogin = () => {
+  const onLogin: FormEventHandler<HTMLFormElement> = (e) => {
+    e.preventDefault();
     authCtx?.onLoginHandler(email, password);
   };
 
@@ -43,50 +44,52 @@ const Login = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                required
-                type="email"
-                onChange={(e) => setEmail(e.target.value)}
-              />
+          <form onSubmit={onLogin}>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  required
+                  type="email"
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  required
+                  type="password"
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                required
-                type="password"
-                onChange={(e) => setPassword(e.target.value)}
-              />
+            <Button className="w-full mt-12" type="submit">
+              Login
+            </Button>
+            <div className="flex items-center">
+              <div className="flex-grow border-t border-gray-400"></div>
+              <span className="flex-shrink mx-4 text-gray-400">or</span>
+              <div className="flex-grow border-t border-gray-400"></div>
             </div>
-          </div>
-          <Button className="w-full mt-12" type="submit" onClick={onLogin}>
-            Login
-          </Button>
-          <div className="flex items-center">
-            <div className="flex-grow border-t border-gray-400"></div>
-            <span className="flex-shrink mx-4 text-gray-400">or</span>
-            <div className="flex-grow border-t border-gray-400"></div>
-          </div>
-          <Button
-            className="w-full bg-[#1877F2] hover:bg-[#1877F2]/80"
-            onClick={() =>
-              (window.location.href =
-                "http://localhost:5001/auth/login/facebook")
-            }
-          >
-            Login with facebook
-          </Button>
-          <CardDescription className="text-center mt-12">
-            Not yet registed? Go to{" "}
-            <Link to={"/signup"} className="underline">
-              signup page
-            </Link>
-            .
-          </CardDescription>
+            <Button
+              className="w-full bg-[#1877F2] hover:bg-[#1877F2]/80"
+              onClick={() =>
+                (window.location.href =
+                  "http://localhost:5001/auth/login/facebook")
+              }
+            >
+              Login with facebook
+            </Button>
+            <CardDescription className="text-center mt-12">
+              Not yet registed? Go to{" "}
+              <Link to={"/signup"} className="underline">
+                signup page
+              </Link>
+              .
+            </CardDescription>
+          </form>
         </CardContent>
       </Card>
     </div>
