@@ -10,6 +10,8 @@ import {
 } from "./store/reminder.context";
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Header from "./components/header";
+import { AuthContextProvider } from "./store/auth.context";
 
 function Home() {
   const navigate = useNavigate();
@@ -35,20 +37,23 @@ function Home() {
   }
 
   return (
-    <div className="max-w-[1400px] mx-auto px-2 pt-2">
-      <Toaster />
-      <div className="grid grid-cols-12 gap-[30px]">
-        <Clock />
-        <div className="col-start-1 col-end-13 transition-all">
-          <ReminderContextProvder>
-            <Reminder />
-          </ReminderContextProvder>
+    <AuthContextProvider>
+      <Header />
+      <div className="max-w-[1400px] mx-auto px-2 pt-2">
+        <Toaster />
+        <div className="grid grid-cols-12 gap-[30px]">
+          <Clock />
+          <div className="col-start-1 col-end-13 transition-all">
+            <ReminderContextProvder>
+              <Reminder />
+            </ReminderContextProvder>
+          </div>
         </div>
+        <GoalContextProvider>
+          <Goal />
+        </GoalContextProvider>
       </div>
-      <GoalContextProvider>
-        <Goal />
-      </GoalContextProvider>
-    </div>
+    </AuthContextProvider>
   );
 }
 
