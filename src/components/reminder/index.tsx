@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 /* Function component START */
 const Reminder = () => {
   const navigate = useNavigate();
-  const remindersQry = useContext(ReminderContext).getAllRemindersQry;
+  const remindersQry = useContext(ReminderContext)?.getAllRemindersQry;
 
   if (remindersQry.isLoading) {
     return <h1>Loading...</h1>;
