@@ -8,7 +8,7 @@ import {
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { useEffect, useState } from "react";
+import { FormEventHandler, useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "../ui/use-toast";
@@ -52,7 +52,8 @@ const Signup = () => {
     }
   }, []);
 
-  const onSignUp = async () => {
+  const onSignUp: FormEventHandler = async (e) => {
+    e.preventDefault();
     if (password === "" || email === "" || confrimedPassword === "") {
       toast({
         title: "All fields are required",
@@ -111,62 +112,64 @@ const Signup = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                required
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
+          <form onSubmit={onSignUp}>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  required
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  required
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="confirm-password">Confirm password</Label>
+                <Input
+                  id="confirm-password"
+                  required
+                  type="password"
+                  value={confrimedPassword}
+                  onChange={(e) => setConfirmedPassword(e.target.value)}
+                />
+              </div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                required
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
+            <Button className="w-full mt-12" type="submit" onClick={onSignUp}>
+              Signup
+            </Button>
+            <div className="flex items-center">
+              <div className="flex-grow border-t border-gray-400"></div>
+              <span className="flex-shrink mx-4 text-gray-400">or</span>
+              <div className="flex-grow border-t border-gray-400"></div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="confirm-password">Confirm password</Label>
-              <Input
-                id="confirm-password"
-                required
-                type="password"
-                value={confrimedPassword}
-                onChange={(e) => setConfirmedPassword(e.target.value)}
-              />
-            </div>
-          </div>
-          <Button className="w-full mt-12" type="submit" onClick={onSignUp}>
-            Signup
-          </Button>
-          <div className="flex items-center">
-            <div className="flex-grow border-t border-gray-400"></div>
-            <span className="flex-shrink mx-4 text-gray-400">or</span>
-            <div className="flex-grow border-t border-gray-400"></div>
-          </div>
-          <Button
-            className="w-full bg-[#1877F2] hover:bg-[#1877F2]/80"
-            onClick={() =>
-              (window.location.href =
-                "http://localhost:5001/auth/signup/facebook")
-            }
-          >
-            Signup with facebook
-          </Button>
-          <CardDescription className="text-center mt-12">
-            Already registed? Go to{" "}
-            <Link to={"/login"} className="underline">
-              login page
-            </Link>
-            .
-          </CardDescription>
+            <Button
+              className="w-full bg-[#1877F2] hover:bg-[#1877F2]/80"
+              onClick={() =>
+                (window.location.href =
+                  "http://localhost:5001/auth/signup/facebook")
+              }
+            >
+              Signup with facebook
+            </Button>
+            <CardDescription className="text-center mt-12">
+              Already registed? Go to{" "}
+              <Link to={"/login"} className="underline">
+                login page
+              </Link>
+              .
+            </CardDescription>
+          </form>
         </CardContent>
       </Card>
     </div>
