@@ -11,10 +11,12 @@ import { Button } from "../ui/button";
 import { FormEventHandler, useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "@/store/auth.context";
+import { useToast } from "../ui/use-toast";
 
 const Login = () => {
   const navigate = useNavigate();
   const authCtx = useContext(AuthContext);
+  const { toast } = useToast();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -31,6 +33,14 @@ const Login = () => {
 
   const onLogin: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
+    if (password === "" || email === "") {
+      toast({
+        title: "All fields are required",
+        description: "Kindly fill up all details",
+        variant: "destructive",
+      });
+      return;
+    }
     authCtx?.onLoginHandler(email, password);
   };
 
@@ -50,7 +60,6 @@ const Login = () => {
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
-                  required
                   type="email"
                   onChange={(e) => setEmail(e.target.value)}
                 />
@@ -59,7 +68,6 @@ const Login = () => {
                 <Label htmlFor="password">Password</Label>
                 <Input
                   id="password"
-                  required
                   type="password"
                   onChange={(e) => setPassword(e.target.value)}
                 />

@@ -32,15 +32,6 @@ export const AuthContextProvider: FC<{ children: any }> = ({ children }) => {
   };
 
   const onLoginHandler = async (email: string, password: string) => {
-    if (password === "" || email === "") {
-      toast({
-        title: "All fields are required",
-        description: "Kindly fill up all details",
-        variant: "destructive",
-      });
-      return;
-    }
-
     try {
       const res = await fetch("http://localhost:5001/auth/login", {
         method: "POST",
