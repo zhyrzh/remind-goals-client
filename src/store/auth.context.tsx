@@ -8,6 +8,7 @@ interface IAuthContext {
   isLoggedIn: boolean;
   onLogoutHandler: () => void;
   onLoginHandler: (email: string, sting: string) => Promise<void>;
+  onSignUpHandler: (email: string, sting: string) => Promise<void>;
   onFacebookLoginHandler: () => void;
   onGetUserDetails: () => void;
 }
@@ -107,6 +108,36 @@ export const AuthContextProvider: FC<{ children: any }> = ({ children }) => {
     }
   };
 
+  const onSignUpHandler = async (password: string, email: string) => {
+    try {
+      const res = await fetch("http://localhost:5001/auth/register", {
+        method: "POST",
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await res.json();
+
+      if (data.access_token) {
+        localStorage.setItem("remind-goals-ath-tkn", JSON.stringify(data));
+        navigate("/setup-profile");
+      } else {
+        toast({
+          title: "Signup error",
+          variant: "destructive",
+          description: data.message,
+        });
+      }
+    } catch (error) {
+      localStorage.removeItem("remind-goals-ath-tkn");
+    }
+  };
+
   const onGetUserDetails = async () => {
     try {
       const userDetails = JSON.parse(
@@ -136,6 +167,7 @@ export const AuthContextProvider: FC<{ children: any }> = ({ children }) => {
       value={{
         onLogoutHandler,
         onLoginHandler,
+        onSignUpHandler,
         onFacebookLoginHandler,
         onGetUserDetails,
         isLoggedIn,
