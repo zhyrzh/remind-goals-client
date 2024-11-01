@@ -8,13 +8,15 @@ import {
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { FormEventHandler, useEffect, useState } from "react";
+import { FormEventHandler, useContext, useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "../ui/use-toast";
 import { Toaster } from "../ui/toaster";
+import { AuthContext } from "@/store/auth.context";
 
 const Signup = () => {
+  const authCtx = useContext(AuthContext);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -62,43 +64,7 @@ const Signup = () => {
       });
       return;
     }
-
-    if (password !== confrimedPassword) {
-      toast({
-        title: "Password do not match",
-        description: "Please check the password you enetered",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    try {
-      const res = await fetch("http://localhost:5001/auth/register", {
-        method: "POST",
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      const data = await res.json();
-
-      if (data.access_token) {
-        localStorage.setItem("remind-goals-ath-tkn", JSON.stringify(data));
-        navigate("/setup-profile");
-      } else {
-        toast({
-          title: "Signup error",
-          variant: "destructive",
-          description: data.message,
-        });
-      }
-    } catch (error) {
-      localStorage.removeItem("remind-goals-ath-tkn");
-    }
+    authCtx.onSignUpHandler(email, password);
   };
 
   return (
