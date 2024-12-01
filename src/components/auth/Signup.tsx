@@ -9,7 +9,6 @@ import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { FormEventHandler, useContext, useEffect, useState } from "react";
-import Cookies from "js-cookie";
 import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "../ui/use-toast";
 import { Toaster } from "../ui/toaster";
@@ -25,24 +24,7 @@ const Signup = () => {
   const [confrimedPassword, setConfirmedPassword] = useState("");
 
   useEffect(() => {
-    if (window.location.hash === "#_=_") {
-      if (history.replaceState) {
-        const cleanHref = window.location.href.split("#")[0];
-
-        history.replaceState(null, "", cleanHref);
-        const data = Cookies.get("my-key");
-
-        if (data) {
-          if (data?.includes("j:")) {
-            const cookieData = data?.replace("j:", "");
-            const parsedData = JSON.parse(cookieData!);
-            localStorage.setItem("remind-goals-ath-tkn", parsedData);
-            navigate("/setup-profile");
-            Cookies.remove("my-key");
-          }
-        }
-      }
-    }
+    authCtx?.onFacebookAuthHandler();
   }, []);
 
   useEffect(() => {
@@ -121,10 +103,11 @@ const Signup = () => {
             </div>
             <Button
               className="w-full bg-[#1877F2] hover:bg-[#1877F2]/80"
-              onClick={() =>
-                (window.location.href =
-                  "http://localhost:5001/auth/signup/facebook")
-              }
+              onClick={(e) => {
+                e.preventDefault();
+                window.location.href =
+                  "http://localhost:5001/auth/signup/facebook";
+              }}
             >
               Signup with facebook
             </Button>

@@ -22,7 +22,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
 
   useEffect(() => {
-    authCtx?.onFacebookLoginHandler();
+    authCtx?.onFacebookAuthHandler();
   }, []);
 
   useEffect(() => {
@@ -83,10 +83,11 @@ const Login = () => {
             </div>
             <Button
               className="w-full bg-[#1877F2] hover:bg-[#1877F2]/80"
-              onClick={() =>
-                (window.location.href =
-                  "http://localhost:5001/auth/login/facebook")
-              }
+              onClick={(e) => {
+                e.preventDefault();
+                window.location.href =
+                  "http://localhost:5001/auth/login/facebook";
+              }}
             >
               Login with facebook
             </Button>

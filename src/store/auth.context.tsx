@@ -9,7 +9,7 @@ interface IAuthContext {
   onLogoutHandler: () => void;
   onLoginHandler: (email: string, sting: string) => Promise<void>;
   onSignUpHandler: (email: string, sting: string) => Promise<void>;
-  onFacebookLoginHandler: () => void;
+  onFacebookAuthHandler: () => void;
   onGetUserDetails: () => void;
 }
 
@@ -76,7 +76,7 @@ export const AuthContextProvider: FC<{ children: any }> = ({ children }) => {
     }
   };
 
-  const onFacebookLoginHandler = () => {
+  const onFacebookAuthHandler = () => {
     if (window.location.hash === "#_=_") {
       if (history.replaceState) {
         const cleanHref = window.location.href.split("#")[0];
@@ -92,14 +92,17 @@ export const AuthContextProvider: FC<{ children: any }> = ({ children }) => {
         const cookieData = data?.replace("j:", "");
         const parsedData = JSON.parse(cookieData!);
 
-        if (parsedData?.profile !== undefined && parsedData?.profile !== null) {
+        if (parsedData?.profile !== undefined) {
           localStorage.setItem("remind-goals-ath-tkn", cookieData);
           setIsLoggedIn(true);
-          navigate("/");
+          if (parsedData?.profile === null) {
+            navigate("/setup-profile");
+          } else {
+            navigate("/");
+          }
         } else {
           toast({
             title: parsedData.message,
-            description: "Kindly register using that account.",
             variant: "destructive",
           });
         }
@@ -168,7 +171,7 @@ export const AuthContextProvider: FC<{ children: any }> = ({ children }) => {
         onLogoutHandler,
         onLoginHandler,
         onSignUpHandler,
-        onFacebookLoginHandler,
+        onFacebookAuthHandler,
         onGetUserDetails,
         isLoggedIn,
       }}
