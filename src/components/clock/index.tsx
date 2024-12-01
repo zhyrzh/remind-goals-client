@@ -1,15 +1,21 @@
 import { useState, useEffect } from "react";
 import Moment from "react-moment";
 import { Card } from "../ui/card";
+import useWindowsFocusHandler from "./useWindowsFocusHandler";
 
 const Clock = () => {
   // useState declarations
   const [expectedTime, setExpectedTime] = useState(Date.now());
   const [currentTime, setCurrentTime] = useState(Date.now());
 
+  const isFocused = useWindowsFocusHandler();
+
   // useEffect declarations
   useEffect(() => {
-    let timeout = setInterval(round, 1000);
+    let timeout: NodeJS.Timeout;
+    if (isFocused) {
+      timeout = setInterval(round, 1000);
+    }
     function round() {
       const drift = Date.now() - expectedTime;
       setCurrentTime(Date.now());
@@ -21,7 +27,7 @@ const Clock = () => {
       clearInterval(timeout);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isFocused]);
 
   return (
     <Card className="col-start-1 col-end-13 h-[310px] flex justify-center items-center flex-col">
