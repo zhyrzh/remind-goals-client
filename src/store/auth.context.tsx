@@ -46,27 +46,27 @@ export const AuthContextProvider: FC<{ children: any }> = ({ children }) => {
       });
       const data = await res.json();
 
-      if (res.status >= 400 && data.profile === null) {
+      if (res.status >= 400 && data.profile === undefined) {
         toast({
           title: "Invalid credentials",
           description: "Pleases provide valid credentials",
           variant: "destructive",
         });
         return;
-      }
-
-      localStorage.setItem(
-        "remind-goals-ath-tkn",
-        JSON.stringify({
-          ...data,
-          profile: data.profile !== null ? true : null,
-        })
-      );
-
-      if (data.profile !== null) {
-        navigate("/");
       } else {
-        navigate("/setup-profile");
+        localStorage.setItem(
+          "remind-goals-ath-tkn",
+          JSON.stringify({
+            ...data,
+            profile: data.profile !== null ? true : null,
+          })
+        );
+
+        if (data.profile !== null) {
+          navigate("/");
+        } else {
+          navigate("/setup-profile");
+        }
       }
 
       setIsLoggedIn(true);
