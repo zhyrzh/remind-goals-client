@@ -49,7 +49,6 @@ export const AuthContextProvider: FC<{ children: any }> = ({ children }) => {
     mutationKey: ["auth", "login"],
     mutationFn: loginReq,
     onSuccess: (data) => {
-      console.log(data, "this");
       localStorage.setItem(
         "remind-goals-ath-tkn",
         JSON.stringify({
