@@ -10,7 +10,7 @@ import { FetchError } from "@/utils/error";
 interface IAuthContext {
   isLoggedIn: boolean;
   onLogoutHandler: () => void;
-  onSignUpHandler: (email: string, sting: string) => Promise<void>;
+  onSignUpHandler: (email: string, password: string) => Promise<void>;
   onFacebookAuthHandler: () => void;
   onGetUserDetails: () => void;
   onLoginHandler: UseMutationResult<
@@ -111,7 +111,7 @@ export const AuthContextProvider: FC<{ children: any }> = ({ children }) => {
     }
   };
 
-  const onSignUpHandler = async (password: string, email: string) => {
+  const onSignUpHandler = async (email: string, password: string) => {
     try {
       const res = await fetch("http://localhost:5001/auth/register", {
         method: "POST",
