@@ -3,14 +3,21 @@ import { createContext, FC, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { Toaster } from "@/components/ui/toaster";
+import { useMutation, UseMutationResult } from "@tanstack/react-query";
+import { useAuthAPIRequest } from "@/hooks/useAuthAPIRequeset";
+import { FetchError } from "@/utils/error";
 
 interface IAuthContext {
   isLoggedIn: boolean;
   onLogoutHandler: () => void;
-  onLoginHandler: (email: string, sting: string) => Promise<void>;
   onSignUpHandler: (email: string, sting: string) => Promise<void>;
   onFacebookAuthHandler: () => void;
   onGetUserDetails: () => void;
+  onLoginHandler: UseMutationResult<
+    any,
+    FetchError,
+    { username: string; password: string }
+  >;
 }
 
 export const AuthContext = createContext<IAuthContext>(
@@ -22,6 +29,8 @@ export const AuthContextProvider: FC<{ children: any }> = ({ children }) => {
   const { toast } = useToast();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
+  const { loginReq } = useAuthAPIRequest();
+
   useEffect(() => {
     onGetUserDetails();
   }, []);
@@ -32,49 +41,40 @@ export const AuthContextProvider: FC<{ children: any }> = ({ children }) => {
     navigate("/login");
   };
 
-  const onLoginHandler = async (email: string, password: string) => {
-    try {
-      const res = await fetch("http://localhost:5001/auth/login", {
-        method: "POST",
-        body: JSON.stringify({
-          username: email,
-          password,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await res.json();
+  const onLoginHandler = useMutation<
+    any,
+    FetchError,
+    { username: string; password: string }
+  >({
+    mutationKey: ["auth", "login"],
+    mutationFn: loginReq,
+    onSuccess: (data) => {
+      console.log(data, "this");
+      localStorage.setItem(
+        "remind-goals-ath-tkn",
+        JSON.stringify({
+          ...data,
+          profile: data.profile !== null ? true : null,
+        })
+      );
 
-      if (res.status >= 400 && data.profile === undefined) {
+      if (data.profile !== null) {
+        navigate("/");
+      } else {
+        navigate("/setup-profile");
+      }
+    },
+    onError: (error) => {
+      if (error!.res?.status >= 400 && error!.res?.status < 500) {
         toast({
           title: "Invalid credentials",
           description: "Pleases provide valid credentials",
           variant: "destructive",
         });
         return;
-      } else {
-        localStorage.setItem(
-          "remind-goals-ath-tkn",
-          JSON.stringify({
-            ...data,
-            profile: data.profile !== null ? true : null,
-          })
-        );
-
-        if (data.profile !== null) {
-          navigate("/");
-        } else {
-          navigate("/setup-profile");
-        }
       }
-
-      setIsLoggedIn(true);
-    } catch (error) {
-      setIsLoggedIn(false);
-      localStorage.removeItem("remind-goals-ath-tkn");
-    }
-  };
+    },
+  });
 
   const onFacebookAuthHandler = () => {
     if (window.location.hash === "#_=_") {
