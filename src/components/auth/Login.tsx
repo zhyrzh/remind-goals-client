@@ -22,7 +22,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
 
   useEffect(() => {
-    authCtx?.onFacebookAuthHandler();
+    authCtx.onFacebookAuthHandler();
   }, []);
 
   useEffect(() => {
@@ -31,8 +31,10 @@ const Login = () => {
     }
   }, []);
 
-  const onLogin: FormEventHandler<HTMLFormElement> = (e) => {
+  const onLogin: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
+    const loginHandler = authCtx?.onLoginHandler;
+
     if (password === "" || email === "") {
       toast({
         title: "All fields are required",
@@ -41,7 +43,8 @@ const Login = () => {
       });
       return;
     }
-    authCtx?.onLoginHandler(email, password);
+
+    loginHandler.mutateAsync({ username: email, password });
   };
 
   return (
