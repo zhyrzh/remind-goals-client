@@ -46,7 +46,7 @@ const Signup = () => {
       });
       return;
     }
-    authCtx.onSignUpHandler(email, password);
+    authCtx.onSignupHandler.mutate({ email, password });
   };
 
   return (
