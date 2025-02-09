@@ -10,13 +10,17 @@ import { FetchError } from "@/utils/error";
 interface IAuthContext {
   isLoggedIn: boolean;
   onLogoutHandler: () => void;
-  onSignUpHandler: (email: string, password: string) => Promise<void>;
   onFacebookAuthHandler: () => void;
   onGetUserDetails: () => void;
   onLoginHandler: UseMutationResult<
     any,
     FetchError,
     { username: string; password: string }
+  >;
+  onSignupHandler: UseMutationResult<
+    any,
+    FetchError,
+    { email: string; password: string }
   >;
 }
 
@@ -29,7 +33,7 @@ export const AuthContextProvider: FC<{ children: any }> = ({ children }) => {
   const { toast } = useToast();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
-  const { loginReq } = useAuthAPIRequest();
+  const { loginReq, signUpReq } = useAuthAPIRequest();
 
   useEffect(() => {
     onGetUserDetails();
@@ -75,6 +79,28 @@ export const AuthContextProvider: FC<{ children: any }> = ({ children }) => {
     },
   });
 
+  const onSignupHandler = useMutation<
+    any,
+    FetchError,
+    { email: string; password: string }
+  >({
+    mutationKey: ["auth", "login"],
+    mutationFn: signUpReq,
+    onSuccess: (data) => {
+      if (data.access_token) {
+        localStorage.setItem("remind-goals-ath-tkn", JSON.stringify(data));
+        navigate("/setup-profile");
+      }
+    },
+    onError: async () => {
+      toast({
+        title: "Signup error",
+        variant: "destructive",
+        description: "Email already taken.",
+      });
+    },
+  });
+
   const onFacebookAuthHandler = () => {
     if (window.location.hash === "#_=_") {
       if (history.replaceState) {
@@ -110,36 +136,6 @@ export const AuthContextProvider: FC<{ children: any }> = ({ children }) => {
     }
   };
 
-  const onSignUpHandler = async (email: string, password: string) => {
-    try {
-      const res = await fetch("http://localhost:5001/auth/register", {
-        method: "POST",
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      const data = await res.json();
-
-      if (data.access_token) {
-        localStorage.setItem("remind-goals-ath-tkn", JSON.stringify(data));
-        navigate("/setup-profile");
-      } else {
-        toast({
-          title: "Signup error",
-          variant: "destructive",
-          description: data.message,
-        });
-      }
-    } catch (error) {
-      localStorage.removeItem("remind-goals-ath-tkn");
-    }
-  };
-
   const onGetUserDetails = async () => {
     try {
       const userDetails = JSON.parse(
@@ -169,7 +165,7 @@ export const AuthContextProvider: FC<{ children: any }> = ({ children }) => {
       value={{
         onLogoutHandler,
         onLoginHandler,
-        onSignUpHandler,
+        onSignupHandler,
         onFacebookAuthHandler,
         onGetUserDetails,
         isLoggedIn,
