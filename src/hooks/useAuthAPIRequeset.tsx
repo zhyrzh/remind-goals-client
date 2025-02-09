@@ -11,7 +11,12 @@ export const useAuthAPIRequest = () => {
     return useFetchRequest(`${baseUrl}/login`, "POST", values)();
   };
 
-  //   const signUpReq = () => {};
+  const signUpReq: MutationFunction<
+    any,
+    { email: string; password: string }
+  > = async (values) => {
+    return useFetchRequest(`${baseUrl}/register`, "POST", values)();
+  };
 
-  return { loginReq };
+  return { loginReq, signUpReq };
 };
