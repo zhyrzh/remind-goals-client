@@ -2,20 +2,18 @@ import { MutationFunction } from "@tanstack/react-query";
 import useFetchRequest from "./useFetchREquest";
 
 export const useAuthAPIRequest = () => {
-  const baseUrl = "http://localhost:5001/auth";
-
   const loginReq: MutationFunction<
     any,
     { username: string; password: string }
   > = async (values) => {
-    return useFetchRequest(`${baseUrl}/login`, "POST", values)();
+    return useFetchRequest(`/auth/login`, "POST", values)();
   };
 
   const signUpReq: MutationFunction<
     any,
     { email: string; password: string }
   > = async (values) => {
-    return useFetchRequest(`${baseUrl}/register`, "POST", values)();
+    return useFetchRequest(`/auth/register`, "POST", values)();
   };
 
   return { loginReq, signUpReq };

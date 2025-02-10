@@ -4,26 +4,24 @@ import { MutationFunction, QueryFunction } from "@tanstack/react-query";
 import useFetchRequest from "./useFetchREquest";
 
 export const useReminderAPIrequest = () => {
-  const baseUrl = "http://localhost:5001/reminder";
-
   const getAllRemindersReq: QueryFunction<IReminder[]> = async () =>
-    useFetchRequest(`${baseUrl}`, "GET")();
+    useFetchRequest(`/reminder`, "GET")();
 
   const createReminderReq: MutationFunction<
     IReminder,
     { content: string; frequency: FrequencyEnum; isActive: boolean }
-  > = async (values) => useFetchRequest(`${baseUrl}`, "POST", values)();
+  > = async (values) => useFetchRequest(`/reminder`, "POST", values)();
 
   const toggleIsActiveReq: MutationFunction<
     IReminder,
     { id: number; isActive: boolean }
   > = async ({ id, isActive }) =>
-    useFetchRequest(`${baseUrl}/${id}/${isActive}`, "PUT")();
+    useFetchRequest(`/reminder/${id}/${isActive}`, "PUT")();
 
   const deleteReminderItemReq: MutationFunction<
     { count: number },
     { id: number }
-  > = async ({ id }) => useFetchRequest(`${baseUrl}/${id}`, "DELETE")();
+  > = async ({ id }) => useFetchRequest(`/reminder/${id}`, "DELETE")();
 
   const editReminderDetailsReq: MutationFunction<
     IReminder,
@@ -34,7 +32,7 @@ export const useReminderAPIrequest = () => {
       reminderStartDate: Date;
     }
   > = async ({ id, content, frequency, reminderStartDate }) =>
-    useFetchRequest(`${baseUrl}/details/${id}`, "PUT", {
+    useFetchRequest(`/reminder/details/${id}`, "PUT", {
       content,
       frequency,
       reminderStartDate,
