@@ -22,6 +22,11 @@ interface IAuthContext {
     FetchError,
     { email: string; password: string }
   >;
+  onSetupProfileHandler: UseMutationResult<
+    any,
+    FetchError,
+    { firstName: string; lastName: string }
+  >;
 }
 
 export const AuthContext = createContext<IAuthContext>(
@@ -33,7 +38,7 @@ export const AuthContextProvider: FC<{ children: any }> = ({ children }) => {
   const { toast } = useToast();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
-  const { loginReq, signUpReq } = useAuthAPIRequest();
+  const { loginReq, signUpReq, setupProfileReq } = useAuthAPIRequest();
 
   useEffect(() => {
     onGetUserDetails();
@@ -62,6 +67,7 @@ export const AuthContextProvider: FC<{ children: any }> = ({ children }) => {
       );
 
       if (data.profile !== null) {
+        setIsLoggedIn(true);
         navigate("/");
       } else {
         navigate("/setup-profile");
@@ -89,6 +95,7 @@ export const AuthContextProvider: FC<{ children: any }> = ({ children }) => {
     onSuccess: (data) => {
       if (data.access_token) {
         localStorage.setItem("remind-goals-ath-tkn", JSON.stringify(data));
+        setIsLoggedIn(true);
         navigate("/setup-profile");
       }
     },
@@ -98,6 +105,34 @@ export const AuthContextProvider: FC<{ children: any }> = ({ children }) => {
         variant: "destructive",
         description: "Email already taken.",
       });
+    },
+  });
+
+  const onSetupProfileHandler = useMutation<
+    any,
+    FetchError,
+    { firstName: string; lastName: string }
+  >({
+    mutationKey: ["auth", "login"],
+    mutationFn: setupProfileReq,
+    onSuccess: (data) => {
+      const userDetails = JSON.parse(
+        localStorage.getItem("remind-goals-ath-tkn")!
+      );
+
+      if (data) {
+        localStorage.setItem(
+          "remind-goals-ath-tkn",
+          JSON.stringify({
+            access_token: userDetails?.access_token,
+            profile: data,
+          })
+        );
+        navigate("/");
+      }
+    },
+    onError: async () => {
+      localStorage.removeItem("remind-goals-ath-tkn");
     },
   });
 
@@ -142,18 +177,22 @@ export const AuthContextProvider: FC<{ children: any }> = ({ children }) => {
         localStorage.getItem("remind-goals-ath-tkn")!
       );
       const token = userDetails?.access_token ? userDetails?.access_token : "";
-      const resposne = await fetch(`http://localhost:5001/auth/verify-user/`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
+      const resposne = await fetch(
+        `https://remind-goals-api.onrender.com/auth/verify-user/`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
       if (resposne.status >= 400) {
         setIsLoggedIn(false);
         navigate("/login");
       }
       await resposne.json();
+      console.log("here");
       setIsLoggedIn(true);
     } catch (error) {
       setIsLoggedIn(false);
@@ -166,6 +205,7 @@ export const AuthContextProvider: FC<{ children: any }> = ({ children }) => {
         onLogoutHandler,
         onLoginHandler,
         onSignupHandler,
+        onSetupProfileHandler,
         onFacebookAuthHandler,
         onGetUserDetails,
         isLoggedIn,
