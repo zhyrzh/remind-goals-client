@@ -9,14 +9,14 @@ import {
 import { Toaster } from "../ui/toaster";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { FormEventHandler, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { FormEventHandler, useContext, useState } from "react";
 import { useToast } from "../ui/use-toast";
+import { AuthContext } from "@/store/auth.context";
 
 const SetupProfile = () => {
+  const authCtx = useContext(AuthContext);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const navigate = useNavigate();
   const { toast } = useToast();
 
   const onSetupProfile: FormEventHandler = async (e) => {
@@ -30,34 +30,7 @@ const SetupProfile = () => {
       });
     }
 
-    try {
-      const userDetails = JSON.parse(
-        localStorage.getItem("remind-goals-ath-tkn")!
-      );
-      const token = userDetails?.access_token ? userDetails?.access_token : "";
-      const res = await fetch("http://localhost:5001/users/setup-profile", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ firstName, lastName }),
-      });
-      const data = await res.json();
-
-      if (res.ok) {
-        localStorage.setItem(
-          "remind-goals-ath-tkn",
-          JSON.stringify({
-            access_token: userDetails?.access_token,
-            profile: data,
-          })
-        );
-        navigate("/");
-      }
-    } catch (error) {
-      localStorage.removeItem("remind-goals-ath-tkn");
-    }
+    authCtx.onSetupProfileHandler.mutate({ firstName, lastName });
   };
 
   return (
