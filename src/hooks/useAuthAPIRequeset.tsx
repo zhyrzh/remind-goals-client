@@ -16,5 +16,12 @@ export const useAuthAPIRequest = () => {
     return useFetchRequest(`/auth/register`, "POST", values)();
   };
 
-  return { loginReq, signUpReq };
+  const setupProfileReq: MutationFunction<
+    any,
+    { firstName: string; lastName: string }
+  > = async (values) => {
+    return useFetchRequest(`/users/setup-profile`, "POST", values)();
+  };
+
+  return { loginReq, signUpReq, setupProfileReq };
 };
