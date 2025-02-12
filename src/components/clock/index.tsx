@@ -8,8 +8,7 @@ const Clock = () => {
   const [currentTime, setCurrentTime] = useState(Date.now());
 
   const clockHandler = () => {
-    var timeout: NodeJS.Timeout;
-    timeout = setInterval(round, 1000);
+    let timeout: NodeJS.Timeout = setInterval(round, 1000);
     function round() {
       const drift = Date.now() - expectedTime;
       setCurrentTime(Date.now());
