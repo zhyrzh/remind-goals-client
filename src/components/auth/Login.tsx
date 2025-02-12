@@ -89,7 +89,7 @@ const Login = () => {
               onClick={(e) => {
                 e.preventDefault();
                 window.location.href =
-                  "http://localhost:5001/auth/login/facebook";
+                  "https://remind-goals-api.onrender.com/auth/login/facebook";
               }}
             >
               Login with facebook

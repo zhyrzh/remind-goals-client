@@ -106,7 +106,7 @@ const Signup = () => {
               onClick={(e) => {
                 e.preventDefault();
                 window.location.href =
-                  "http://localhost:5001/auth/signup/facebook";
+                  "https://remind-goals-api.onrender.com/auth/signup/facebook";
               }}
             >
               Signup with facebook
