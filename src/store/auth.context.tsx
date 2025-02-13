@@ -146,12 +146,12 @@ export const AuthContextProvider: FC<{ children: any }> = ({ children }) => {
       }
     }
     const data = Cookies.get("my-key");
-
+    console.log(data, "OUTSIDE");
     if (data) {
       if (data?.includes("j:")) {
         const cookieData = data?.replace("j:", "");
         const parsedData = JSON.parse(cookieData!);
-
+        console.log(data, "INSIDE");
         if (parsedData?.profile !== undefined) {
           localStorage.setItem("remind-goals-ath-tkn", cookieData);
           setIsLoggedIn(true);
