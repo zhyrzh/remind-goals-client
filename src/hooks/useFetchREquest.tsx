@@ -15,7 +15,6 @@ const useFetchRequest = (endpoint: string, method: string, body?: any) => {
       headers,
       method,
       body: body !== undefined ? JSON.stringify(body) : undefined,
-      credentials: "include",
     });
     if (res.ok) {
       return await res.json();
