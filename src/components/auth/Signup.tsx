@@ -105,8 +105,9 @@ const Signup = () => {
               className="w-full bg-[#1877F2] hover:bg-[#1877F2]/80"
               onClick={(e) => {
                 e.preventDefault();
-                window.location.href =
-                  "https://remind-goals-api.onrender.com/auth/signup/facebook";
+                window.location.href = `${
+                  import.meta.env.BACKEND_URL
+                }/auth/signup/facebook`;
               }}
             >
               Signup with facebook

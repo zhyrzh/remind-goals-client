@@ -178,13 +178,14 @@ export const AuthContextProvider: FC<{ children: any }> = ({ children }) => {
       );
       const token = userDetails?.access_token ? userDetails?.access_token : "";
       const resposne = await fetch(
-        `https://remind-goals-api.onrender.com/auth/verify-user/`,
+        `${import.meta.env.VITE_BACKEND_URL}/auth/verify-user/`,
         {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
+          credentials: "include",
         }
       );
       if (resposne.status >= 400) {

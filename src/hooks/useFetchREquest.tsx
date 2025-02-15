@@ -8,7 +8,7 @@ const useFetchRequest = (endpoint: string, method: string, body?: any) => {
     "Content-Type": "application/json",
   };
 
-  const BASE_URL = "https://remind-goals-api.onrender.com";
+  const BASE_URL = `${import.meta.env.VITE_BACKEND_URL}`;
 
   const reqFn = async () => {
     const res = await fetch(`${BASE_URL}${endpoint}`, {

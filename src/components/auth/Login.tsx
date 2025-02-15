@@ -88,8 +88,9 @@ const Login = () => {
               className="w-full bg-[#1877F2] hover:bg-[#1877F2]/80"
               onClick={(e) => {
                 e.preventDefault();
-                window.location.href =
-                  "https://remind-goals-api.onrender.com/auth/login/facebook";
+                window.location.href = `${
+                  import.meta.env.VITE_BACKEND_URL
+                }/auth/login/facebook`;
               }}
             >
               Login with facebook
