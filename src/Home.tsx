@@ -12,6 +12,7 @@ import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "./components/header";
 import { AuthContextProvider } from "./store/auth.context";
+import Spinner from "./components/ui/spinner";
 
 function Home() {
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ function Home() {
   }, []);
 
   if (getAllGoalsQry?.isLoading || getAllRemindersQry?.isLoading) {
-    return <h1>Loading</h1>;
+    return <Spinner />;
   }
 
   if (getAllGoalsQry?.isError && getAllGoalsQry.error.res.status === 401) {
