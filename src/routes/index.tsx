@@ -5,6 +5,8 @@ import SetupProfile from "@/components/auth/SetupProfile";
 import Signup from "@/components/auth/Signup";
 import Header from "@/components/header";
 import { AuthContextProvider } from "@/store/auth.context";
+import GoalContextProvider from "@/store/goal.context";
+import { ReminderContextProvder } from "@/store/reminder.context";
 import { createBrowserRouter } from "react-router-dom";
 
 export const router = createBrowserRouter([
@@ -12,7 +14,11 @@ export const router = createBrowserRouter([
     path: "/",
     element: (
       <AuthContextProvider>
-        <Home />
+        <GoalContextProvider>
+          <ReminderContextProvder>
+            <Home />
+          </ReminderContextProvder>
+        </GoalContextProvider>
       </AuthContextProvider>
     ),
     errorElement: <Error />,
