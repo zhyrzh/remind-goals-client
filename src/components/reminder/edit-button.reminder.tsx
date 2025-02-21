@@ -21,6 +21,7 @@ import { useToast } from "../ui/use-toast";
 import { FrequencyEnum, radioItems } from "./constants";
 import { IReminder } from "./types";
 import { ReminderContext } from "@/store/reminder.context";
+import Spinner from "../ui/spinner";
 
 // Types declaration
 interface IEditButton {
@@ -77,6 +78,10 @@ const EditButton: FC<IEditButton> = ({ reminder }) => {
       reminderStartDate: new Date(),
     });
   };
+
+  if (reminderCtx.editReminderDetailsMtn.isPending) {
+    return <Spinner />;
+  }
 
   return (
     <Dialog

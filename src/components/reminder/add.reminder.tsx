@@ -18,6 +18,7 @@ import { useToast } from "../ui/use-toast";
 import useCurrTabDetails from "@/hooks/useCurrTabDetails";
 import { FrequencyEnum, radioItems } from "./constants";
 import { ReminderContext } from "@/store/reminder.context";
+import Spinner from "../ui/spinner";
 
 // Types declarations
 interface IAddReminder {}
@@ -75,6 +76,10 @@ const AddReminder: FC<IAddReminder> = () => {
       reminderStartDate: new Date(),
     });
   };
+
+  if (reminderCtx.createReminderMtn.isPending) {
+    return <Spinner />;
+  }
 
   return (
     <Dialog open={showAddReminderModal} onOpenChange={setShowAddReminderModal}>
