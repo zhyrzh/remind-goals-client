@@ -37,7 +37,7 @@ const EditButton: FC<IEditButton> = ({ reminder }) => {
   const [values, setValues] = useState<IReminderInputValues>({
     title: reminder.content,
     frequency: reminder.frequency,
-    reminderStartDate: new Date(reminder.reminderStartDate),
+    triggerDate: new Date(reminder.triggerDate),
   });
   const [showEditReminderModal, setShowEditReminderModal] =
     useState<boolean>(false);
@@ -75,7 +75,7 @@ const EditButton: FC<IEditButton> = ({ reminder }) => {
     setValues({
       title: "",
       frequency: FrequencyEnum.once,
-      reminderStartDate: new Date(),
+      triggerDate: new Date(),
     });
   };
 
@@ -149,10 +149,10 @@ const EditButton: FC<IEditButton> = ({ reminder }) => {
                     onSelect={(date) =>
                       setValues((prevValues) => ({
                         ...prevValues,
-                        reminderStartDate: new Date(date!),
+                        triggerDate: new Date(date!),
                       }))
                     }
-                    selected={values.reminderStartDate}
+                    selected={values.triggerDate}
                     mode="single"
                   />
                 </div>
@@ -174,7 +174,7 @@ const EditButton: FC<IEditButton> = ({ reminder }) => {
                         id: reminder.id,
                         content: values.title,
                         frequency: values.frequency,
-                        reminderStartDate: values.reminderStartDate,
+                        triggerDate: values.triggerDate,
                       },
                     });
                   } else {
@@ -213,8 +213,7 @@ const EditButton: FC<IEditButton> = ({ reminder }) => {
                           content: currTabDetails.data.content,
                           frequency: currTabDetails.data.frequency,
                           id: reminder.id,
-                          reminderStartDate:
-                            currTabDetails.data.reminderStartDate,
+                          triggerDate: currTabDetails.data.triggerDate,
                         });
                         setShowEditReminderModal(false);
                         break;

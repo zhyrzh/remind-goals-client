@@ -20,7 +20,7 @@ interface IReminderContext {
       content: string;
       frequency: FrequencyEnum;
       isActive: boolean;
-      reminderStartDate: Date;
+      triggerDate: Date;
     }
   >;
   toggleIsActiveMtn: UseMutationResult<
@@ -40,7 +40,7 @@ interface IReminderContext {
       id: number;
       content: string;
       frequency: FrequencyEnum;
-      reminderStartDate: Date;
+      triggerDate: Date;
     }
   >;
 }
@@ -73,7 +73,7 @@ export const ReminderContextProvder: FC<{ children: any }> = ({ children }) => {
       content: string;
       frequency: FrequencyEnum;
       isActive: boolean;
-      reminderStartDate: Date;
+      triggerDate: Date;
     }
   >({
     mutationKey: ["reminder", "add"],
@@ -120,7 +120,7 @@ export const ReminderContextProvder: FC<{ children: any }> = ({ children }) => {
       id: number;
       content: string;
       frequency: FrequencyEnum;
-      reminderStartDate: Date;
+      triggerDate: Date;
     }
   >({
     mutationKey: ["reminder", "edit-details"],

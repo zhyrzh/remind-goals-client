@@ -29,13 +29,13 @@ export const useReminderAPIrequest = () => {
       id: number;
       content: string;
       frequency: FrequencyEnum;
-      reminderStartDate: Date;
+      triggerDate: Date;
     }
-  > = async ({ id, content, frequency, reminderStartDate }) =>
+  > = async ({ id, content, frequency, triggerDate }) =>
     useFetchRequest(`/reminder/details/${id}`, "PUT", {
       content,
       frequency,
-      reminderStartDate,
+      triggerDate,
     })();
 
   return {

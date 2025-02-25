@@ -40,14 +40,11 @@ export type ICurrTabDetails = {
     }
   | {
       type: "reminder.edit";
-      data: Pick<
-        IReminder,
-        "content" | "frequency" | "id" | "reminderStartDate"
-      >;
+      data: Pick<IReminder, "content" | "frequency" | "id" | "triggerDate">;
     }
   | {
       type: "reminder.add";
-      data: Pick<IReminder, "content" | "frequency" | "reminderStartDate">;
+      data: Pick<IReminder, "content" | "frequency" | "triggerDate">;
     }
   | {
       type: undefined;

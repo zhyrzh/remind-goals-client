@@ -26,7 +26,7 @@ interface IAddReminder {}
 export interface IReminderInputValues {
   title: string;
   frequency: FrequencyEnum;
-  reminderStartDate: Date;
+  triggerDate: Date;
 }
 
 /* Function component START */
@@ -40,7 +40,7 @@ const AddReminder: FC<IAddReminder> = () => {
   const [values, setValues] = useState<IReminderInputValues>({
     title: "",
     frequency: FrequencyEnum.once,
-    reminderStartDate: new Date(),
+    triggerDate: new Date(),
   });
 
   // hooks declaration
@@ -73,7 +73,7 @@ const AddReminder: FC<IAddReminder> = () => {
     setValues({
       title: "",
       frequency: FrequencyEnum.once,
-      reminderStartDate: new Date(),
+      triggerDate: new Date(),
     });
   };
 
@@ -140,10 +140,10 @@ const AddReminder: FC<IAddReminder> = () => {
                     onSelect={(date) =>
                       setValues((prevValues) => ({
                         ...prevValues,
-                        reminderStartDate: new Date(date!),
+                        triggerDate: new Date(date!),
                       }))
                     }
-                    selected={values.reminderStartDate}
+                    selected={values.triggerDate}
                     disabled={isDisabled}
                     className="bg-slate-200 mx-auto"
                     mode="single"
@@ -171,7 +171,7 @@ const AddReminder: FC<IAddReminder> = () => {
                     data: {
                       content: values.title,
                       frequency: values.frequency,
-                      reminderStartDate: values.reminderStartDate,
+                      triggerDate: values.triggerDate,
                     },
                   });
                 }}
@@ -215,8 +215,7 @@ const AddReminder: FC<IAddReminder> = () => {
                           content: currTabDetails.data.content!,
                           frequency: currTabDetails.data.frequency!,
                           isActive: true,
-                          reminderStartDate:
-                            currTabDetails.data.reminderStartDate!,
+                          triggerDate: currTabDetails.data.triggerDate!,
                         });
                         break;
                     }
