@@ -13,6 +13,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "../ui/use-toast";
 import { Toaster } from "../ui/toaster";
 import { AuthContext } from "@/store/auth.context";
+import Spinner from "../ui/spinner";
 
 const Signup = () => {
   const authCtx = useContext(AuthContext);
@@ -48,6 +49,10 @@ const Signup = () => {
     }
     authCtx.onSignupHandler.mutate({ email, password });
   };
+
+  if (authCtx.onLoginHandler.isPending) {
+    return <Spinner />;
+  }
 
   return (
     <div className="h-screen flex items-center justify-items-center	">

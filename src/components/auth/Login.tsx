@@ -12,6 +12,7 @@ import { FormEventHandler, useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "@/store/auth.context";
 import { useToast } from "../ui/use-toast";
+import Spinner from "../ui/spinner";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -46,6 +47,10 @@ const Login = () => {
 
     loginHandler.mutateAsync({ username: email, password });
   };
+
+  if (authCtx.onLoginHandler.isPending) {
+    return <Spinner />;
+  }
 
   return (
     <div className="h-screen flex items-center justify-items-center	">

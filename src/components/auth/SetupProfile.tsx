@@ -12,6 +12,7 @@ import { Button } from "../ui/button";
 import { FormEventHandler, useContext, useState } from "react";
 import { useToast } from "../ui/use-toast";
 import { AuthContext } from "@/store/auth.context";
+import Spinner from "../ui/spinner";
 
 const SetupProfile = () => {
   const authCtx = useContext(AuthContext);
@@ -32,6 +33,10 @@ const SetupProfile = () => {
 
     authCtx.onSetupProfileHandler.mutate({ firstName, lastName });
   };
+
+  if (authCtx.onLoginHandler.isPending) {
+    return <Spinner />;
+  }
 
   return (
     <div className="h-screen flex items-center justify-items-center	">
