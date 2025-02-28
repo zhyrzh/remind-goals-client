@@ -21,7 +21,7 @@
 	}
 
 	# health check for railway
-	rewrite /health /*
+	rewrite /* /index.html
 
 	# serve from the 'dist' folder (Vite builds into the 'dist' folder)
 	root * dist
