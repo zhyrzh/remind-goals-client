@@ -111,7 +111,7 @@ const Signup = () => {
               onClick={(e) => {
                 e.preventDefault();
                 window.location.href = `${
-                  import.meta.env.BACKEND_URL
+                  import.meta.env.VITE_BACKEND_URL
                 }/auth/signup/facebook`;
               }}
             >
