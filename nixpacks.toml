@@ -18,4 +18,4 @@
 
 # start the caddy web server
 [start]
-    cmd = 'exec caddy run --config Caddyfile --adapter caddyfile 2>&1 fmt --overwrite' # start caddy using the Caddyfile config and caddyfile adapter
+    cmd = 'exec caddy run --config Caddyfile --adapter caddyfile 2>&1' # start caddy using the Caddyfile config and caddyfile adapter
