@@ -170,12 +170,9 @@ const EditGoal: FC<IEditGoalProps> = ({ goalId }) => {
                           title: currTabDetails.data?.title!,
                         });
                         break;
-                      case "goal.add":
-                        goalCtx.addGoalMtn.mutate({
-                          title: currentGoalTitle,
-                          checklist: goalChecklistCtx
-                            .getAllChecklistByGoalIdQry(goalId)
-                            .data?.map(({ id }) => ({ id }))!,
+                      case "goal.edit.title":
+                        goalCtx.editGoalTitleMtn.mutate({
+                          ...currTabDetails.data,
                         });
                         break;
                       case "checklist.toggle":

@@ -3,6 +3,7 @@ import AddGoal from "./add.goal";
 import GoalItemCard from "./card.goal";
 import { GoalContext } from "@/store/goal.context";
 import { useNavigate } from "react-router-dom";
+import Spinner from "../ui/spinner";
 
 /* Function component START */
 const Goal = () => {
@@ -11,8 +12,8 @@ const Goal = () => {
   // context declarations
   const goals = useContext(GoalContext)?.getAllGoalsQry;
 
-  if (goals.isLoading) {
-    return <h1>Loading</h1>;
+  if (goals.isPending) {
+    return <Spinner />;
   }
 
   if (goals.isError && goals.error.res.status === 401) {
