@@ -66,7 +66,7 @@ const AddGoal: FC = () => {
   const onOpenChange = (val: boolean) => {
     setShowAddGoalModal(val);
     resetCurrTabDetails();
-    if (goalTitle === "") {
+    if (goalTitle !== "") {
       resetFields();
     }
   };
@@ -80,7 +80,6 @@ const AddGoal: FC = () => {
     goalChecklistCtx.deleteSpecificChecklistItm.isPending ||
     goalChecklistCtx.editChecklistItmTitleMtn.isPending
   ) {
-    console.log("here");
     return <Spinner />;
   }
 
