@@ -53,6 +53,11 @@ const EditGoal: FC<IEditGoalProps> = ({ goalId }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showEditGoalModal, currTabDetails.value]);
 
+  useEffect(() => {
+    setCurrentGoalTitle(() => goalCtx.editGoalTitleMtn.data?.title!);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [goalCtx?.editGoalTitleMtn?.isSuccess]);
+
   // methods declaration
   const resetCurrTabDetails = () => {
     setCurrTabDetails({
@@ -174,6 +179,8 @@ const EditGoal: FC<IEditGoalProps> = ({ goalId }) => {
                         goalCtx.editGoalTitleMtn.mutate({
                           ...currTabDetails.data,
                         });
+                        setCurrentGoalTitle(currTabDetails.data?.title!);
+                        setIsEdittingTitle(false);
                         break;
                       case "checklist.toggle":
                         goalChecklistCtx.toggleChecklistItmStatusMutn.mutate({
