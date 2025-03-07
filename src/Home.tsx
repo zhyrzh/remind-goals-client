@@ -30,21 +30,13 @@ function Home() {
     }
   }, []);
 
-  useEffect(() => {
-    if (
-      (getAllGoalsQry?.isError && getAllGoalsQry.error.res.status === 401) ||
-      (getAllRemindersQry?.isError &&
-        getAllRemindersQry?.error?.res.status === 401)
-    ) {
-      console.log("hitted?");
-      localStorage.removeItem("remind-goals-ath-tkn");
-      Cookies.remove("my-key");
-      navigate("/login");
-    }
-  }, [getAllGoalsQry?.isError, getAllRemindersQry?.isError]);
-
-  if (getAllGoalsQry?.isPending || getAllRemindersQry?.isPending) {
+  if (getAllGoalsQry?.isLoading || getAllRemindersQry?.isLoading) {
     return <Spinner />;
+  }
+
+  if (getAllGoalsQry?.isError && getAllGoalsQry.error.res.status === 401) {
+    localStorage.removeItem("remind-goals-ath-tkn");
+    Cookies.remove("my-key");
   }
 
   return (
