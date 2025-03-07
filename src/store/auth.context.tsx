@@ -168,6 +168,8 @@ export const AuthContextProvider: FC<{ children: any }> = ({ children }) => {
         }
         Cookies.remove("my-key");
       }
+    } else {
+      Cookies.remove("my-key");
     }
   };
 
