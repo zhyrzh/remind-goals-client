@@ -43,7 +43,7 @@ function Home() {
     }
   }, [getAllGoalsQry?.isError, getAllRemindersQry?.isError]);
 
-  if (getAllGoalsQry?.isLoading || getAllRemindersQry?.isLoading) {
+  if (getAllGoalsQry?.isPending || getAllRemindersQry?.isPending) {
     return <Spinner />;
   }
 
