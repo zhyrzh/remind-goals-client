@@ -34,7 +34,10 @@ function Home() {
     return <Spinner />;
   }
 
-  if (getAllGoalsQry?.isError && getAllGoalsQry.error.res.status === 401) {
+  if (
+    (getAllGoalsQry?.isError && getAllGoalsQry.error.res.status === 401) ||
+    (getAllRemindersQry.isError && getAllRemindersQry.error.res.status === 401)
+  ) {
     localStorage.removeItem("remind-goals-ath-tkn");
     Cookies.remove("my-key");
     navigate("/login");
