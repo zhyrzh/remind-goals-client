@@ -78,6 +78,9 @@ const GoalContextProvider: FC<{ children: any }> = ({ children }) => {
       qryClient.invalidateQueries({
         queryKey: ["goals", id],
       });
+      qryClient.invalidateQueries({
+        queryKey: ["goals"],
+      });
     },
   });
 
