@@ -36,7 +36,9 @@ function Home() {
 
   if (getAllGoalsQry?.isError && getAllGoalsQry.error.res.status === 401) {
     localStorage.removeItem("remind-goals-ath-tkn");
-    Cookies.remove("my-key");
+    Cookies.remove("my-key", {
+      domain: import.meta.env.VITE_COOKIE_DOMAIN || "localhost",
+    });
   }
 
   return (

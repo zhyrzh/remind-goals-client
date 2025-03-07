@@ -146,7 +146,7 @@ export const AuthContextProvider: FC<{ children: any }> = ({ children }) => {
       }
     }
     const data = Cookies.get("my-key");
-
+    console.log(data, "check");
     if (data) {
       if (data?.includes("j:")) {
         const cookieData = data?.replace("j:", "");
@@ -166,10 +166,10 @@ export const AuthContextProvider: FC<{ children: any }> = ({ children }) => {
             variant: "destructive",
           });
         }
-        Cookies.remove("my-key");
+        Cookies.remove("my-key", {
+          domain: import.meta.env.VITE_COOKIE_DOMAIN || "localhost",
+        });
       }
-    } else {
-      Cookies.remove("my-key");
     }
   };
 
@@ -197,7 +197,9 @@ export const AuthContextProvider: FC<{ children: any }> = ({ children }) => {
       await resposne.json();
       setIsLoggedIn(true);
     } catch (error) {
-      Cookies.remove("my-key");
+      Cookies.remove("my-key", {
+        domain: import.meta.env.VITE_COOKIE_DOMAIN || "localhost",
+      });
       setIsLoggedIn(false);
     }
   };
