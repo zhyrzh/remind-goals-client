@@ -197,6 +197,7 @@ export const AuthContextProvider: FC<{ children: any }> = ({ children }) => {
       await resposne.json();
       setIsLoggedIn(true);
     } catch (error) {
+      Cookies.remove("my-key");
       setIsLoggedIn(false);
     }
   };
