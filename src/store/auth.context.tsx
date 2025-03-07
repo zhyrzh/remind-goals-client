@@ -47,6 +47,9 @@ export const AuthContextProvider: FC<{ children: any }> = ({ children }) => {
   const onLogoutHandler = () => {
     localStorage.removeItem("remind-goals-ath-tkn");
     setIsLoggedIn(false);
+    Cookies.remove("my-key", {
+      domain: import.meta.env.VITE_COOKIE_DOMAIN || "localhost",
+    });
     navigate("/login");
   };
 
