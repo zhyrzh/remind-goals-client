@@ -1,16 +1,18 @@
 import { FetchError } from "@/utils/error";
 
-const useFetchRequest = (endpoint: string, method: string, body?: any) => {
-  const userDetails = JSON.parse(localStorage.getItem("remind-goals-ath-tkn")!);
-  const token = userDetails?.access_token ? userDetails?.access_token : "";
-  const headers: HeadersInit = {
-    Authorization: `Bearer ${token}`,
-    "Content-Type": "application/json",
-  };
+const useFetchRequest = () => {
+  const reqFn = async (endpoint: string, method: string, body?: any) => {
+    const userDetails = JSON.parse(
+      localStorage.getItem("remind-goals-ath-tkn")!
+    );
+    const token = userDetails?.access_token ? userDetails?.access_token : "";
+    const headers: HeadersInit = {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    };
 
-  const BASE_URL = `${import.meta.env.VITE_BACKEND_URL}`;
+    const BASE_URL = `${import.meta.env.VITE_BACKEND_URL}`;
 
-  const reqFn = async () => {
     const res = await fetch(`${BASE_URL}${endpoint}`, {
       headers,
       method,
@@ -24,7 +26,23 @@ const useFetchRequest = (endpoint: string, method: string, body?: any) => {
     }
   };
 
-  return reqFn;
+  const get = (endpoint: string) => {
+    return reqFn(endpoint, "GET");
+  };
+
+  const del = (endpoint: string) => {
+    return reqFn(endpoint, "DELETE");
+  };
+
+  const post = (endpoint: string, body?: any) => {
+    return reqFn(endpoint, "POST", body);
+  };
+
+  const put = (endpoint: string, body?: any) => {
+    return reqFn(endpoint, "PUT", body);
+  };
+
+  return { get, del, post, put };
 };
 
 export default useFetchRequest;
