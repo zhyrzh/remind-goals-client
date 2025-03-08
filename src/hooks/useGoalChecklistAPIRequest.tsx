@@ -3,57 +3,51 @@ import { MutationFunction, QueryFunctionContext } from "@tanstack/react-query";
 import useFetchRequest from "./useFetchREquest";
 
 export const useGoalChecklistAPIRequest = () => {
+  const { get, del, post, put } = useFetchRequest();
+
   const getAllChecklistWithNoGoalIdReq = async (
     _context: QueryFunctionContext
-  ) => useFetchRequest(`/goal-checklist/get-all-no-goal-id`, "GET")();
+  ) => get(`/goal-checklist/get-all-no-goal-id`);
 
   const getAllChecklistByGoalIdReq = async ({
     queryKey: [_primKey, _subKey, goalId],
   }: QueryFunctionContext) =>
-    useFetchRequest(`/goal-checklist/get-all-by-goal-id/${goalId}`, "GET")();
+    get(`/goal-checklist/get-all-by-goal-id/${goalId}`);
 
   const addGoalChklistItmReq: MutationFunction<
     IGoalChecklist,
     { title: string; isActive: boolean }
-  > = async (values) => useFetchRequest("/goal-checklist", "POST", values)();
+  > = async (values) => post(`/goal-checklist`, values);
 
   const addGoalChecklistItmToExistingGoalReq: MutationFunction<
     IGoalChecklist,
     { title: string; isActive: boolean; goalId: number }
   > = async (values) =>
-    useFetchRequest(
-      `/goal-checklist/to-existing-goal/${values.goalId}`,
-      "POST",
-      {
-        title: values.title,
-        isActive: values.isActive,
-      }
-    )();
+    post(`/goal-checklist/to-existing-goal/${values.goalId}`, {
+      title: values.title,
+      isActive: values.isActive,
+    });
 
   const deleteAllNoGoalIdReq: MutationFunction<
     { count: number },
     undefined
-  > = async () => useFetchRequest("/goal-checklist/all/no-goal-id", "DELETE")();
+  > = async () => del(`/goal-checklist/all/no-goal-id`);
 
   const toggleChecklistItmStatusReq: MutationFunction<
     IGoalChecklist,
     { checklistItmId: number; isActive: boolean }
   > = async ({ checklistItmId, isActive }) =>
-    useFetchRequest(
-      `/goal-checklist/toggle-is-active/${checklistItmId}/${isActive}`,
-      "PUT"
-    )();
+    put(`/goal-checklist/toggle-is-active/${checklistItmId}/${isActive}`);
 
   const deleteSpecificChecklistItmReq: MutationFunction<
     IGoalChecklist,
     { id: number }
-  > = async ({ id }) => useFetchRequest(`/goal-checklist/${id}`, "DELETE")();
+  > = async ({ id }) => del(`/goal-checklist/${id}`);
 
   const editChecklistItmTitleReq: MutationFunction<
     IGoalChecklist,
     { id: number; title: string }
-  > = async ({ id, title }) =>
-    useFetchRequest(`/goal-checklist/edit-title/${id}/${title}`, "PUT")();
+  > = async ({ id, title }) => put(`/goal-checklist/edit-title/${id}/${title}`);
 
   return {
     getAllChecklistWithNoGoalIdReq,

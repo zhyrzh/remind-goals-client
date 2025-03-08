@@ -3,27 +3,27 @@ import { MutationFunction, QueryFunction } from "@tanstack/react-query";
 import useFetchRequest from "./useFetchREquest";
 
 export const useGoalAPIRequest = () => {
-  const getAllGoalsReq: QueryFunction<IGoal[]> = async () =>
-    useFetchRequest(`/goals`, "GET")();
+  const { get, del, post, put } = useFetchRequest();
+
+  const getAllGoalsReq: QueryFunction<IGoal[]> = async () => get("/goals");
 
   const getSpecificGoalReq: QueryFunction<IGoal> = async ({
     queryKey: [_primKey, id],
-  }) => useFetchRequest(`/goals/specific/${id}`, "GET")();
+  }) => get(`/goals/specific/${id}`);
 
   const addGoalReq: MutationFunction<
     IGoal,
     { title: string; checklist: Pick<IGoalChecklist, "id">[] }
   > = async ({ title, checklist }) =>
-    useFetchRequest(`/goals`, "POST", {
+    post("/goals", {
       title,
       checklist,
-    })();
+    });
 
   const editGoalTitleReq: MutationFunction<
     IGoal,
     { title: string; id: number }
-  > = async ({ id, title }) =>
-    useFetchRequest(`/goals/${id}`, "PUT", { title })();
+  > = async ({ id, title }) => put(`/goals/${id}`, title);
 
   return { getAllGoalsReq, getSpecificGoalReq, addGoalReq, editGoalTitleReq };
 };
