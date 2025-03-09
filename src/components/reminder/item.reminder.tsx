@@ -37,7 +37,11 @@ const ReminderItem: FC<IReminderItemProps> = ({ reminder }) => {
       >
         {reminder.content}
       </p>
-      <section className="flex ml-auto">
+
+      <section className="flex ml-auto items-center">
+        <div className="mr-4 bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs">
+          <p className="">{reminder.frequency}</p>
+        </div>
         <EditButton reminder={reminder} />
         <DeleteButton reminder={reminder} />
       </section>
