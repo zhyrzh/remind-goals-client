@@ -196,7 +196,7 @@ const AddGoal: FC = () => {
                         break;
                       case "checklist.toggle":
                         goalChecklistCtx.toggleChecklistItmStatusMutn.mutate({
-                          checklistItmId: currTabDetails.data?.id!,
+                          id: currTabDetails.data?.id!,
                           isActive: currTabDetails.data?.isActive!,
                         });
                         break;
