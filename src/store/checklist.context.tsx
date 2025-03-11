@@ -29,7 +29,7 @@ interface IGoalChecklistContext {
   toggleChecklistItmStatusMutn: UseMutationResult<
     IGoalChecklist,
     FetchError,
-    { checklistItmId: number; isActive: boolean }
+    { id: number; isActive: boolean }
   >;
   deleteSpecificChecklistItm: UseMutationResult<
     IGoalChecklist,
@@ -142,7 +142,7 @@ const ChecklistContextProvider: FC<{ children: any }> = ({ children }) => {
   const toggleChecklistItmStatusMutn = useMutation<
     IGoalChecklist,
     FetchError,
-    { checklistItmId: number; isActive: boolean }
+    { id: number; isActive: boolean }
   >({
     mutationKey: ["goal-checklist", "toggle-status"],
     mutationFn: toggleChecklistItmStatusReq,
