@@ -16,12 +16,12 @@ export const useGoalChecklistAPIRequest = () => {
 
   const addGoalChklistItmReq: MutationFunction<
     IGoalChecklist,
-    { title: string; isActive: boolean }
+    Pick<IGoalChecklist, "title" | "isActive">
   > = async (values) => post(`/goal-checklist`, values);
 
   const addGoalChecklistItmToExistingGoalReq: MutationFunction<
     IGoalChecklist,
-    { title: string; isActive: boolean; goalId: number }
+    Pick<IGoalChecklist, "title" | "isActive" | "goalId">
   > = async (values) =>
     post(`/goal-checklist/to-existing-goal/${values.goalId}`, {
       title: values.title,
@@ -35,18 +35,18 @@ export const useGoalChecklistAPIRequest = () => {
 
   const toggleChecklistItmStatusReq: MutationFunction<
     IGoalChecklist,
-    { checklistItmId: number; isActive: boolean }
-  > = async ({ checklistItmId, isActive }) =>
-    put(`/goal-checklist/toggle-is-active/${checklistItmId}/${isActive}`);
+    Pick<IGoalChecklist, "id" | "isActive">
+  > = async ({ id, isActive }) =>
+    put(`/goal-checklist/toggle-is-active/${id}/${isActive}`);
 
   const deleteSpecificChecklistItmReq: MutationFunction<
     IGoalChecklist,
-    { id: number }
+    Pick<IGoalChecklist, "id">
   > = async ({ id }) => del(`/goal-checklist/${id}`);
 
   const editChecklistItmTitleReq: MutationFunction<
     IGoalChecklist,
-    { id: number; title: string }
+    Pick<IGoalChecklist, "id" | "title">
   > = async ({ id, title }) => put(`/goal-checklist/edit-title/${id}/${title}`);
 
   return {

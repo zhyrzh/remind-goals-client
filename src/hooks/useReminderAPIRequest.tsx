@@ -11,27 +11,23 @@ export const useReminderAPIrequest = () => {
 
   const createReminderReq: MutationFunction<
     IReminder,
-    { content: string; frequency: FrequencyEnum; isActive: boolean }
+    Pick<IReminder, "content" | "frequency" | "isActive">
   > = async (values) => post(`/reminder`, values);
 
   const toggleIsActiveReq: MutationFunction<
     IReminder,
-    { id: number; isActive: boolean }
+    // { id: number; isActive: boolean }
+    Pick<IReminder, "id" | "isActive">
   > = async ({ id, isActive }) => put(`/reminder/${id}/${isActive}`);
 
   const deleteReminderItemReq: MutationFunction<
     { count: number },
-    { id: number }
+    Pick<IReminder, "id">
   > = async ({ id }) => del(`/reminder/${id}`);
 
   const editReminderDetailsReq: MutationFunction<
     IReminder,
-    {
-      id: number;
-      content: string;
-      frequency: FrequencyEnum;
-      triggerDate: Date;
-    }
+    Pick<IReminder, "id" | "content" | "frequency" | "triggerDate">
   > = async ({ id, content, frequency, triggerDate }) =>
     put(`/reminder/details/${id}`, {
       content,
