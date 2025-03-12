@@ -149,7 +149,7 @@ export const AuthContextProvider: FC<{ children: any }> = ({ children }) => {
       }
     }
     const data = Cookies.get("my-key");
-    console.log(data, "check");
+
     if (data) {
       if (data?.includes("j:")) {
         const cookieData = data?.replace("j:", "");
