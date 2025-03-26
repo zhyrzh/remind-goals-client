@@ -23,6 +23,23 @@ const Login = () => {
   const [password, setPassword] = useState("");
 
   useEffect(() => {
+    const fb_auth_error = window.localStorage.getItem("fb_auth_error");
+    if (fb_auth_error !== null) {
+      toast({
+        title: fb_auth_error,
+        variant: "destructive",
+      });
+    }
+    const interval = setInterval(() => {
+      window.localStorage.removeItem("fb_auth_error");
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
+  useEffect(() => {
     authCtx.onFacebookAuthHandler();
   }, []);
 
