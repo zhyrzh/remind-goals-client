@@ -164,6 +164,7 @@ export const AuthContextProvider: FC<{ children: any }> = ({ children }) => {
             navigate("/");
           }
         } else {
+          localStorage.setItem("fb_auth_error", parsedData.message);
           toast({
             title: parsedData.message,
             variant: "destructive",
