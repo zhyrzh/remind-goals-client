@@ -52,6 +52,29 @@ const Login = () => {
     return <Spinner />;
   }
 
+  const handleFacebookLogin = async () => {
+    const width = 500;
+    const height = 600;
+    const left = (window.innerWidth - width) / 2;
+    const top = (window.innerHeight - height) / 2;
+
+    const loginWindow = window.open(
+      `${import.meta.env.VITE_BACKEND_URL}/auth/login/facebook`,
+      "facebookLogin",
+      `width=${width},height=${height},top=${top},left=${left}`
+    );
+
+    const checkPopup = setInterval(() => {
+      if (loginWindow) {
+        if (loginWindow?.frames?.name === "facebookLogin") {
+          clearInterval(checkPopup);
+          loginWindow.close();
+          window.location.reload();
+        }
+      }
+    }, 1000);
+  };
+
   return (
     <div className="h-screen flex items-center justify-items-center	">
       <Card className="mx-auto max-w-sm mb-24">
@@ -93,9 +116,7 @@ const Login = () => {
               className="w-full bg-[#1877F2] hover:bg-[#1877F2]/80"
               onClick={(e) => {
                 e.preventDefault();
-                window.location.href = `${
-                  import.meta.env.VITE_BACKEND_URL
-                }/auth/login/facebook`;
+                handleFacebookLogin();
               }}
             >
               Login with facebook
