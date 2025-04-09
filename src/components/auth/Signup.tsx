@@ -137,10 +137,17 @@ const Signup = () => {
               className="w-full bg-[#1877F2] hover:bg-[#1877F2]/80"
               onClick={(e) => {
                 e.preventDefault();
-                authCtx?.onFacebookAuthHandler(
-                  `/auth/signup/facebook`,
-                  loginWindowRef
-                );
+                if (import.meta.env.VITE_BACKEND_URL === "production")
+                  authCtx?.onFacebookAuthHandler(
+                    `/auth/signup/facebook`,
+                    loginWindowRef
+                  );
+                else
+                  toast({
+                    title: "Facebook login only available in development mode",
+                    description:
+                      "Facebook app is not configured for production. Kindly use email and password",
+                  });
               }}
             >
               Signup with facebook
