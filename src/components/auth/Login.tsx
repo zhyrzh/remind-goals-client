@@ -79,11 +79,9 @@ const Login = () => {
 
   useEffect(() => {
     const messageListener = (event: MessageEvent) => {
-      console.log("should be here", event.origin);
       if (event.origin !== import.meta.env.VITE_BACKEND_URL) return;
 
       if (event.data === "auth_complete") {
-        console.log("should be here rt?");
         if (loginWindowRef?.current) {
           loginWindowRef.current.close();
         }

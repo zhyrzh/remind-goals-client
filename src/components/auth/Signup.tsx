@@ -61,7 +61,6 @@ const Signup = () => {
   useEffect(() => {
     const messageListener = (event: MessageEvent) => {
       if (event.origin !== import.meta.env.VITE_BACKEND_URL) return;
-      console.log("should be here");
       if (event.data === "auth_complete") {
         if (loginWindowRef.current) {
           loginWindowRef.current.close();
