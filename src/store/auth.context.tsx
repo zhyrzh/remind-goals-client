@@ -1,5 +1,12 @@
 import { useToast } from "@/components/ui/use-toast";
-import { createContext, FC, useEffect, useState } from "react";
+import {
+  createContext,
+  FC,
+  MutableRefObject,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { Toaster } from "@/components/ui/toaster";
@@ -10,7 +17,7 @@ import { FetchError } from "@/utils/error";
 interface IAuthContext {
   isLoggedIn: boolean;
   onLogoutHandler: () => void;
-  onFacebookAuthHandler: () => void;
+  onFacebookRefetchAuthHandler: () => void;
   onGetUserDetails: () => void;
   onLoginHandler: UseMutationResult<
     any,
@@ -27,6 +34,10 @@ interface IAuthContext {
     FetchError,
     { firstName: string; lastName: string }
   >;
+  onFacebookAuthHandler: (
+    endpoint: string,
+    windowRef: MutableRefObject<any>
+  ) => void;
 }
 
 export const AuthContext = createContext<IAuthContext>(
@@ -39,6 +50,8 @@ export const AuthContextProvider: FC<{ children: any }> = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
   const { loginReq, signUpReq, setupProfileReq } = useAuthAPIRequest();
+
+  const loginWindowRef = useRef<any>(null);
 
   useEffect(() => {
     onGetUserDetails();
@@ -139,7 +152,7 @@ export const AuthContextProvider: FC<{ children: any }> = ({ children }) => {
     },
   });
 
-  const onFacebookAuthHandler = () => {
+  const onFacebookRefetchAuthHandler = () => {
     if (window.location.hash === "#_=_") {
       if (history.replaceState) {
         const cleanHref = window.location.href.split("#")[0];
@@ -197,15 +210,31 @@ export const AuthContextProvider: FC<{ children: any }> = ({ children }) => {
       if (resposne.status >= 400) {
         setIsLoggedIn(false);
         navigate("/login");
+        localStorage.removeItem("remind-goals-ath-tkn");
+        Cookies.remove("my-key", {
+          domain: import.meta.env.VITE_COOKIE_DOMAIN || "localhost",
+        });
       }
       await resposne.json();
       setIsLoggedIn(true);
     } catch (error) {
+      localStorage.removeItem("remind-goals-ath-tkn");
       Cookies.remove("my-key", {
         domain: import.meta.env.VITE_COOKIE_DOMAIN || "localhost",
       });
       setIsLoggedIn(false);
     }
+  };
+
+  const onFacebookAuthHandler = (
+    endpoint: string,
+    windowRef: MutableRefObject<any>
+  ) => {
+    windowRef.current = window.open(
+      `${import.meta.env.VITE_BACKEND_URL}${endpoint}`,
+      "_blank",
+      "width=500,height=600"
+    )!;
   };
 
   return (
@@ -215,8 +244,9 @@ export const AuthContextProvider: FC<{ children: any }> = ({ children }) => {
         onLoginHandler,
         onSignupHandler,
         onSetupProfileHandler,
-        onFacebookAuthHandler,
+        onFacebookRefetchAuthHandler,
         onGetUserDetails,
+        onFacebookAuthHandler,
         isLoggedIn,
       }}
     >
