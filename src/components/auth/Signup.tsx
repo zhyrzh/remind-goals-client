@@ -8,7 +8,13 @@ import {
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { FormEventHandler, useContext, useEffect, useState } from "react";
+import {
+  FormEventHandler,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "../ui/use-toast";
 import { Toaster } from "../ui/toaster";
@@ -24,8 +30,10 @@ const Signup = () => {
   const [password, setPassword] = useState("");
   const [confrimedPassword, setConfirmedPassword] = useState("");
 
+  const loginWindowRef = useRef<any>(null);
+
   useEffect(() => {
-    authCtx?.onFacebookAuthHandler();
+    authCtx?.onFacebookRefetchAuthHandler();
   }, []);
 
   useEffect(() => {
@@ -49,6 +57,25 @@ const Signup = () => {
     }
     authCtx.onSignupHandler.mutate({ email, password });
   };
+
+  useEffect(() => {
+    const messageListener = (event: MessageEvent) => {
+      if (event.origin !== import.meta.env.VITE_BACKEND_URL) return;
+      console.log("should be here");
+      if (event.data === "auth_complete") {
+        if (loginWindowRef.current) {
+          loginWindowRef.current.close();
+        }
+        window.location.reload();
+      }
+    };
+
+    window.addEventListener("message", messageListener);
+
+    return () => {
+      window.removeEventListener("message", messageListener);
+    };
+  }, []);
 
   if (authCtx.onLoginHandler.isPending) {
     return <Spinner />;
@@ -110,9 +137,10 @@ const Signup = () => {
               className="w-full bg-[#1877F2] hover:bg-[#1877F2]/80"
               onClick={(e) => {
                 e.preventDefault();
-                window.location.href = `${
-                  import.meta.env.VITE_BACKEND_URL
-                }/auth/signup/facebook`;
+                authCtx?.onFacebookAuthHandler(
+                  `/auth/signup/facebook`,
+                  loginWindowRef
+                );
               }}
             >
               Signup with facebook

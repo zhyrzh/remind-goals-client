@@ -8,7 +8,13 @@ import {
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { FormEventHandler, useContext, useEffect, useState } from "react";
+import {
+  FormEventHandler,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "@/store/auth.context";
 import { useToast } from "../ui/use-toast";
@@ -21,6 +27,8 @@ const Login = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const loginWindowRef = useRef<any>(null);
 
   useEffect(() => {
     const fb_auth_error = window.localStorage.getItem("fb_auth_error");
@@ -40,7 +48,7 @@ const Login = () => {
   }, []);
 
   useEffect(() => {
-    authCtx.onFacebookAuthHandler();
+    authCtx.onFacebookRefetchAuthHandler();
   }, []);
 
   useEffect(() => {
@@ -69,28 +77,26 @@ const Login = () => {
     return <Spinner />;
   }
 
-  const handleFacebookLogin = async () => {
-    const width = 500;
-    const height = 600;
-    const left = (window.innerWidth - width) / 2;
-    const top = (window.innerHeight - height) / 2;
+  useEffect(() => {
+    const messageListener = (event: MessageEvent) => {
+      console.log("should be here", event.origin);
+      if (event.origin !== import.meta.env.VITE_BACKEND_URL) return;
 
-    const loginWindow = window.open(
-      `${import.meta.env.VITE_BACKEND_URL}/auth/login/facebook`,
-      "facebookLogin",
-      `width=${width},height=${height},top=${top},left=${left}`
-    );
-
-    const checkPopup = setInterval(() => {
-      if (loginWindow) {
-        if (loginWindow?.frames?.name === "facebookLogin") {
-          clearInterval(checkPopup);
-          loginWindow.close();
-          window.location.reload();
+      if (event.data === "auth_complete") {
+        console.log("should be here rt?");
+        if (loginWindowRef?.current) {
+          loginWindowRef.current.close();
         }
+        window.location.reload();
       }
-    }, 1000);
-  };
+    };
+
+    window.addEventListener("message", messageListener);
+
+    return () => {
+      window.removeEventListener("message", messageListener);
+    };
+  }, []);
 
   return (
     <div className="h-screen flex items-center justify-items-center	">
@@ -133,7 +139,10 @@ const Login = () => {
               className="w-full bg-[#1877F2] hover:bg-[#1877F2]/80"
               onClick={(e) => {
                 e.preventDefault();
-                handleFacebookLogin();
+                authCtx?.onFacebookAuthHandler(
+                  `/auth/login/facebook`,
+                  loginWindowRef
+                );
               }}
             >
               Login with facebook
