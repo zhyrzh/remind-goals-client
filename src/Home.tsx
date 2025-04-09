@@ -30,15 +30,20 @@ function Home() {
     }
   }, []);
 
-  if (getAllGoalsQry?.isLoading || getAllRemindersQry?.isLoading) {
+  if (getAllGoalsQry?.isPending || getAllRemindersQry?.isPending) {
     return <Spinner />;
   }
 
-  if (getAllGoalsQry?.isError && getAllGoalsQry.error.res.status === 401) {
+  if (
+    getAllGoalsQry?.isError &&
+    getAllGoalsQry.error.res.status === 401 &&
+    localStorage.getItem("remind-goals-ath-tkn") === null
+  ) {
     localStorage.removeItem("remind-goals-ath-tkn");
     Cookies.remove("my-key", {
       domain: import.meta.env.VITE_COOKIE_DOMAIN || "localhost",
     });
+    navigate("/login");
   }
 
   return (
