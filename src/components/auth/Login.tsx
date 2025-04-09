@@ -139,7 +139,7 @@ const Login = () => {
               className="w-full bg-[#1877F2] hover:bg-[#1877F2]/80"
               onClick={(e) => {
                 e.preventDefault();
-                if (import.meta.env.VITE_BACKEND_URL === "production")
+                if (import.meta.env.VITE_BACKEND_URL === "dev")
                   authCtx?.onFacebookAuthHandler(
                     `/auth/login/facebook`,
                     loginWindowRef
