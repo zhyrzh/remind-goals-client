@@ -1,4 +1,4 @@
-import { FC, useContext, useState } from "react";
+import { FC, useContext, useEffect, useState } from "react";
 import { TrashIcon } from "@radix-ui/react-icons";
 import {
   Dialog,
@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { IReminder } from "./types";
 import { ReminderContext } from "@/store/reminder.context";
+import Spinner from "../ui/spinner";
 
 // Types declaration
 interface IDeleteButton {
@@ -27,9 +28,11 @@ const DeleteButton: FC<IDeleteButton> = ({ reminder }) => {
   const [showSetIsActiveDialog, setShowIsActiveDialog] =
     useState<boolean>(false);
 
-  // if (reminderCtx.deleteReminderItemMtn.isPending) {
-  //   return <Spinner />;
-  // }
+  useEffect(() => {
+    if (reminderCtx.deleteReminderItemMtn.status !== "pending") {
+      setShowIsActiveDialog(false);
+    }
+  }, []);
 
   return (
     <Dialog open={showSetIsActiveDialog} onOpenChange={setShowIsActiveDialog}>
@@ -48,12 +51,11 @@ const DeleteButton: FC<IDeleteButton> = ({ reminder }) => {
           <Button
             type="submit"
             onClick={() => {
-              // onRemoveReminder(reminder.id);
               reminderCtx.deleteReminderItemMtn.mutate({ id: reminder.id });
-              setShowIsActiveDialog((prevVal) => !prevVal);
             }}
+            disabled={reminderCtx.deleteReminderItemMtn.isPending}
           >
-            Yes
+            {reminderCtx.deleteReminderItemMtn.isPending ? <Spinner /> : "Yes"}
           </Button>
           <Button
             type="button"

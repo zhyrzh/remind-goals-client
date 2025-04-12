@@ -1,4 +1,4 @@
-import { FC, useContext, useState } from "react";
+import { FC, useContext, useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -18,6 +18,7 @@ import { useToast } from "../ui/use-toast";
 import useCurrTabDetails from "@/hooks/useCurrTabDetails";
 import { FrequencyEnum, radioItems } from "./constants";
 import { ReminderContext } from "@/store/reminder.context";
+import Spinner from "../ui/spinner";
 
 // Types declarations
 interface IAddReminder {}
@@ -76,9 +77,15 @@ const AddReminder: FC<IAddReminder> = () => {
     });
   };
 
-  // if (reminderCtx.createReminderMtn.isPending) {
-  //   return <Spinner />;
-  // }
+  useEffect(() => {
+    if (reminderCtx.createReminderMtn.status !== "pending") {
+      resetCurrTabDetails();
+      resetFields();
+      setShowAddReminderModal(false);
+    }
+  }, [reminderCtx.createReminderMtn.status]);
+
+  console.log(reminderCtx.createReminderMtn.status);
 
   return (
     <Dialog open={showAddReminderModal} onOpenChange={setShowAddReminderModal}>
@@ -220,12 +227,25 @@ const AddReminder: FC<IAddReminder> = () => {
                     }
                     // onAddReminder(values);
                   }
-                  resetCurrTabDetails();
-                  resetFields();
-                  setShowAddReminderModal(false);
+                  // if (!reminderCtx.createReminderMtn.isPending) {
+                  //   console.log(
+                  //     "Reminder added successfully",
+                  //     reminderCtx.createReminderMtn
+                  //   );
+                  //   resetCurrTabDetails();
+                  //   resetFields();
+                  //   setShowAddReminderModal(false);
+                  // }
                 }}
+                disabled={reminderCtx.createReminderMtn.isPending}
               >
-                {!currTabDetails.isCancel ? "Confirm" : "Discard"}
+                {reminderCtx.createReminderMtn.isPending ? (
+                  <Spinner />
+                ) : !currTabDetails.isCancel ? (
+                  "Confirm"
+                ) : (
+                  "Discard"
+                )}
               </Button>
               <Button
                 type="button"

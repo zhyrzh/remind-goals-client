@@ -1,4 +1,4 @@
-import { FC, useContext, useRef, useState } from "react";
+import { FC, useContext, useEffect, useRef, useState } from "react";
 import { Pencil1Icon } from "@radix-ui/react-icons";
 import {
   Dialog,
@@ -21,6 +21,7 @@ import { useToast } from "../ui/use-toast";
 import { FrequencyEnum, radioItems } from "./constants";
 import { IReminder } from "./types";
 import { ReminderContext } from "@/store/reminder.context";
+import Spinner from "../ui/spinner";
 
 // Types declaration
 interface IEditButton {
@@ -78,9 +79,12 @@ const EditButton: FC<IEditButton> = ({ reminder }) => {
     });
   };
 
-  // if (reminderCtx.editReminderDetailsMtn.isPending) {
-  //   return <Spinner />;
-  // }
+  useEffect(() => {
+    if (reminderCtx.editReminderDetailsMtn.status !== "pending") {
+      setShowEditReminderModal(false);
+      resetCurrTabDetails();
+    }
+  }, [reminderCtx.editReminderDetailsMtn.status]);
 
   return (
     <Dialog
@@ -214,7 +218,6 @@ const EditButton: FC<IEditButton> = ({ reminder }) => {
                           id: reminder.id,
                           triggerDate: currTabDetails.data.triggerDate,
                         });
-                        setShowEditReminderModal(false);
                         break;
                       default:
                         toast({
@@ -230,10 +233,16 @@ const EditButton: FC<IEditButton> = ({ reminder }) => {
                     setShowEditReminderModal(false);
                     resetFields();
                   }
-                  resetCurrTabDetails();
                 }}
+                disabled={reminderCtx.editReminderDetailsMtn.isPending}
               >
-                {!currTabDetails.isCancel ? "Confirm" : "Discard"}
+                {reminderCtx.editReminderDetailsMtn.isPending ? (
+                  <Spinner />
+                ) : !currTabDetails.isCancel ? (
+                  "Confirm"
+                ) : (
+                  "Discard"
+                )}
               </Button>
               <Button
                 type="button"
