@@ -73,10 +73,6 @@ const Login = () => {
     loginHandler.mutateAsync({ username: email, password });
   };
 
-  if (authCtx.onLoginHandler.isPending) {
-    return <Spinner />;
-  }
-
   useEffect(() => {
     const messageListener = (event: MessageEvent) => {
       if (event.origin !== import.meta.env.VITE_BACKEND_URL) return;
@@ -111,6 +107,7 @@ const Login = () => {
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
+                  autoComplete="off"
                   id="email"
                   type="email"
                   onChange={(e) => setEmail(e.target.value)}
@@ -125,8 +122,12 @@ const Login = () => {
                 />
               </div>
             </div>
-            <Button className="w-full mt-12" type="submit">
-              Login
+            <Button
+              className="w-full mt-12"
+              type="submit"
+              disabled={authCtx.onLoginHandler.isPending}
+            >
+              {authCtx.onLoginHandler.isPending ? <Spinner /> : "Login"}
             </Button>
             <div className="flex items-center">
               <div className="flex-grow border-t border-gray-400"></div>

@@ -76,10 +76,6 @@ const Signup = () => {
     };
   }, []);
 
-  if (authCtx.onLoginHandler.isPending) {
-    return <Spinner />;
-  }
-
   return (
     <div className="h-screen flex items-center justify-items-center	">
       <Toaster />
@@ -96,6 +92,7 @@ const Signup = () => {
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
+                  autoComplete="off"
                   id="email"
                   required
                   type="email"
@@ -124,8 +121,13 @@ const Signup = () => {
                 />
               </div>
             </div>
-            <Button className="w-full mt-12" type="submit" onClick={onSignUp}>
-              Signup
+            <Button
+              className="w-full mt-12"
+              type="submit"
+              onClick={onSignUp}
+              disabled={authCtx.onSignupHandler.isPending}
+            >
+              {authCtx.onSignupHandler.isPending ? <Spinner /> : "Signup"}
             </Button>
             <div className="flex items-center">
               <div className="flex-grow border-t border-gray-400"></div>

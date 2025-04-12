@@ -34,10 +34,6 @@ const SetupProfile = () => {
     authCtx.onSetupProfileHandler.mutate({ firstName, lastName });
   };
 
-  if (authCtx.onLoginHandler.isPending) {
-    return <Spinner />;
-  }
-
   return (
     <div className="h-screen flex items-center justify-items-center	">
       <Toaster />
@@ -74,8 +70,16 @@ const SetupProfile = () => {
                 />
               </div>
             </div>
-            <Button className="w-full mt-12" type="submit">
-              Continue
+            <Button
+              className="w-full mt-12"
+              type="submit"
+              disabled={authCtx.onSetupProfileHandler.isPending}
+            >
+              {authCtx.onSetupProfileHandler.isPending ? (
+                <Spinner />
+              ) : (
+                "Continue"
+              )}
             </Button>
           </CardContent>
         </Card>
