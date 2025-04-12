@@ -12,7 +12,6 @@ import { Checkbox } from "../ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { IReminder } from "./types";
 import { ReminderContext } from "@/store/reminder.context";
-import Spinner from "../ui/spinner";
 
 interface ICustomCheckbox {
   reminder: IReminder;
@@ -27,9 +26,9 @@ const CustomCheckbox: FC<ICustomCheckbox> = ({ reminder }) => {
   const [showSetIsActiveDialog, setShowIsActiveDialog] =
     useState<boolean>(false);
 
-  if (toggleIsActiveMtn.isPending) {
-    return <Spinner />;
-  }
+  // if (toggleIsActiveMtn.isPending) {
+  //   return <Spinner />;
+  // }
 
   return (
     <Dialog open={showSetIsActiveDialog} onOpenChange={setShowIsActiveDialog}>

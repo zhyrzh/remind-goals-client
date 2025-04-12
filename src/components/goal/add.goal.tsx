@@ -16,7 +16,6 @@ import { Tabs, TabsContent } from "../ui/tabs";
 import useCurrTabDetails from "../../hooks/useCurrTabDetails";
 import { ChecklistContext } from "@/store/checklist.context";
 import { GoalContext } from "@/store/goal.context";
-import Spinner from "../ui/spinner";
 
 /* Function component START */
 const AddGoal: FC = () => {
@@ -71,17 +70,17 @@ const AddGoal: FC = () => {
     }
   };
 
-  if (
-    goalCtx.addGoalMtn.isPending ||
-    goalChecklistCtx.addGoalChklistItmMutn.isPending ||
-    goalChecklistCtx.deleteAllNoGoalIdMtn.isPending ||
-    goalChecklistCtx.getAllChecklistWithNoGoalIdQry.isPending ||
-    goalChecklistCtx.toggleChecklistItmStatusMutn.isPending ||
-    goalChecklistCtx.deleteSpecificChecklistItm.isPending ||
-    goalChecklistCtx.editChecklistItmTitleMtn.isPending
-  ) {
-    return <Spinner />;
-  }
+  // if (
+  //   goalCtx.addGoalMtn.isPending ||
+  //   goalChecklistCtx.addGoalChklistItmMutn.isPending ||
+  //   goalChecklistCtx.deleteAllNoGoalIdMtn.isPending ||
+  //   goalChecklistCtx.getAllChecklistWithNoGoalIdQry.isPending ||
+  //   goalChecklistCtx.toggleChecklistItmStatusMutn.isPending ||
+  //   goalChecklistCtx.deleteSpecificChecklistItm.isPending ||
+  //   goalChecklistCtx.editChecklistItmTitleMtn.isPending
+  // ) {
+  //   return <Spinner />;
+  // }
 
   return (
     <Dialog open={showAddGoalModal} onOpenChange={onOpenChange}>

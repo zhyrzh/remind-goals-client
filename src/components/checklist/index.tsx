@@ -8,7 +8,6 @@ import ChecklistCard from "./card.checklist";
 import { Cross1Icon, PlusIcon } from "@radix-ui/react-icons";
 import { ICurrTabDetails } from "@/hooks/useCurrTabDetails";
 import { ChecklistContext } from "@/store/checklist.context";
-import Spinner from "../ui/spinner";
 
 type IChecklistProps = {
   setCurrTabDetails: React.Dispatch<React.SetStateAction<ICurrTabDetails>>;
@@ -79,12 +78,12 @@ const Checklist: FC<IChecklistProps> = ({
     }
   };
 
-  if (
-    goalChecklistCtx.getAllChecklistWithNoGoalIdQry.isPending ||
-    goalChecklistCtx.getAllChecklistByGoalIdQry(goalId!).isPending
-  ) {
-    return <Spinner />;
-  }
+  // if (
+  //   goalChecklistCtx.getAllChecklistWithNoGoalIdQry.isPending ||
+  //   goalChecklistCtx.getAllChecklistByGoalIdQry(goalId!).isPending
+  // ) {
+  //   return <Spinner />;
+  // }
 
   return (
     <>

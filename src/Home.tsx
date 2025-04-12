@@ -12,7 +12,6 @@ import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "./components/header";
 import { AuthContextProvider } from "./store/auth.context";
-import Spinner from "./components/ui/spinner";
 import Cookies from "js-cookie";
 
 function Home() {
@@ -30,9 +29,9 @@ function Home() {
     }
   }, []);
 
-  if (getAllGoalsQry?.isPending || getAllRemindersQry?.isPending) {
-    return <Spinner />;
-  }
+  // if (getAllGoalsQry?.isPending || getAllRemindersQry?.isPending) {
+  //   return <Spinner />;
+  // }
 
   if (
     getAllGoalsQry?.isError &&

@@ -12,7 +12,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { IReminder } from "./types";
 import { ReminderContext } from "@/store/reminder.context";
-import Spinner from "../ui/spinner";
 
 // Types declaration
 interface IDeleteButton {
@@ -28,9 +27,9 @@ const DeleteButton: FC<IDeleteButton> = ({ reminder }) => {
   const [showSetIsActiveDialog, setShowIsActiveDialog] =
     useState<boolean>(false);
 
-  if (reminderCtx.deleteReminderItemMtn.isPending) {
-    return <Spinner />;
-  }
+  // if (reminderCtx.deleteReminderItemMtn.isPending) {
+  //   return <Spinner />;
+  // }
 
   return (
     <Dialog open={showSetIsActiveDialog} onOpenChange={setShowIsActiveDialog}>
