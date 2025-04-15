@@ -18,7 +18,7 @@ import { useToast } from "../ui/use-toast";
 import { Pencil1Icon } from "@radix-ui/react-icons";
 import { ChecklistContext } from "@/store/checklist.context";
 import { GoalContext } from "@/store/goal.context";
-import Spinner from "../ui/Spinner";
+import Spinner from "../ui/spinner";
 
 // Types declaration
 interface IEditGoalProps {

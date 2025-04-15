@@ -85,8 +85,6 @@ const AddReminder: FC<IAddReminder> = () => {
     }
   }, [reminderCtx.createReminderMtn.status]);
 
-  console.log(reminderCtx.createReminderMtn.status);
-
   return (
     <Dialog open={showAddReminderModal} onOpenChange={setShowAddReminderModal}>
       <DialogTrigger asChild>
@@ -225,17 +223,7 @@ const AddReminder: FC<IAddReminder> = () => {
                         });
                         break;
                     }
-                    // onAddReminder(values);
                   }
-                  // if (!reminderCtx.createReminderMtn.isPending) {
-                  //   console.log(
-                  //     "Reminder added successfully",
-                  //     reminderCtx.createReminderMtn
-                  //   );
-                  //   resetCurrTabDetails();
-                  //   resetFields();
-                  //   setShowAddReminderModal(false);
-                  // }
                 }}
                 disabled={reminderCtx.createReminderMtn.isPending}
               >

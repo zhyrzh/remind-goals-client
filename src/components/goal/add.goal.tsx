@@ -16,7 +16,7 @@ import { Tabs, TabsContent } from "../ui/tabs";
 import useCurrTabDetails from "../../hooks/useCurrTabDetails";
 import { ChecklistContext } from "@/store/checklist.context";
 import { GoalContext } from "@/store/goal.context";
-import Spinner from "../ui/Spinner";
+import Spinner from "../ui/spinner";
 
 /* Function component START */
 const AddGoal: FC = () => {

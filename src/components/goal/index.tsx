@@ -3,7 +3,7 @@ import AddGoal from "./add.goal";
 import GoalItemCard from "./card.goal";
 import { GoalContext } from "@/store/goal.context";
 import { useNavigate } from "react-router-dom";
-import Spinner from "../ui/Spinner";
+import Spinner from "../ui/spinner";
 
 /* Function component START */
 const Goal = () => {
