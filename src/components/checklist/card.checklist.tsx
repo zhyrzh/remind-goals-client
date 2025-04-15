@@ -119,12 +119,13 @@ const ChecklistCard: FC<IChecklistCardProp> = ({
     return (
       <>
         <Input
+          autoComplete="off"
           type="text"
           value={checklistEditedTitleValue ? checklistEditedTitleValue : ""}
           onChange={(e) => setChecklistEditedTitleValue(e.target.value)}
           ref={editInputRef}
         />
-        <section className="flex">
+        <section className="flex ml-1">
           <Button
             className=""
             onClick={() => {
@@ -137,7 +138,7 @@ const ChecklistCard: FC<IChecklistCardProp> = ({
                     "Please make sure to make actual changes on the title.",
                   variant: "destructive",
                 });
-              } else
+              } else {
                 setCurrTabDetails({
                   value: "confirmation",
                   tabTitle: "Are you sure you want to edit the title?",
@@ -148,6 +149,7 @@ const ChecklistCard: FC<IChecklistCardProp> = ({
                     title: checklistEditedTitleValue,
                   },
                 });
+              }
             }}
           >
             Save

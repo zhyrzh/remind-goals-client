@@ -78,13 +78,6 @@ const Checklist: FC<IChecklistProps> = ({
     }
   };
 
-  // if (
-  //   goalChecklistCtx.getAllChecklistWithNoGoalIdQry.isPending ||
-  //   goalChecklistCtx.getAllChecklistByGoalIdQry(goalId!).isPending
-  // ) {
-  //   return <Spinner />;
-  // }
-
   return (
     <>
       <div className="mt-4">
@@ -104,6 +97,7 @@ const Checklist: FC<IChecklistProps> = ({
           isEditting && (
             <div className="flex items-center mt-2 transition-all">
               <Input
+                autoComplete="off"
                 type="text"
                 id="checklistTitle"
                 name="checklistTitle"
@@ -121,6 +115,7 @@ const Checklist: FC<IChecklistProps> = ({
         ) : (
           <div className="flex items-center mt-2 transition-all">
             <Input
+              autoComplete="off"
               type="text"
               id="checklistTitle"
               name="checklistTitle"
