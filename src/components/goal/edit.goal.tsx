@@ -18,6 +18,7 @@ import { useToast } from "../ui/use-toast";
 import { Pencil1Icon } from "@radix-ui/react-icons";
 import { ChecklistContext } from "@/store/checklist.context";
 import { GoalContext } from "@/store/goal.context";
+import Spinner from "../ui/Spinner";
 
 // Types declaration
 interface IEditGoalProps {
@@ -51,7 +52,7 @@ const EditGoal: FC<IEditGoalProps> = ({ goalId }) => {
   useEffect(() => {
     setCurrentGoalTitle(goalDetailsQry.data?.title!);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showEditGoalModal, currTabDetails.value]);
+  }, [showEditGoalModal, currTabDetails.value, goalDetailsQry.data?.title]);
 
   useEffect(() => {
     setCurrentGoalTitle(() => goalCtx.editGoalTitleMtn.data?.title!);
@@ -77,6 +78,42 @@ const EditGoal: FC<IEditGoalProps> = ({ goalId }) => {
     resetCurrTabDetails();
     resetFields();
   };
+
+  useEffect(() => {
+    if (goalCtx.editGoalTitleMtn.status !== "pending") {
+      if (currTabDetails.type === "goal.edit.title") {
+        setCurrentGoalTitle(currTabDetails.data?.title!);
+        setIsEdittingTitle(false);
+        resetCurrTabDetails();
+      }
+    }
+  }, [goalCtx.editGoalTitleMtn.status]);
+
+  useEffect(() => {
+    if (
+      goalChecklistCtx.addGoalChecklistItmToExistingGoalMtn.status !== "pending"
+    ) {
+      resetCurrTabDetails();
+    }
+  }, [goalChecklistCtx?.addGoalChecklistItmToExistingGoalMtn.status]);
+
+  useEffect(() => {
+    if (goalChecklistCtx.editChecklistItmTitleMtn.status !== "pending") {
+      resetCurrTabDetails();
+    }
+  }, [goalChecklistCtx?.editChecklistItmTitleMtn.status]);
+
+  useEffect(() => {
+    if (goalChecklistCtx.deleteSpecificChecklistItm.status !== "pending") {
+      resetCurrTabDetails();
+    }
+  }, [goalChecklistCtx?.deleteSpecificChecklistItm.status]);
+
+  useEffect(() => {
+    if (goalChecklistCtx.toggleChecklistItmStatusMutn.status !== "pending") {
+      resetCurrTabDetails();
+    }
+  }, [goalChecklistCtx?.toggleChecklistItmStatusMutn.status]);
 
   return (
     <Dialog open={showEditGoalModal} onOpenChange={onOpenChange}>
@@ -115,7 +152,7 @@ const EditGoal: FC<IEditGoalProps> = ({ goalId }) => {
                     onChange={(e) => setCurrentGoalTitle(e.target.value)}
                     value={currentGoalTitle}
                   />
-                  <section className="flex">
+                  <section className="flex ml-1">
                     <Button
                       onClick={() => {
                         if (currentGoalTitle === goalDetailsQry.data?.title!) {
@@ -169,18 +206,10 @@ const EditGoal: FC<IEditGoalProps> = ({ goalId }) => {
                 onClick={() => {
                   if (!currTabDetails.isCancel) {
                     switch (currTabDetails.type) {
-                      case "checklist.add":
-                        goalChecklistCtx?.addGoalChklistItmMutn.mutate({
-                          isActive: currTabDetails.data?.isActive!,
-                          title: currTabDetails.data?.title!,
-                        });
-                        break;
                       case "goal.edit.title":
                         goalCtx.editGoalTitleMtn.mutate({
                           ...currTabDetails.data,
                         });
-                        setCurrentGoalTitle(currTabDetails.data?.title!);
-                        setIsEdittingTitle(false);
                         break;
                       case "checklist.toggle":
                         goalChecklistCtx.toggleChecklistItmStatusMutn.mutate({
@@ -225,10 +254,28 @@ const EditGoal: FC<IEditGoalProps> = ({ goalId }) => {
                   } else {
                     setShowEditGoalModal(false);
                   }
-                  resetCurrTabDetails();
                 }}
+                disabled={
+                  goalCtx.editGoalTitleMtn.isPending ||
+                  goalChecklistCtx.addGoalChecklistItmToExistingGoalMtn
+                    .isPending ||
+                  goalChecklistCtx.editChecklistItmTitleMtn.isPending ||
+                  goalChecklistCtx.deleteSpecificChecklistItm.isPending ||
+                  goalChecklistCtx.toggleChecklistItmStatusMutn.isPending
+                }
               >
-                {!currTabDetails.isCancel ? "Confirm" : "Discard"}
+                {goalCtx.editGoalTitleMtn.isPending ||
+                goalChecklistCtx.addGoalChecklistItmToExistingGoalMtn
+                  .isPending ||
+                goalChecklistCtx.editChecklistItmTitleMtn.isPending ||
+                goalChecklistCtx.deleteSpecificChecklistItm.isPending ||
+                goalChecklistCtx.toggleChecklistItmStatusMutn.isPending ? (
+                  <Spinner />
+                ) : !currTabDetails.isCancel ? (
+                  "Confirm"
+                ) : (
+                  "Discard"
+                )}
               </Button>
               <Button
                 type="button"

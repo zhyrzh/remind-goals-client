@@ -16,6 +16,7 @@ import { Tabs, TabsContent } from "../ui/tabs";
 import useCurrTabDetails from "../../hooks/useCurrTabDetails";
 import { ChecklistContext } from "@/store/checklist.context";
 import { GoalContext } from "@/store/goal.context";
+import Spinner from "../ui/Spinner";
 
 /* Function component START */
 const AddGoal: FC = () => {
@@ -31,13 +32,6 @@ const AddGoal: FC = () => {
   useEffect(() => {
     goalChecklistCtx.deleteAllNoGoalIdMtn.mutate(undefined);
   }, [showAddGoalModal]);
-
-  useEffect(() => {
-    if (goalCtx?.addGoalMtn?.isSuccess) {
-      setShowAddGoalModal(false);
-      resetFields();
-    }
-  }, [goalCtx.addGoalMtn.isSuccess]);
 
   // hooks
   const { toast } = useToast();
@@ -70,17 +64,36 @@ const AddGoal: FC = () => {
     }
   };
 
-  // if (
-  //   goalCtx.addGoalMtn.isPending ||
-  //   goalChecklistCtx.addGoalChklistItmMutn.isPending ||
-  //   goalChecklistCtx.deleteAllNoGoalIdMtn.isPending ||
-  //   goalChecklistCtx.getAllChecklistWithNoGoalIdQry.isPending ||
-  //   goalChecklistCtx.toggleChecklistItmStatusMutn.isPending ||
-  //   goalChecklistCtx.deleteSpecificChecklistItm.isPending ||
-  //   goalChecklistCtx.editChecklistItmTitleMtn.isPending
-  // ) {
-  //   return <Spinner />;
-  // }
+  useEffect(() => {
+    if (goalCtx.addGoalMtn.status !== "pending") {
+      setShowAddGoalModal(false);
+      resetFields();
+    }
+  }, [goalCtx.addGoalMtn.status]);
+
+  useEffect(() => {
+    if (goalChecklistCtx.addGoalChklistItmMutn.status !== "pending") {
+      resetCurrTabDetails();
+    }
+  }, [goalChecklistCtx.addGoalChklistItmMutn.status]);
+
+  useEffect(() => {
+    if (goalChecklistCtx.editChecklistItmTitleMtn.status !== "pending") {
+      resetCurrTabDetails();
+    }
+  }, [goalChecklistCtx.editChecklistItmTitleMtn.status]);
+
+  useEffect(() => {
+    if (goalChecklistCtx.toggleChecklistItmStatusMutn.status !== "pending") {
+      resetCurrTabDetails();
+    }
+  }, [goalChecklistCtx.toggleChecklistItmStatusMutn.status]);
+
+  useEffect(() => {
+    if (goalChecklistCtx.deleteSpecificChecklistItm.status !== "pending") {
+      resetCurrTabDetails();
+    }
+  }, [goalChecklistCtx.deleteSpecificChecklistItm.status]);
 
   return (
     <Dialog open={showAddGoalModal} onOpenChange={onOpenChange}>
@@ -174,6 +187,14 @@ const AddGoal: FC = () => {
 
             <DialogFooter className="mt-12">
               <Button
+                disabled={
+                  goalCtx.addGoalMtn.isPending ||
+                  goalChecklistCtx.addGoalChklistItmMutn.isPending ||
+                  goalChecklistCtx.editChecklistItmTitleMtn.isPending ||
+                  goalChecklistCtx.toggleChecklistItmStatusMutn.isPending ||
+                  goalChecklistCtx.deleteSpecificChecklistItm.isPending ||
+                  goalChecklistCtx.editChecklistItmTitleMtn.isPending
+                }
                 type="submit"
                 onClick={() => {
                   if (!currTabDetails.isCancel) {
@@ -221,10 +242,20 @@ const AddGoal: FC = () => {
                   } else {
                     setShowAddGoalModal(false);
                   }
-                  resetCurrTabDetails();
                 }}
               >
-                {!currTabDetails.isCancel ? "Confirm" : "Discard"}
+                {goalCtx.addGoalMtn.isPending ||
+                goalChecklistCtx.addGoalChklistItmMutn.isPending ||
+                goalChecklistCtx.editChecklistItmTitleMtn.isPending ||
+                goalChecklistCtx.toggleChecklistItmStatusMutn.isPending ||
+                goalChecklistCtx.deleteSpecificChecklistItm.isPending ||
+                goalChecklistCtx.editChecklistItmTitleMtn.isPending ? (
+                  <Spinner />
+                ) : !currTabDetails.isCancel ? (
+                  "Confirm"
+                ) : (
+                  "Discard"
+                )}
               </Button>
               <Button
                 type="button"
