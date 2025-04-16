@@ -23,7 +23,7 @@ export const useGoalAPIRequest = () => {
   const editGoalTitleReq: MutationFunction<
     IGoal,
     Pick<IGoal, "id" | "title">
-  > = async ({ id, title }) => put(`/goals/${id}`, title);
+  > = async ({ id, title }) => put(`/goals/${id}`, { title });
 
   return { getAllGoalsReq, getSpecificGoalReq, addGoalReq, editGoalTitleReq };
 };
