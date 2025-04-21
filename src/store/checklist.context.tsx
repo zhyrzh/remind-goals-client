@@ -93,9 +93,6 @@ const ChecklistContextProvider: FC<{ children: any }> = ({ children }) => {
       qryClient.invalidateQueries({
         queryKey: ["goal-checklist", "get-all-with-no-goal-id"],
       });
-      qryClient.invalidateQueries({
-        queryKey: ["goals"],
-      });
     },
   });
 
@@ -106,9 +103,9 @@ const ChecklistContextProvider: FC<{ children: any }> = ({ children }) => {
   >({
     mutationKey: ["goal-checklist", "add"],
     mutationFn: addGoalChecklistItmToExistingGoalReq,
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       qryClient.invalidateQueries({
-        queryKey: ["goal-checklist", "get-all-by-goal-id"],
+        queryKey: ["goal-checklist", "get-all-by-goal-id", variables.goalId],
       });
       qryClient.invalidateQueries({
         queryKey: ["goal-checklist", "get-all-with-no-goal-id"],
