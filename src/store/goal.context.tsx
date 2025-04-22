@@ -24,6 +24,7 @@ interface IGoalContext {
     FetchError,
     { title: string; id: number }
   >;
+  deleteGoalMtn: UseMutationResult<IGoal, FetchError, { id: number }>;
 }
 
 export const GoalContext = createContext<IGoalContext>(
@@ -33,8 +34,13 @@ export const GoalContext = createContext<IGoalContext>(
 const GoalContextProvider: FC<{ children: any }> = ({ children }) => {
   const qryClient = useQueryClient();
 
-  const { addGoalReq, editGoalTitleReq, getAllGoalsReq, getSpecificGoalReq } =
-    useGoalAPIRequest();
+  const {
+    addGoalReq,
+    editGoalTitleReq,
+    getAllGoalsReq,
+    getSpecificGoalReq,
+    deleteGoalReq,
+  } = useGoalAPIRequest();
 
   const getAllGoalsQry = useQuery<IGoal[], FetchError>({
     queryKey: ["goals"],
@@ -84,6 +90,16 @@ const GoalContextProvider: FC<{ children: any }> = ({ children }) => {
     },
   });
 
+  const deleteGoalMtn = useMutation<IGoal, FetchError, { id: number }>({
+    mutationKey: ["goals", "delete"],
+    mutationFn: deleteGoalReq,
+    onSuccess: () => {
+      qryClient.invalidateQueries({
+        queryKey: ["goals"],
+      });
+    },
+  });
+
   return (
     <ChecklistContextProvider>
       <GoalContext.Provider
@@ -92,6 +108,7 @@ const GoalContextProvider: FC<{ children: any }> = ({ children }) => {
           getSpecificGoalQry,
           addGoalMtn,
           editGoalTitleMtn,
+          deleteGoalMtn,
         }}
       >
         {children}
