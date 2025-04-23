@@ -2,6 +2,7 @@ import { FC, useEffect, useState } from "react";
 import { Card } from "../ui/card";
 import { IGoal } from "./types";
 import EditGoal from "./edit.goal";
+import DeleteGoal from "./delete.goal";
 
 // Type declarations
 interface IGoalItemCardProp {
@@ -39,6 +40,7 @@ const GoalItemCard: FC<IGoalItemCardProp> = ({ goal }) => {
           goalTitle={goal.title}
           goalId={goal.id}
         />
+        <DeleteGoal goal={goal} />
       </section>
     </Card>
   );
